@@ -6,7 +6,7 @@ DeMixT is a frequentist-based method and fast in yielding accurate estimates of 
 The function DeMixT is designed to finish the whole pipeline of deconvolution for two or three components. DeMixT.S1 function is designed to estimate the proportions of all mixed samples for each mixture component with or without subsetting gene set. DeMixT.S2 function is designed to estimate the deconvolved expressions of individual mixed tumor samples for unknown component given a subset of genes.
 
 # Installation
-To install this package, start R and install the package:
+To install this package, start R and enter:
 
 devtools:::install_github("wwylab/DeMixT/DeMixT_0.1")
 
