@@ -10,4 +10,4 @@ To install this package, start R and enter:
 
 devtools:::install_github("wwylab/DeMixT/DeMixT_0.1")
 
-DeMixT enables the feature of parallel computing using OpenMP. If OpenMP has not been installed, you can still install DeMixT but without parallel computing feature. Please download and install OpenMP if you want to use enable this feature. To learn how to install OpenMP, please check the file How to install OpenMP.docx.
+DeMixT enables the feature of parallel computing using OpenMP. If OpenMP has not been installed, you can still install and use DeMixT but without parallel computing feature. Please download and install OpenMP if you want to enable the feature. To learn more about how to install OpenMP, please check the file "How to install OpenMP.docx".
