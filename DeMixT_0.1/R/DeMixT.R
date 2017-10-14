@@ -1,5 +1,5 @@
 ###DeMixT running function for a pipeline
-DeMixT <- function(inputdata, groupid, niter = 10, ninteg1 = 50,ninteg2 = 50, filter.option = 1, filter.criteria1 = c(0.5,0.5), filter.criteria2 = c(250,250), 
+DeMixT <- function(inputdata, groupid, niter = 10, ninteg1 = 50,ninteg2 = 50, filter.out = TRUE, filter.option = 1, filter.criteria1 = c(0.5,0.5), filter.criteria2 = c(250,250),
 filter.criteria3 = 0.25, if.filter = FALSE, tol=10^(-5), sg0=0.5^2, mu0=0.0, nthread=-1){
 ##Begin Step 1
     core.num <- round(detectCores())-1
@@ -13,7 +13,7 @@ filter.criteria3 = 0.25, if.filter = FALSE, tol=10^(-5), sg0=0.5^2, mu0=0.0, nth
 	
 ##Begin Step2
 	print("Step 2 is started for deconvolution of expressions.")
-	res.S2 <- DeMixT.S2(inputdata, groupid, givenpi, ninteg = ninteg2,  filter.option = filter.option, nthread)
+	res.S2 <- DeMixT.S2(inputdata, groupid, givenpi, ninteg = ninteg2, filter.out = filter.out, filter.option = filter.option, nthread)
 	return(list(pi = givenpi1, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovExprN2 = res.S2$decovExprN2, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma, pi_iteration = pi_iteration))
 
 }

@@ -1,5 +1,5 @@
 ###DeMixT step II function
-DeMixT.S2 <- function(inputdata, groupid, givenpi,ninteg = 50,  filter.option = 1, nthread=-1){
+DeMixT.S2 <- function(inputdata, groupid, givenpi,ninteg = 50, filter.out = TRUE, filter.option = 1, nthread=-1){
     core.num <- round(detectCores())-1
     if(nthread == -1) nthread = core.num
 	sample.id <- colnames(inputdata[, groupid == 3])
@@ -28,6 +28,7 @@ DeMixT.S2 <- function(inputdata, groupid, givenpi,ninteg = 50,  filter.option = 
     decovSigma <- cbind(decovSigmaN, res$decovSigma); colnames(decovSigma) = c('SigmaN1', 'SigmaT'); row.names(decovSigma) = gene.id
     ## filter out genes with muN - muT > 4
     filter.in <- (decovMu[,1] - decovMu[,2] <= 4.0)
+    if(filter.out = FALSE)  filter.in <- rep(TRUE, dim(inputdata)[1])
     }else{
     decovMuN1 <- apply(log2(inputdata[,groupid == 1]), 1, mean)
     decovSigmaN1 <- apply(log2(inputdata[,groupid == 1]), 1, sd)
