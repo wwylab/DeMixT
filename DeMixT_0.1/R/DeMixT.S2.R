@@ -28,7 +28,7 @@ DeMixT.S2 <- function(inputdata, groupid, givenpi,ninteg = 50, filter.out = TRUE
     decovSigma <- cbind(decovSigmaN, res$decovSigma); colnames(decovSigma) = c('SigmaN1', 'SigmaT'); row.names(decovSigma) = gene.id
     ## filter out genes with muN - muT > 4
     filter.in <- (decovMu[,1] - decovMu[,2] <= 4.0)
-    if(filter.out = FALSE)  filter.in <- rep(TRUE, dim(inputdata)[1])
+    if(filter.out == FALSE)  filter.in <- rep(TRUE, dim(inputdata)[1])
     }else{
     decovMuN1 <- apply(log2(inputdata[,groupid == 1]), 1, mean)
     decovSigmaN1 <- apply(log2(inputdata[,groupid == 1]), 1, sd)
