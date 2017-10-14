@@ -8,8 +8,8 @@ Deconvolution of heterogeneous tumor samples with two or three components using 
 This is the main function to run the deconvolution analysis in a setting of two or three components.
 }
 \usage{
-DeMixT(inputdata, groupid, niter = 10, ninteg1 = 50,ninteg2 = 50, filter.option = 1, 
-filter.criteria1 = c(0.5,0.5), filter.criteria2 = c(250,250), filter.criteria3 = 0.25, 
+DeMixT(inputdata, groupid, niter = 10, ninteg1 = 50,ninteg2 = 50, filter.out = TRUE, 
+filter.option = 1, filter.criteria1 = c(0.5,0.5), filter.criteria2 = c(250,250), filter.criteria3 = 0.25, 
 if.filter = FALSE, tol = 10^(-5), sg0 = 0.5^2, mu0= 0.0, nthread = detectCore() - 1)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -21,6 +21,7 @@ A vector of indicators to denote if the corresponding samples are reference samp
  \item{niter}{The maximum number of iterations used in the algorithm of iterated conditional modes. A larger value can better guarantee the convergence in estimation. The default number is 10.}
 \item{ninteg1}{The number of bins used in numerical integration for computing complete likelihood when proportions are estimated. A larger value can increase accuracy in estimation but also increase the running time. Especially in three-component deconvolution, the increase of number of bins can lengthen the running time. The default value is 50.}
 \item{ninteg2}{The number of bins used in numerical integration for computing complete likelihood when individual expressions are deconvolved. The default value is 50.}
+\item{filter.out}{Option to control if only genes with low-biased estimates are output for two-component deconvolution.}
 \item{filter.option}{The option is used to process or filter zero count from input expression matrix. If it is set to 1, all those genes containing zero count in sample will be removed. If it is set to 2, input data matrix will be added 1 to vanish zero count. This option is used for RNA-seq data. Default is 1.}
 \item{filter.criteria1}{Filtering threshold used to select genes with small sample standard deviations in reference samples. This threshold is set on the level of log2-transformed data. A vector of length 1 is given for two-component deconvolution and length 2 for three-component deconvolution. A larger value will relax the gene filtering for proportion estimation but might introduce bias. A smaller value will take fewer genes for proportion estimation. User should take care of the choice of this value because too stringent criteria can cause no gene to be input for estimation. It is only enabled when if.filter = TRUE. Default is 0.5 for each component.}
 \item{filter.criteria2}{The percentage or the number of genes that will be used for proportion estimation after gene selection. It is a vector of length 2 for three-component setting and length 1 for two-component setting. In the two-component setting, a rank of fold change of mixed to reference is used to select most differentially expressed genes at the average level. In the three-component setting, this is used within our component merging strategy. The first element is set to give the number of genes selected in the first step when we merge three-component into two-component, and the second element of this vector is set to give the number of genes selected in the second step, where all three components are being estimated. It is enabled when if.filter = TRUE. Default value is 250.}

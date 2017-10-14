@@ -8,7 +8,7 @@ Deconvolves expressions of each individual sample for unknown component
 This function is designed to estimate the deconvolved expressions of individual mixed tumor samples for unknown component for each gene.
 }
 \usage{
-DeMixT.S2(inputdata, groupid, givenpi,ninteg = 50, filter.option = 1, 
+DeMixT.S2(inputdata, groupid, givenpi,ninteg = 50, filter.out = TRUE, filter.option = 1, 
 nthread=detectCore() - 1)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -19,6 +19,7 @@ A matrix of expression data (e.g gene expressions) from reference (e.g. normal) 
 A vector of indicators to denote if the corresponding samples are reference samples or mixed tumor samples. DeMixT is able to deconvolve mixed tumor samples with at most three components. We use 1 and 2 to denote the samples referencing the first and the second known component in mixed tumor samples. We use 3 to indicate mixed tumor samples prepared to be deconvolved. For example, in two-component deconvolution, we have c(1,1,...,3,3) and in three-component deconvolution, we have c(1,1,...,2,2,...,3,3).}
  \item{givenpi}{A vector of proportions for all admixed samples, with size of the number of admixed samples for two component and two times the number of admixed samples for three component. It is fixed with given proportions for the first and the second known component of mixed tumor samples, or just for one known component when there is just one type of reference tissues. It has the form of Vector \eqn{(\pi^1_{N_1},\pi^2_{N_1},...,\pi^{S_T}_{N_1},\pi^1_{N_2},\pi^2_{N_2},...,\pi^{S_T}_{N_2})}. \eqn{S_T(S_T<S)} is the number of mixed tumor samples.}
 \item{ninteg}{The number of bins used in numerical integration for computing complete likelihood when expressions are deconvolved. The default value is 50.}
+\item{filter.out}{Option to control if only genes with low-biased estimates are output for two-component deconvolution.}
 \item{filter.option}{The option is used to process or filter zero count from input expression matrix. If it is set to 1, all those genes containing zero count in sample will be removed. If it is set to 2, input data matrix will be added 1 to vanish zero count. This option is used for RNA-seq data. Default is 1.}
 \item{nthread}{The number of threads used for deconvolution. The default is the number of whole CPUs minus one.}
 
