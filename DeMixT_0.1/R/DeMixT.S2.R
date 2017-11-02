@@ -4,6 +4,15 @@ DeMixT.S2 <- function(inputdata, groupid, givenpi,ninteg = 50, filter.out = TRUE
     if(nthread == -1) nthread = core.num
 	sample.id <- colnames(inputdata[, groupid == 3])
     if(is.null(row.names(inputdata))) row.names(inputdata) <- 1:nrow(inputdata)
+    
+    nCid = length(unique(groupid))-1
+    # filter genes with constant value across all samples
+    if (nCid == 1){
+        inputdata <- inputdata[apply(inputdata, 1, FUN = function(x) length(unique(x[groupid == 1])) > 1),]
+    }else{
+        inputdata <- inputdata[apply(inputdata, 1, FUN = function(x) length(unique(x[groupid == 1])) > 1)&apply(inputdata, 1, FUN = function(x) length(unique(x[groupid == 2])) > 1),]
+    }
+    
 	if(filter.option == 1){
 		inputdata <- inputdata[apply(inputdata, 1, FUN = function(x) sum(x <= 0) == 0), ]
         gene.id <- row.names(inputdata)

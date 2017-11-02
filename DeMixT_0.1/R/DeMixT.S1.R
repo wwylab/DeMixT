@@ -3,6 +3,7 @@ DeMixT.S1 <- function(inputdata, groupid, niter = 10, ninteg = 50, filter.option
 ##filter.option:1, we remove all the genes containing zero count in any sample; 2, we add 1 to the original inputdatamat to kill all the zero
     core.num <- round(detectCores())-1
     if(nthread == -1) nthread = core.num
+    #
 	if(filter.option == 1){
 		inputdata <- inputdata[apply(inputdata, 1, FUN = function(x) sum(x <= 0) == 0), ]
 	}else if(filter.option == 2){
@@ -13,6 +14,14 @@ DeMixT.S1 <- function(inputdata, groupid, niter = 10, ninteg = 50, filter.option
 	nCid = length(unique(groupid))-1       ## number of known components
 	sample.id = colnames(inputdata[,groupid == 3])
 	
+    # filter genes with constant value across all samples
+    if (nCid == 1){
+        inputdata <- inputdata[apply(inputdata, 1, FUN = function(x) length(unique(x[groupid == 1])) > 1),]
+    }else{
+        inputdata <- inputdata[apply(inputdata, 1, FUN = function(x) length(unique(x[groupid == 1])) > 1)&apply(inputdata, 1, FUN = function(x) length(unique(x[groupid == 2])) > 1),]
+    }
+    
+    #
 	if (nCid == 1){
 	  if.stage = FALSE
 	}else{
