@@ -13,8 +13,7 @@ To install this package, start R and enter:
 devtools:::install_github("wwylab/DeMixT/DeMixT_0.1")
 
 DeMixT enables the feature of parallel computing using OpenMP. If OpenMP has not been installed, you can still install and use DeMixT but without parallel computing feature. Please download and install OpenMP if you want to enable the feature. To learn more about how to install OpenMP, please check the file "How to install OpenMP.docx".
-
-For Mac users who do not have OpneMP installed, please download and intall "DeMixT_0.1.1.tar.gz".
+For
 
 # Mixed cell line data
 This data set is used in our validation experiment for DeMixT. To generate this dataset in RNA-seq, we performed a mixing experiment, in which we mixed mRNAs from three cell lines: lung adenocarcinoma in humans (H1092), cancer-associated fibroblasts (CAFs) and tumor infiltrating lymphocytes (TIL), at different proportions to generate 32 samples, including 9 samples that correspond to three repeats of a pure cell line sample for three cell lines. The RNA amount of each tissue in the mixture samples was calculated on the basis of real RNA concentrations tested in the biologist’s lab.
