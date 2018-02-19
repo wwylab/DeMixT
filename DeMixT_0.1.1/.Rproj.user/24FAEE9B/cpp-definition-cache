@@ -1,0 +1,356 @@
+[
+    {
+        "definitions" : [
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 32,
+                "name" : "Tdemix(double *, int *, int *, int *, int *, double *, double *, double *, int *, int *, int *, double *, int *, double *, double *, double *, double *, double *, double *, double *, double *, double *, double *, double *)",
+                "parent_name" : "",
+                "usr" : "c:@F@Tdemix"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 448,
+                "name" : "load_data(double *)",
+                "parent_name" : "",
+                "usr" : "c:@F@load_data"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 466,
+                "name" : "initialSet(PARAM *)",
+                "parent_name" : "",
+                "usr" : "c:@F@initialSet"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 485,
+                "name" : "saveFiles(double *, double *, double *, double *, double *, double *, double *, double *, double *)",
+                "parent_name" : "",
+                "usr" : "c:@F@saveFiles"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 554,
+                "name" : "gettumor(int, int)",
+                "parent_name" : "",
+                "usr" : "c:@F@gettumor"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 595,
+                "name" : "tf_y(int, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@tf_y"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 610,
+                "name" : "tf_y2(int, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@tf_y2"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 625,
+                "name" : "mint(int, int, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@mint"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 662,
+                "name" : "tmin_y(double, double, int, int, double (*)(int, int, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@tmin_y"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 768,
+                "name" : "tmin_y2(double, double, int, double, double (*)(int, double, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@tmin_y2"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 875,
+                "name" : "nitg_ft_y(double, double, double, double, double, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@nitg_ft_y"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 885,
+                "name" : "min_nitg_ft_y(double, double, double, double, double, double, double, double, double (*)(double, double, double, double, double, double, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@min_nitg_ft_y"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1003,
+                "name" : "ft_y(double, double, double, double, double, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@ft_y"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1097,
+                "name" : "ft_y_SC(double, double, double, double, double, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@ft_y_SC"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1124,
+                "name" : "pf_y(int, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@pf_y"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1138,
+                "name" : "pmin_y(double, double, int, double (*)(int, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@pmin_y"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1243,
+                "name" : "getpi(int, int)",
+                "parent_name" : "",
+                "usr" : "c:@F@getpi"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1273,
+                "name" : "getpiT(int)",
+                "parent_name" : "",
+                "usr" : "c:@F@getpiT"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1297,
+                "name" : "ft_y2(double, double, double, double, double, double, double, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@ft_y2"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1325,
+                "name" : "pf_y2(int, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@pf_y2"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1343,
+                "name" : "pf_yT(int, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@pf_yT"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1359,
+                "name" : "pmin_y2(double, double, int, double, double (*)(int, double, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@pmin_y2"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1464,
+                "name" : "minpi(int, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@minpi"
+            },
+            {
+                "column" : 6,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1478,
+                "name" : "getmle(int, int, int)",
+                "parent_name" : "",
+                "usr" : "c:@F@getmle"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1504,
+                "name" : "lf1(int, int, double, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@lf1"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1516,
+                "name" : "fmin1(double, double, int, int, double, double, double (*)(int, int, double, double, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@fmin1"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1628,
+                "name" : "lf2(int, int, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@lf2"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+                "kind" : 6,
+                "line" : 1649,
+                "name" : "fmin2(double, double, int, int, double (*)(int, int, double), double)",
+                "parent_name" : "",
+                "usr" : "c:@F@fmin2"
+            }
+        ],
+        "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixT.c",
+        "file_last_write" : 1518642334
+    },
+    {
+        "definitions" : [
+            {
+                "column" : 16,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 3,
+                "line" : 14,
+                "name" : "param",
+                "parent_name" : "",
+                "usr" : "c:@S@param"
+            },
+            {
+                "column" : 3,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 8,
+                "line" : 30,
+                "name" : "PARAM",
+                "parent_name" : "",
+                "usr" : "c:DeMixTH.h@T@PARAM"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 133,
+                "name" : "cnorm(double)",
+                "parent_name" : "",
+                "usr" : "c:@F@cnorm"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 139,
+                "name" : "cinvgamma(double)",
+                "parent_name" : "",
+                "usr" : "c:@F@cinvgamma"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 146,
+                "name" : "dnorm(double, double, double)",
+                "parent_name" : "",
+                "usr" : "c:@F@dnorm"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 156,
+                "name" : "sum(double *, int)",
+                "parent_name" : "",
+                "usr" : "c:@F@sum"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 168,
+                "name" : "mean(double *, int)",
+                "parent_name" : "",
+                "usr" : "c:@F@mean"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 175,
+                "name" : "sd(double *, int)",
+                "parent_name" : "",
+                "usr" : "c:@F@sd"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 188,
+                "name" : "gammaln(double)",
+                "parent_name" : "",
+                "usr" : "c:@F@gammaln"
+            },
+            {
+                "column" : 8,
+                "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+                "kind" : 6,
+                "line" : 205,
+                "name" : "gamma(double)",
+                "parent_name" : "",
+                "usr" : "c:@F@gamma"
+            }
+        ],
+        "file" : "/Users/g/Desktop/DeMixT_0.1.1/src/DeMixTH.h",
+        "file_last_write" : 1518642334
+    }
+]
