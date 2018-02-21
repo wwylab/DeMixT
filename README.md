@@ -11,14 +11,18 @@ The function DeMixT is designed to finish the whole pipeline of deconvolution fo
 We have two versions of DeMixT for users to download. The source file is compatible with windows, linux and mac os.
 
 For users who have OpenMP on the computer. Please use DeMixT_0.1. To install this package, start R and enter:
-devtools:::install_github("wwylab/DeMixT/DeMixT_0.1")
+
+devtools::install_github("wwylab/DeMixT/DeMixT_0.1")
 
 For users who do not have OpenMP on the computer. Please use DeMixT_0.1.1. To install this package, start R and enter:
-devtools:::install_github("wwylab/DeMixT/DeMixT_0.1.1")
+
+devtools::install_github("wwylab/DeMixT/DeMixT_0.1.1")
 
 You can also download the installation file directly from the website:
-DeMixT_0.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.1.zip
-DeMixT_0.1.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.1.zip
+
+DeMixT_0.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.1.tar.gz
+
+DeMixT_0.1.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.1.1.tar.gz
 
 For more information, please visit:
 https://bcbweb.mdanderson.edu/main/DeMixT
