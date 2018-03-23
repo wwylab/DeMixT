@@ -60,15 +60,23 @@ Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, nite
                 
         
                 obj<-rres[[22]]
-                print(obj)
+                #print(obj)
                 
                 if(sum(obj == 0)>1){
                     niter1 <- which(obj==0)[1]-1
                 }else{
                     niter1 <- length(obj)
                 }
-                print('objective function in each step:')
-                print(obj[1:niter1])
+                
+                
+                if (nhavepi != 1) {
+                  cat('Objective function in each step: ')
+                  cat(obj[1:niter1])
+                  cat('\n')
+                }
+                
+                
+                
                 outcome1<-matrix(rres[[16]], ncol=intx, nrow=2, byrow=T)
 	            outcome2<-matrix(rres[[17]], ncol=(intx), nrow=wgenes, byrow = T)
 	            outcome3<-matrix(rres[[18]], ncol=niter, nrow=wgenes,byrow=T)

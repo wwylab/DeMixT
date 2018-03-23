@@ -60,7 +60,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   integ = *ninteg;
   total_tol = *tol;
   iteration = *niter; // number of iterations
-  printf("iteration is %d\n", iteration);
+  //printf("iteration is %d\n", iteration);
 
 
 
@@ -71,7 +71,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   {
     if(nGroup[j]==1) fNorm1++;
     if(nGroup[j]==2) fNorm2++;
-    printf("%d : %d \n", j, nGroup[j]);
+    //printf("%d : %d \n", j, nGroup[j]);
   }
 
   // Determine the number of tumor sample
@@ -92,13 +92,13 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   for(j=0;j<nS;j++) FD[j]= calloc(nG, sizeof(double));
 
 
-  printf("Setting is over\n");
+  //printf("Setting is over\n");
 
   // Data transfer
   initialSet(p);
   load_data(data);
 
-  printf("Loading is over\n");
+  //printf("Loading is over\n");
 
   tmppi1 =calloc(iteration ,sizeof(double *));  // save pi1 estimates in each iteration
   tmppi2 =calloc(iteration ,sizeof(double *));  // save pi2 estimates in each iteration
@@ -108,7 +108,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     tmppi1[j]= calloc(intx, sizeof(double ));
     tmppi2[j]= calloc(intx, sizeof(double ));
   }
-  printf("Loading1 is over\n");
+  //printf("Loading1 is over\n");
 
   //calculate mean and sd of normal samples
   stroma1 = calloc(nG, sizeof(double *));
@@ -125,7 +125,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   st1_sig_2 = calloc(nG ,sizeof(double));
   st2_sig_2 = calloc(nG ,sizeof(double));
 
-  printf("Loading2 is over\n");
+  //printf("Loading2 is over\n");
 
   for(j=0;j<nG;j++) stroma1[j]= calloc(fNorm1, sizeof(double));
   for(j=0;j<nG;j++) stroma2[j]= calloc(fNorm2, sizeof(double));
@@ -136,7 +136,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     mixed = calloc(nG ,sizeof(double *));
     for(j=0;j<nG;j++) mixed[j]= calloc(intx, sizeof(double));
     mixedm = calloc(nG ,sizeof(double));
-  printf("Loading3 is over\n");
+  //printf("Loading3 is over\n");
 
     for(i=0;i<nG;i++)
     {
@@ -207,7 +207,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     for(k=0;k<intx;k++) p->piT[k] = fixpi3[k];
   }
 
-  printf("Loading is over\n");
+  //printf("Loading is over\n");
 
   free(st1_mu);
   free(st2_mu);
@@ -227,7 +227,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
   CD = calloc(intx ,sizeof(double *));
   for(j=0;j<intx;j++) CD[j]= calloc(nG, sizeof(double));
-  printf("Iteration is starting\n");
+  //printf("Iteration is starting\n");
 
   avgparT = calloc(iteration, sizeof(double *));
   sigparT = calloc(iteration, sizeof(double *));
@@ -252,7 +252,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
     for(i=0;i<iteration;i++)
     {
-        printf("iteration %d Updating Purity\n", i+1);
+      if (nHavepi != 1)  printf("Iteration %d: updating purities\n", i+1);
         //updating pi value
         if(nHavepi==0)
         {
@@ -276,19 +276,19 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         for(j=0;j<intx;j++)
         {
             tmppi1[i][j] = p->pi1[j];
-            printf("%15.3f \t",  p->pi1[j]);
+          if (nHavepi != 1)  printf("%15.3f \t",  p->pi1[j]);
             if(Cid == 2)
             {
                 tmppi2[i][j] = p->pi2[j];
-                printf(" %15.3f \t",  p->pi2[j]);
+              if (nHavepi != 1)  printf(" %15.3f \t",  p->pi2[j]);
             }
-            printf("\n");
+            if (nHavepi != 1)  printf("\n");
         }
         
         
         if(i==0) start_t=clock();
         
-        printf("iteration %d Updating Parameters\n", i+1);
+        if (nHavepi != 1)  printf("Iteration %d: updating parameters\n", i+1);
         #ifdef _OPENMP
          #pragma omp parallel for //openmp
         for(j=0;j<nG;j++)
@@ -314,9 +314,9 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         if(i==1)
         {
             end_t=clock();
-            printf("================================================================\n");
-            printf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
-            printf("================================================================\n");
+            //printf("================================================================\n");
+            //printf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
+            //printf("================================================================\n");
         }
 
         // objective function 2D
@@ -433,7 +433,7 @@ void load_data(double *mat1)
       FD[k][j]=  mat1[nG*k+j];
     }
   }
-  printf("There are  %d normals and %d tumors\n", fNorm,intx);
+  if (nHavepi != 1) printf("There are  %d normals and %d tumors\n", fNorm,intx);
 
 }
 
