@@ -1,13 +1,11 @@
 Package: DeMixT
-Title: Cell type-specific deconvolution of heterogeneous tumor samples
-        with three components using expression data from RNAseq or
-        microarray platforms
-Version: 0.1.1
-Date: 2016-12-16
-Author: Zeya Wang, Wenyi Wang
-Maintainer: Zeya Wang <zw17@rice.edu>,Shaolong Cao <SCao@mdanderson.org>
-Description: We develop a three-component deconvolution model, DeMixT, for expression data from a mixture of cancerous tissues, infiltrating immune cells and tumor microenvironment. DeMixT is a frequentist-based method and fast in yielding accurate estimates of cell proportions and compartment-specific expression profiles for two-component and three-component deconvolution problem. Our method promises to provide deeper insight into cancer biomarkers and assist in the development of novel prognostic markers and therapeutic strategies.
+Title: Cell type-specific deconvolution of heterogeneous tumor samples with two or three components using expression data from RNAseq or microarray platforms
+Version: 0.1
+Date: 2018-03-19
+Authors: Zeya Wang <zw17.rice@gmail.com>, Wenyi Wang <wwang7@@mdanderson.org>
+Maintainers: Zeya Wang <zw17.rice@gmail.com>, Fan Gao <fgao3@mdanderson.org>
+Description: DeMixT is a software package that performs deconvolution on transcriptome data from a mixture of two or three components.
 LazyData: TRUE
-Depends: R (>= 3.2)
+Depends: R (>= 3.2), parallel
 NeedsCompilation: yes
-Packaged: 2018-02-14 21:05:34 UTC; fgao3
+
