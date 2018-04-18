@@ -1,0 +1,5 @@
+useDynLib(DeMixT)
+export(DeMixT)
+export(DeMixT.S1)
+export(DeMixT.S2)
+export(Optimum.KernelC)
