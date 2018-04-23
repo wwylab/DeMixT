@@ -13,11 +13,13 @@ We have two versions of DeMixT for users to download. The source file is compati
 For users who have OpenMP on the computer. Please use DeMixT_0.1 or DeMixT_0.2. To install this package, start R and enter:
 
 devtools::install_github("wwylab/DeMixT/DeMixT_0.1")
+
 devtools::install_github("wwylab/DeMixT/DeMixT_0.2")
 
 For users who do not have OpenMP on the computer. Please use DeMixT_0.1.1 or DeMixT_0.2.1. To install this package, start R and enter:
 
 devtools::install_github("wwylab/DeMixT/DeMixT_0.1.1")
+
 devtools::install_github("wwylab/DeMixT/DeMixT_0.2.1")
 
 You can also download the installation file directly from the website:
