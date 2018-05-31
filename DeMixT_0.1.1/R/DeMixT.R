@@ -1,27 +1,30 @@
-require(parallel)
+###DeMixT running function for a pipeline
+DeMixT <- function(inputdata, groupid, niter = 10, ninteg1 = 50,ninteg2 = 50, filter.out = TRUE, filter.option = 1, filter.criteria1 = c(0.5,0.5), filter.criteria2 = c(250,250),
+filter.criteria3 = 0.25, if.filter = FALSE, tol=10^(-5), sg0=0.5^2, mu0=0.0, nthread=-1){
+##Begin Step 1
+    core.num <- round(detectCores())-1
+    if(nthread == -1) nthread = core.num
+	print("Step 1 is started for estimating proportions.")
+	res.S1 <- DeMixT.S1(inputdata, groupid, niter = niter, ninteg = ninteg1, filter.option = filter.option, filter.criteria1 = filter.criteria1, filter.criteria2 = filter.criteria2, 
+			  filter.criteria3 = filter.criteria3, if.filter = if.filter,tol=tol, sg0=sg0, mu0=mu0, nthread)
+              givenpi1 <- res.S1$pi 
+			  givenpi <- c(t(givenpi1))# expand the piout matrix to a vector
+    pi_iteration <- res.S1$pi_iteration
+	
+##Begin Step2
+	print("Step 2 is started for deconvolution of expressions.")
+	res.S2 <- DeMixT.S2(inputdata, groupid, givenpi, ninteg = ninteg2, filter.out = filter.out, filter.option = filter.option, nthread)
+	return(list(pi = givenpi1, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovExprN2 = res.S2$decovExprN2, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma, pi_iteration = pi_iteration))
 
-DeMixT <- function(data.Y, data.comp1, data.comp2 = NULL, 
-                   niter = 10, nbin = 50, 
-                   if.filter = TRUE, ngene.selected.for.pi = 250, mean.diff.in.CM = 0.25,
-                   tol = 10^(-5), output.more.info = FALSE, nthread = detectCores() - 1) {
-  
-  cat("Step 1: Estimation of Proportions\n")
-  res.S1 <- DeMixT.S1(data.Y = data.Y, data.comp1 = data.comp1, data.comp2 = data.comp2, 
-                      niter = niter, nbin = nbin, 
-                      if.filter = if.filter, ngene.selected.for.pi = ngene.selected.for.pi, mean.diff.in.CM = mean.diff.in.CM,
-                      tol = tol, nthread = nthread)
-  
-  cat("Step 2: Deconvolution of Expressions\n")
-  res.S2 <- DeMixT.S2(data.Y = data.Y, data.comp1 = data.comp1, data.comp2 = data.comp2, 
-                      givenpi = c(t(res.S1$pi)), nbin = nbin, nthread = nthread)
-  
-  cat("Deconvolution is finished\n")
-  
-  if (is.null(data.comp2)) { # two-component
-    if (output.more.info) return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma, pi.iter = res.S1$pi.iter, gene.name = res.S1$gene.name))
-    return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma))
-  } else { # three-component
-    if (output.more.info) return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovExprN2 = res.S2$decovExprN2, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma, pi.iter = res.S1$pi.iter, gene.name = res.S1$gene.name))
-    return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovExprN2 = res.S2$decovExprN2, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma))
-  }
 }
+
+
+
+
+
+
+
+
+
+
+

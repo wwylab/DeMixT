@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527728576902.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3651964604",
+    "id" : "9DC82446",
+    "lastKnownWriteTime" : 1527723779,
+    "last_content_update" : 1527723779,
+    "path" : "~/Desktop/DeMixT_0.1/R/DeMixT.R",
+    "project_path" : "R/DeMixT.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

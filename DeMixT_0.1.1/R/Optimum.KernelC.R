@@ -1,6 +1,7 @@
-require(parallel)
 ###main function
-Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, niter, ninteg,tol, sg0 = 0.5^2, mu0= 0.0, nthread = 1){
+Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, niter, ninteg,tol, sg0 = 0.5^2, mu0= 0.0, nthread=-1){
+                   core.num <- round(detectCores())-1
+                   if(nthread == -1) nthread = core.num
     
 	               if(!is.matrix(inputdata)) stop("argument inputdata must be a matrix");
 	               if(!is.vector(groupid)) stop("argument groupid must be a vector"); 
@@ -59,20 +60,15 @@ Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, nite
                 
         
                 obj<-rres[[22]]
-                #print(obj)
+                print(obj)
                 
                 if(sum(obj == 0)>1){
                     niter1 <- which(obj==0)[1]-1
                 }else{
                     niter1 <- length(obj)
                 }
-                
-                if (nhavepi != 1) {
-                  cat('Objective function in each step: ')
-                  cat(obj[1:niter1])
-                  cat('\n')
-                }
-                
+                print('objective function in each step:')
+                print(obj[1:niter1])
                 outcome1<-matrix(rres[[16]], ncol=intx, nrow=2, byrow=T)
 	            outcome2<-matrix(rres[[17]], ncol=(intx), nrow=wgenes, byrow = T)
 	            outcome3<-matrix(rres[[18]], ncol=niter, nrow=wgenes,byrow=T)

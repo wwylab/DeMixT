@@ -1,0 +1,8 @@
+DeMixT="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/DeMixT"
+datasets="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/datasets"
+grDevices="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/grDevices"
+graphics="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/graphics"
+methods="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/methods"
+parallel="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/parallel"
+stats="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/stats"
+utils="/Library/Frameworks/R.framework/Versions/3.4/Resources/library/utils"

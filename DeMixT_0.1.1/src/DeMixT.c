@@ -11,22 +11,7 @@
   #include <string.h>
   #include <float.h> /* DBL_EPSILON */
   #include "DeMixTH.h"
-  // #ifdef _OPENMP
-  //   #include<omp.h> /* parallel computing */
-  // #endif
 
-// int checkopenmp()
-// {
-//     #ifdef _OPENMP
-//     printf("OpenMP installed.\n");
-//     #pragma omp parallel
-//     #pragma omp master
-//     printf("number of threads = % d\n", omp_get_num_threads());
-//     #else
-//     printf("Your machine does not have OpenMP installed!\n");
-//     #endif
-//     return 0;
-// }
 
 
 void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
@@ -41,9 +26,6 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   double total_tol;
   double **mixed;
   double *mixedm;
-  // #ifdef _OPENMP 
-  //   int nthread=*thread;
-  // #endif
   
     clock_t start_t, end_t;
     
@@ -60,7 +42,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   integ = *ninteg;
   total_tol = *tol;
   iteration = *niter; // number of iterations
-  //printf("Iteration is %d\n", iteration);
+  printf("iteration is %d\n", iteration);
 
 
 
@@ -71,7 +53,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   {
     if(nGroup[j]==1) fNorm1++;
     if(nGroup[j]==2) fNorm2++;
-    //printf("%d : %d \n", j, nGroup[j]);
+    printf("%d : %d \n", j, nGroup[j]);
   }
 
   // Determine the number of tumor sample
@@ -92,13 +74,13 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   for(j=0;j<nS;j++) FD[j]= calloc(nG, sizeof(double));
 
 
-  //printf("Setting is over\n");
+  printf("Setting is over\n");
 
   // Data transfer
   initialSet(p);
   load_data(data);
 
-  //printf("Loading is over\n");
+  printf("Loading is over\n");
 
   tmppi1 =calloc(iteration ,sizeof(double *));  // save pi1 estimates in each iteration
   tmppi2 =calloc(iteration ,sizeof(double *));  // save pi2 estimates in each iteration
@@ -108,7 +90,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     tmppi1[j]= calloc(intx, sizeof(double ));
     tmppi2[j]= calloc(intx, sizeof(double ));
   }
-  //printf("Loading1 is over\n");
+  printf("Loading1 is over\n");
 
   //calculate mean and sd of normal samples
   stroma1 = calloc(nG, sizeof(double *));
@@ -125,7 +107,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   st1_sig_2 = calloc(nG ,sizeof(double));
   st2_sig_2 = calloc(nG ,sizeof(double));
 
-  //printf("Loading2 is over\n");
+  printf("Loading2 is over\n");
 
   for(j=0;j<nG;j++) stroma1[j]= calloc(fNorm1, sizeof(double));
   for(j=0;j<nG;j++) stroma2[j]= calloc(fNorm2, sizeof(double));
@@ -136,7 +118,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     mixed = calloc(nG ,sizeof(double *));
     for(j=0;j<nG;j++) mixed[j]= calloc(intx, sizeof(double));
     mixedm = calloc(nG ,sizeof(double));
-  //printf("Loading3 is over\n");
+  printf("Loading3 is over\n");
 
     for(i=0;i<nG;i++)
     {
@@ -207,7 +189,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     for(k=0;k<intx;k++) p->piT[k] = fixpi3[k];
   }
 
-  //printf("Loading is over\n");
+  printf("Loading is over\n");
 
   free(st1_mu);
   free(st2_mu);
@@ -227,7 +209,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
   CD = calloc(intx ,sizeof(double *));
   for(j=0;j<intx;j++) CD[j]= calloc(nG, sizeof(double));
-  //printf("Iteration is starting\n");
+  printf("Iteration is starting\n");
 
   avgparT = calloc(iteration, sizeof(double *));
   sigparT = calloc(iteration, sizeof(double *));
@@ -252,77 +234,46 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
     for(i=0;i<iteration;i++)
     {
-        if (nHavepi != 1) printf("Iteration %d: updating purities\n", i+1);
+        printf("iteration %d Updating Purity\n", i+1);
         //updating pi value
-        // if(nHavepi==0)
-        // {
-        //     #ifdef _OPENMP
-        //     // multithreaded OpenMP version of code
-        //     #pragma omp parallel for //openmp
-        //     for(l=0;l<intx;l++) getpi(l, Cid);
-        //    #else
-        //     //single-threaded version of code
-        //     for(l=0;l<intx;l++) getpi(l, Cid);
-        //   #endif
-        // }else if(nHavepi == 2){
-        //   #ifdef _OPENMP
-        //   #pragma omp parallel for //openmp
-        //     for(l=0;l<intx;l++) getpiT(l); // this is to estimate pi1 and pi2 given piT in the three component case
-        //   #else
-        //     for(l=0;l<intx;l++) getpiT(l);
-        //    #endif
-        // }
+        if(nHavepi==0)
+        {
+            
+          
+            //single-threaded version of code
+            for(l=0;l<intx;l++) getpi(l, Cid);
         
-
-        if(nHavepi==0) // no openmp
-        {
-          for(l=0;l<intx;l++) getpi(l, Cid);
-        }else if(nHavepi == 2)
-        {
-          for(l=0;l<intx;l++) getpiT(l);
+        }else if(nHavepi == 2){
+         
+            for(l=0;l<intx;l++) getpiT(l);
+          
         }
-
-
+        
         for(j=0;j<intx;j++)
         {
             tmppi1[i][j] = p->pi1[j];
-            if (nHavepi != 1) printf("%15.3f \t",  p->pi1[j]);
+            printf("%15.3f \t",  p->pi1[j]);
             if(Cid == 2)
             {
                 tmppi2[i][j] = p->pi2[j];
-            if (nHavepi != 1) printf(" %15.3f \t",  p->pi2[j]);
+                printf(" %15.3f \t",  p->pi2[j]);
             }
-            if (nHavepi != 1)  printf("\n");
+            printf("\n");
         }
         
         
         if(i==0) start_t=clock();
         
-        if (nHavepi != 1) printf("Iteration %d: updating parameters\n", i+1);
-        // #ifdef _OPENMP
-        //  #pragma omp parallel for //openmp
-        // for(j=0;j<nG;j++)
-        // {
-        //     gettumor(j, Cid);
-        //     avgparT[i][j] = p->Tavg[j];
-        //     sigparT[i][j] = p->Tsigma[j];
-        // }
-        //  #else
-        // for(j=0;j<nG;j++)
-        // {
-        //     gettumor(j, Cid);
-        //     avgparT[i][j] = p->Tavg[j];
-        //     sigparT[i][j] = p->Tsigma[j];
-        // }
-        //  #endif
-
-
-        for(j=0;j<nG;j++) // no openmp
+        
+        for(j=0;j<nG;j++)
         {
             gettumor(j, Cid);
             avgparT[i][j] = p->Tavg[j];
             sigparT[i][j] = p->Tsigma[j];
         }
+         
+        
+        
         
         
         
@@ -330,9 +281,9 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         if(i==1)
         {
             end_t=clock();
-            //printf("================================================================\n");
-            //printf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
-            //printf("================================================================\n");
+            printf("================================================================\n");
+            printf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
+            printf("================================================================\n");
         }
 
         // objective function 2D
@@ -371,33 +322,20 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         }
 
     }
-   
+
     //final pi value
 
     
-   //  if(nHavepi==0)
-   //  {
-   //    #ifdef _OPENMP
-   //     #pragma omp parallel for //openmp
-   //      for(l=0;l<intx;l++) getpi(l, Cid);
-   //     #else
-   //      for(l=0;l<intx;l++) getpi(l, Cid);
-   //     #endif
-   //  }else if(nHavepi == 2){
-   //     #ifdef _OPENMP
-   //  #pragma omp parallel for //openmp
-   //      for(l=0;l<intx;l++) getpiT(l); // this is to estimate pi1 and pi2 given piT in the three component case
-   // #else
-   //      for(l=0;l<intx;l++) getpiT(l);
-   // #endif
-        
-   //  }
-
-  if(nHavepi==0) // no openmp
+    if(nHavepi==0)
     {
-      for(l=0;l<intx;l++) getpi(l, Cid);
+      
+        for(l=0;l<intx;l++) getpi(l, Cid);
+      
     }else if(nHavepi == 2){
-      for(l=0;l<intx;l++) getpiT(l);
+      
+        for(l=0;l<intx;l++) getpiT(l);
+  
+        
     }
     
     
@@ -456,9 +394,11 @@ void load_data(double *mat1)
       FD[k][j]=  mat1[nG*k+j];
     }
   }
-  if (nHavepi != 1) printf("There are %d normals and %d tumors\n", fNorm,intx);
+  printf("There are  %d normals and %d tumors\n", fNorm,intx);
 
 }
+
+
 
 
 void initialSet(PARAM *qq)
