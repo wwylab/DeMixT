@@ -1,0 +1,30 @@
+Released DeMixT v0.2 (With OpenMP) and v0.2.1 (Without OpenMP) in March 2018 
+Released DeMixT v0.1 (With OpenMP) and v0.1.1 (Without OpenMP) in October 2017
+
+--
+News features and changes from v0.1 to v0.2
+
+1. reformat input data
+reformat inputdata and groupid to data.Y, data.comp1, and data.comp2 
+
+The inputdata in v0.1 and v0.1.1 is a matrix of expression data from reference (e.g. normal) and mixed samples (e.g. mixed tumor samples). It is a G × S matrix where G is the number of genes and S is the number of samples including reference and mixed samples. The groupid is a vector of indicators to denote if the corresponding samples are reference samples or mixed tumor samples.
+
+The input data in v0.2 and v0.2.2 are seperated into data.Y, data.comp1, and data.comp2. They are matrices of expression data from mixed tumor samples, reference component 1, and additional reference samples, respectively. Samples with the same tissue type should be placed together in columns.
+
+
+2. rename parameters
+rename ninteg1 and ninteg2 to nbin
+rename filter.criteria2 to num.of.gene.selected.for.pi
+rename filter.criteria3 to mean.diff.in.CM
+
+3. remove paramters 
+remove filter.out
+remove sg0
+
+4. add names of genes in output
+If "output.more.info = TRUE", then show the names of genes (gene.name) used in estimating the proportions. If no gene names are provided in the original data set, the genes will be automatically indexed. This default is output.more.info = TRUE.
+
+5. avoid some warning messages in the script editor
+
+
+
