@@ -33,7 +33,7 @@ DeMixT_0.1.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.1.1.
 DeMixT_0.2.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.2.1.tar.gz
 
 For more information, please visit:
-https://bioinformatics.mdanderson.edu/main/DeMixT
+http://bioinformatics.mdanderson.org/main/DeMixT
 
 # How to install OpenMP
 We provide a brief instruction for installing OpenMP, which is needed to enable the parallel computing for DeMixT. Please check the file "How_to_install_OpenMP.pdf".
