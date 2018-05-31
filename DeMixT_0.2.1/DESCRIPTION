@@ -8,4 +8,4 @@ Description: DeMixT is a software package that performs deconvolution on transcr
 LazyData: TRUE
 Depends: R (>= 3.2), parallel
 NeedsCompilation: yes
-
+RoxygenNote: 6.0.1

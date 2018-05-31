@@ -30,8 +30,6 @@ DeMixT(data.Y, data.comp1, data.comp2 = NULL, niter = 10, nbin = 50,
   
   \item{tol}{The convergence criterion. The default is 10^(-5).}
   
-  \item{output.iter}{The logical flag indicating whether to show the estimated proportions in each iteration in the output.}
-  
   \item{nthread}{The number of threads used for deconvolution when OpenMP is availble in the system. The default is the number of whole threads minus one. In our no-OpenMP version, it is set to 1.}
 }
 
@@ -50,7 +48,7 @@ DeMixT(data.Y, data.comp1, data.comp2 = NULL, niter = 10, nbin = 50,
   
   \item{decovSigma}{Estimated \eqn{\sigma} of log2-normal distribution for both known (\eqn{SigmaN1, SigmaN2}) and unknown component (\eqn{SigmaT}).}
  
-  \item{gene.name}{The names of genes used in estimating the proportions. If no gene names are rpovided in the original data set, the genes will be automatically indexed. This is enabled only when output.more.info = TRUE.}
+  \item{gene.name}{The names of genes used in estimating the proportions. If no gene names are provided in the original data set, the genes will be automatically indexed. This is enabled only when output.more.info = TRUE.}
 }
 
 \author{
