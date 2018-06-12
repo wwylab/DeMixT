@@ -27,9 +27,16 @@ DeMixT.S2 <- function(data.Y, data.comp1, data.comp2 = NULL,
   
   ## filter.option: 1 - remove genes containing zero; 2 - add 1 to to kill zeros
   if (filter.option == 1) {
-    inputdata <- inputdata[apply(inputdata, 1, function(x) sum(x <= 0) == 0), ]
+    index <- apply(inputdata, 1, function(x) sum(x <= 0) == 0)
+    inputdata <- inputdata[index, ]
+    data.comp1 <- data.comp1[index, ]
+    if(!is.null(data.comp2)) data.comp2 <- data.comp2[index, ]
+    data.Y <- data.Y[index, ]
   } else if (filter.option == 2) {
     inputdata <- inputdata + 1
+    data.comp1 <- data.comp1 + 1
+    if(!is.null(data.comp2)) data.comp2 <- data.comp2 + 1
+    data.Y <- data.Y + 1
   } else {
     stop("The argument filter.option can only be 1 or 2")
   }
