@@ -10,13 +10,13 @@ The function DeMixT is designed to finish the whole pipeline of deconvolution fo
 # Installation
 DeMixT source files are compatible with windows, linux and mac os.
 
-For users who have OpenMP on the computer. DeMixT_0.2 is the latest version and is recommended to use. To install this package, start R and enter:
+For users who have OpenMP on the computer. DeMixT_0.1 is the archived older version of DeMixT_0.2. To install this package, start R and enter:
 
 devtools::install_github("wwylab/DeMixT/DeMixT_0.1")
 
 devtools::install_github("wwylab/DeMixT/DeMixT_0.2")
 
-For users who do not have OpenMP on the computer. DeMixT_0.2.1 is the latest version and is recommended to use. To install this package, start R and enter:
+For users who do not have OpenMP on the computer. DeMixT_0.1.1 is the archived older version of DeMixT_0.2.1. To install this package, start R and enter:
 
 devtools::install_github("wwylab/DeMixT/DeMixT_0.1.1")
 
