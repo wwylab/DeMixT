@@ -13,7 +13,7 @@ DeMixT.S2 <- function(data.Y, data.comp1, data.comp2 = NULL,
   if (is.null(colnames(data.Y))) {
     colnames(data.Y) <- as.character(1:ncol(data.Y))
   }
-  gene.id <- rownames(data.Y) 
+  
   sample.id <- colnames(data.Y) 
   
   ## combine datasets
@@ -44,6 +44,8 @@ DeMixT.S2 <- function(data.Y, data.comp1, data.comp2 = NULL,
   ## filter out genes with constant value across all samples
   inputdata < ifelse(is.null(data.comp2), inputdata[apply(data.comp1, 1, function(x) length(unique(x)) > 1), ], 
                      inputdata[apply(data.comp1, 1, function(x) length(unique(x)) > 1) & apply(data.comp2, 1, function(x) length(unique(x)) > 1), ])
+  
+  gene.id <- rownames(data.Y) 
   
   res <- Optimum.KernelC(inputdata, groupid, nhavepi = 1, givenpi = givenpi, givenpiT = rep(0, ncol(data.Y)), 
                          niter = 1, ninteg = nbin, tol = 1e-5, nthread = nthread)
