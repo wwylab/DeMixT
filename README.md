@@ -22,7 +22,7 @@ devtools::install_github("wwylab/DeMixT/DeMixT_0.1.1")
 
 devtools::install_github("wwylab/DeMixT/DeMixT_0.2.1")
 
-You can also download the installation file directly from the website:
+You can also download the installation files directly from the website:
 
 DeMixT_0.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.1.tar.gz
 
