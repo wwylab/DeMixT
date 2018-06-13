@@ -117,7 +117,7 @@ PARAM *p;
 double **FD, **CD;
 double **avgparN, **sigparN, **avgparT, **sigparT;
 double  **tmppi1, **tmppi2;
-int iteration;
+int iteration,iteration1;
 
 int nP,nG, nS, nHavepi, Cid, nmle;
 double vap1, del1, vap1m, del1m;
