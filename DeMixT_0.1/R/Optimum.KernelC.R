@@ -1,5 +1,5 @@
 ###main function
-Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, niter, ninteg,tol, sg0 = 0.5^2, mu0= 0.0, nthread=-1){
+Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, niter, ninteg,tol, sg0 = 0.5^2, mu0= 0.0, nthread=-1, integral_option=0){
                    core.num <- round(detectCores())-1
                    if(nthread == -1) nthread = core.num
     
@@ -56,10 +56,10 @@ Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, nite
 	
                 s0 = sg0 + 0.0
                 m0 = mu0 + 0.0
-	            rres <- .C("Tdemix", dataarray1, as.integer(groupid), as.integer(nsub), as.integer(wgenes), as.integer(nhavepi), givenpi1, givenpi2, givenpi3, as.integer(nCid), as.integer(niter), as.integer(ninteg), tol, as.integer(nthread), s0, m0, rep(0, 2*intx),  rep(0, intx*wgenes), rep(0, niter*wgenes), rep(0, niter*wgenes), rep(0, niter*intx), rep(0, niter*intx), rep(0,niter), rep(0, intx*wgenes), rep(0, intx*wgenes))
+	            rres <- .C("Tdemix", dataarray1, as.integer(groupid), as.integer(nsub), as.integer(wgenes), as.integer(nhavepi), givenpi1, givenpi2, givenpi3, as.integer(nCid), as.integer(niter), as.integer(ninteg), tol, as.integer(nthread), s0, m0, integral_option, rep(0, 2*intx),  rep(0, intx*wgenes), rep(0, niter*wgenes), rep(0, niter*wgenes), rep(0, niter*intx), rep(0, niter*intx), rep(0,niter), rep(0, intx*wgenes), rep(0, intx*wgenes))
                 
         
-                obj<-rres[[22]]
+                obj<-rres[[22+1]]
                 print(obj)
                 
                 if(sum(obj == 0)>1){
@@ -69,14 +69,14 @@ Optimum.KernelC <- function(inputdata, groupid, nhavepi, givenpi, givenpiT, nite
                 }
                 print('objective function in each step:')
                 print(obj[1:niter1])
-                outcome1<-matrix(rres[[16]], ncol=intx, nrow=2, byrow=T)
-	            outcome2<-matrix(rres[[17]], ncol=(intx), nrow=wgenes, byrow = T)
-	            outcome3<-matrix(rres[[18]], ncol=niter, nrow=wgenes,byrow=T)
-	            outcome4<-matrix(rres[[19]], ncol=niter, nrow=wgenes,byrow=T)
-	            outcome5<-matrix(rres[[20]], ncol=niter, nrow=intx,byrow=T)
-	            outcome6<-matrix(rres[[21]], ncol=niter, nrow=intx,byrow=T)
-	            outcome21<-matrix(rres[[23]], ncol=(intx), nrow=wgenes, byrow = T)
-	            outcome22<-matrix(rres[[24]], ncol=(intx), nrow=wgenes, byrow = T)
+                outcome1<-matrix(rres[[16+1]], ncol=intx, nrow=2, byrow=T)
+	            outcome2<-matrix(rres[[17+1]], ncol=(intx), nrow=wgenes, byrow = T)
+	            outcome3<-matrix(rres[[18+1]], ncol=niter, nrow=wgenes,byrow=T)
+	            outcome4<-matrix(rres[[19+1]], ncol=niter, nrow=wgenes,byrow=T)
+	            outcome5<-matrix(rres[[20+1]], ncol=niter, nrow=intx,byrow=T)
+	            outcome6<-matrix(rres[[21+1]], ncol=niter, nrow=intx,byrow=T)
+	            outcome21<-matrix(rres[[23+1]], ncol=(intx), nrow=wgenes, byrow = T)
+	            outcome22<-matrix(rres[[24+1]], ncol=(intx), nrow=wgenes, byrow = T)
 
 #                 if(nhavepi == 1){
 # 	            print(paste0('Totally ', round(100*sum(outcome4[,niter]>99.99)/wgenes,3),'% genes estimated touch the optimization bound'))
