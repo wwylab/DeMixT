@@ -14,7 +14,7 @@
 
 
 
-void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
+void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, int *integral_option, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
 {
     //nCid = 1, we have just one stroma component; =2, we have 2
   int i, j, k, l;
@@ -26,6 +26,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   double total_tol;
   double **mixed;
   double *mixedm;
+  integ_option = *integral_option;
   
     clock_t start_t, end_t;
     
@@ -937,8 +938,19 @@ double min_nitg_ft_y(double ax, double bx, double y, double mung, double mutg, d
 //for calculating pi1
 
 
-/* For update ratio calculation, we need to fix position at the same number*/
 double ft_y(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2)
+{
+  //integ_option: 0: ft_old; 1: ft_new.
+  if(integ_option==0){
+    return ft_y_old(y, mung, mutg, sng, stg, pi1, pi2);
+  }else{
+    return ft_y_new(y, mung, mutg, sng, stg, pi1, pi2);
+  }
+}
+
+
+/* For update ratio calculation, we need to fix position at the same number*/
+double ft_y_new(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2)
 {
   int i;
   double tmode;
@@ -974,7 +986,7 @@ double ft_y(double y, double mung, double mutg, double sng, double stg, double p
       if(rtval1<=0) rtval1 = 1e-313;
       rtval1 = rtval1/(double)integ1*cutd;
       for(i=0;i<integ2;i++) tmp_pos2[i] = (y - cutd)/(double)integ2*(i+0.5) + cutd;
-
+      
       for(i=0;i<integ2;i++)
       {
         tmp = -0.5*log(sng)-0.5*log(stg) -log(y-tmp_pos2[i])-log(tmp_pos2[i]);
@@ -1028,8 +1040,36 @@ double ft_y(double y, double mung, double mutg, double sng, double stg, double p
     if(rtval<=0) rtval=1e-313;
     return(log(rtval/(double)integ *y));
   }
-
+  
 }
+
+double ft_y_old(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2)
+{
+  int i;
+  double rtval;
+  double tmp;
+  double tmp_pos[integ];
+  
+  rtval=0;
+  for(i=0;i<integ;i++) tmp_pos[i] = (y)/(double)integ*(i+0.5);
+  
+  for(i=0;i<integ;i++)
+  {
+    tmp= -0.5*log(sng)-0.5*log(stg) -log(y-tmp_pos[i])-log(tmp_pos[i]);
+    tmp= tmp-0.5*pow(log2(tmp_pos[i])-(log2(pi1) + mung), 2.0) /sng;
+    tmp= tmp-0.5*pow(log2(y - tmp_pos[i])-(log2(1-pi1-pi2) + mutg), 2.0)/stg;
+    
+    tmp= exp(tmp);
+    
+    rtval +=tmp;
+  }
+  
+  if(rtval<=0)
+    rtval=1e-313;
+  
+  return (log(rtval/(double)integ *y));
+}
+
 
 
 double ft_y_SC(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2)
