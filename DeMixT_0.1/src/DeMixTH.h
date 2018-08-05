@@ -56,6 +56,8 @@ double pmin2(double ax, double bx,int iS, double *nval1, double *nval2, int *Gid
 void getmle(int opt, int opt2, int h);
 ///new function to add
 double ft_y(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2);
+double ft_y_old(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2);
+double ft_y_new(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2);
 double ft_y_SC(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2);
 double ft_y2(double y, double mung1, double mung2, double mutg, double sng1, double sng2, double stg, double pi1, double pi2);
 double pf_y(int samp, double pi1);
@@ -126,6 +128,7 @@ double pvap1, pdel1, pvap1m, pdel1m;
 int fNorm, fNorm1, fNorm2, intx;			// Number of normal samples;
 int integ; //number of integration bins
 int opt_seq; // indicator of sequencing technique
+int integ_option;
 unsigned long *seed;
 double M;
 
