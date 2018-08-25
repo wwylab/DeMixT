@@ -8,17 +8,13 @@ DeMixT is a frequentist-based method and fast in yielding accurate estimates of 
 The function DeMixT is designed to finish the whole pipeline of deconvolution for two or three components. DeMixT.S1 function is designed to estimate the proportions of all mixed samples for each mixing component. DeMixT.S2 function is designed to estimate the component-specific deconvolved expressions of individual mixed samples for a given set of genes.
 
 # Installation
-DeMixT source files are compatible with windows, linux and mac os.
+DeMixT source files are compatible with Windows, Linux and macOS.
 
-For users who have OpenMP on the computer, please use DeMixT_0.2 (DeMixT_0.1 is an archived version). To install this package, start R and enter:
+DeMixT_0.2 is the latest version, which is for a computer that has OpenMP. To install DeMixT_0.2, start R and enter:
 
-devtools::install_github("wwylab/DeMixT/DeMixT_0.2")
+devtools::install_github("wwylab/DeMixT")
 
-For users who do not have OpenMP on the computer, please use DeMixT_0.2.1 (DeMixT_0.1.1 is an archived version). To install this package, start R and enter:
-
-devtools::install_github("wwylab/DeMixT/DeMixT_0.2.1")
-
-You can also download the installation files directly from the website:
+For a computer that does not have OpenMP or the older versions of DeMixT, please visit https://github.com/wwylab/DeMixTallmaterials. You can also download the installation files directly from the website:
 
 DeMixT_0.2: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.2.tar.gz
 
