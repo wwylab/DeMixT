@@ -14,11 +14,11 @@ DeMixT_0.2 is the latest version, which is for a computer that has OpenMP. To in
 
 devtools::install_github("wwylab/DeMixT")
 
-For a computer that does not have OpenMP or the older versions of DeMixT, please visit https://github.com/wwylab/DeMixTallmaterials. You can also download the installation files directly from the website:
+You can also download the installation files directly from the website:
 
 DeMixT_0.2: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.2.tar.gz
 
-DeMixT_0.2.1: http://bioinformatics.mdanderson.org/Software/DeMixT/DeMixT_0.2.1.tar.gz
+For a computer that does not have OpenMP or the older versions of DeMixT, please visit https://github.com/wwylab/DeMixTallmaterials. 
 
 For more information, please visit:
 http://bioinformatics.mdanderson.org/main/DeMixT
