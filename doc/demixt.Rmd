@@ -1,10 +1,15 @@
 ---
 title: "A Vignette for DeMixT"
 author: "Zeya Wang and Fan Gao"
-date: "11/08/2018"
+date: "`r Sys.Date()`"
 output: pdf_document
 toc: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -18,18 +23,16 @@ DeMixT is a frequentist-based method and fast in yielding accurate estimates of 
 
 The function DeMixT is designed to finish the whole pipeline of deconvolution for two or three components. DeMixT.S1 function is designed to estimate the proportions of all mixed samples for each mixing component. DeMixT.S2 function is designed to estimate the component-specific deconvolved expressions of individual mixed samples for a given set of genes.
 
-
 # 2. Installation
 
 ## 2.1 Source file
 
 DeMixT source files are compatible with Windows, Linux and macOS.
 
-DeMixT_0.2 is the latest version, which is for a computer that has OpenMP. To install DeMixT_0.2, start R and enter:
-
+DeMixT_0.2 is the latest version, which is for a computer that has OpenMP. DeMixT_0.2.1 is for computers that do not have OpenMP. To install DeMixT_0.2.1, start R and enter:
 
 ```{r}
-#devtools::install_github("wwylab/DeMixT")
+#devtools::install_github("wwylab/DeMixTallmaterials/DeMixT_0.2.1")
 ```
 
 
@@ -90,9 +93,9 @@ These two steps can be separately implemented using the function DeMixT.S1 and D
 
 ```{r, results="hide"}
 library(DeMixT)
-data(test.data1)
-res <- DeMixT(data.Y = test.data1$y, data.comp1 = test.data1$comp1, 
-              if.filter = FALSE, output.more.info = TRUE)
+data(test.data.y)
+data(test.data.comp1)
+res <- DeMixT(data.Y = test.data1.y, data.comp1 = test.data1.comp1, if.filter = FALSE, output.more.info = TRUE)
 ```
 
 
@@ -110,9 +113,11 @@ res$gene.name
 ## 5.2 Simulated three-component data 
 
 ```{r}
-# data(test.data2)
-# res <- DeMixT(data.Y = test.data2$y, data.comp1 = test.data2$comp1, 
-#               data.comp2 = test.data2$comp2, if.filter = FALSE)
+# data(test.data2.y)
+# data(test.data2.comp1)
+# data(test.data2.comp2)
+# res <- DeMixT(data.Y = test.data2.y, data.comp1 = test.data2.comp1, data.comp2 = test.data2.comp2, if.filter = FALSE)
+
 ```
 
 
@@ -121,65 +126,65 @@ res$gene.name
 This dataset was generated at the Dana Farber Cancer Institute (GSE97284). Radical prostatectomy specimens were annotated in detail by pathologists, and regions of interest were identified that corresponded to benign epithelium, prostatic intraepithelial neoplasia (abnormal tissue that is possibly precancerous), and tumor, each with its surrounding stroma. FFPE samples are known to generate overall lower quality expression data than those from fresh frozen samples. We observed a small proportion of probesets that presented large differences in mean expression levels between the dissected tissues: tumor ($T$) and stroma ($N$) in this dataset. Only 53 probesets presented a mean difference $(| \bar{T} - \bar{N} |) >1$, as compared to 10,397 probesets in GSE19830. We therefore chose the top 80 genes with the largest mean differences and ran DeMixT under two settings: tumor unknown and stroma unknown. DeMixT is able to obtain concordant estimates of the tumor proportions when the proportion of the stromal component was unknown and when the proportion of tumor tissue was unknown and also tended to provide accurate component-specific mean expression levels. 
  
 ```{r, results="hide"}
-library(DeMixT)
-data <- as.matrix(read.table("Data/input.lcm.txt", header = FALSE))
-normal <- data[, 1:25]
-adm <- data[, 26:48]
-tumor <- data[, 49:73]
-
-testr.TA <- DeMixT(data.Y = 2^adm, data.comp1 = 2^tumor, 
-                   niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
-testr.SA <- DeMixT(data.Y = 2^adm, data.comp1 = 2^normal, 
-                   niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
+# library(DeMixT)
+# data <- as.matrix(read.table("Data/input.lcm.txt", header = FALSE))
+# normal <- data[, 1:25]
+# adm <- data[, 26:48]
+# tumor <- data[, 49:73]
+# 
+# testr.TA <- DeMixT(data.Y = 2^adm, data.comp1 = 2^tumor, 
+#                    niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
+# testr.SA <- DeMixT(data.Y = 2^adm, data.comp1 = 2^normal, 
+#                    niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
 ```
 
 ```{r}
-# plot A
-dt_purT <- 1- as.numeric(testr.SA$pi)
-dt_purS <- 1- as.numeric(testr.TA$pi)
-plot(1 - dt_purS, dt_purT, 
-     col = "blue", pch = 1, xlim = c(0, 1), ylim = c(0, 1), 
-     xlab = expression(1 - hat(pi)[S]), ylab = expression(hat(pi)[T]))
-abline(0, 1, col = "red", lwd = 2)
-
-# Plot B - Mean expressions for Tumor
-OB_St <- log2(read.table("Data/lcm_normal.txt", header = F))
-OB_Tu <- log2(read.table("Data/lcm_tumor.txt", header = F))
-DT_Tu_mu <- as.numeric(testr.SA$Mu[, 1])
-DT_St_mu <- as.numeric(testr.TA$Mu[, 1])
-DT_Tu_sg <- as.numeric(testr.SA$Sigma[, 1])
-DT_St_sg <- as.numeric(testr.TA$Sigma[, 1])
-OB_St_m <- apply(OB_St, 1, mean)
-OB_Tu_m <- apply(OB_Tu, 1, mean)
-# filter out genes with large estimated standard deviations
-condSt <- (DT_St_sg < 0.99)
-condTu <- (DT_Tu_sg < 0.99)
-DT_Tu_m <- as.numeric(apply(log2(testr.SA$ExprT), 1, mean))
-DT_St_m <- as.numeric(apply(log2(testr.TA$ExprT), 1, mean))
-OB_St_m <- OB_St_m[condSt]
-OB_Tu_m <- OB_Tu_m[condTu]
-DT_St_m <- DT_St_m[condSt]
-DT_Tu_m <- DT_Tu_m[condTu]
-
-# TPlot B - Mean expressions for Tumor
-smoothScatter((DT_Tu_m + OB_Tu_m) / 2, DT_Tu_m - OB_Tu_m, 
-              ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2", 
-              xlim = c(2,16), ylim = c(-1.2,1.2), 
-              main = "Mean expressions for Tumor", 
-              pch = 1, nrpoints = 0, col = 'yellow', 
-              colramp=colorRampPalette(c("white","yellow","yellow1","orange","orange1")))
-tmp01 <- lowess((DT_Tu_m - OB_Tu_m) ~ ((DT_Tu_m + OB_Tu_m) / 2))
-lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
-abline(h = 0, col = 'red', lty = 2)
-
-# Plot C - Mean expressions for Stroma
-smoothScatter((DT_St_m + OB_St_m) / 2, DT_St_m - OB_St_m, 
-              ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2", 
-              xlim = c(2,16), ylim = c(-1.2,1.2), 
-              main = "Mean expressions for Stroma", pch = 1, nrpoints = 0, 
-              col = 'yellow', 
-              colramp=colorRampPalette(c("white","yellow","yellow1","orange","orange1")))
-tmp01 <- lowess((DT_St_m - OB_St_m) ~ ((DT_St_m + OB_St_m) / 2))
-lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
-abline(h = 0, col = 'red', lty = 2)
+# # plot A
+# dt_purT <- 1- as.numeric(testr.SA$pi)
+# dt_purS <- 1- as.numeric(testr.TA$pi)
+# plot(1 - dt_purS, dt_purT, 
+#      col = "blue", pch = 1, xlim = c(0, 1), ylim = c(0, 1), 
+#      xlab = expression(1 - hat(pi)[S]), ylab = expression(hat(pi)[T]))
+# abline(0, 1, col = "red", lwd = 2)
+# 
+# # Plot B - Mean expressions for Tumor
+# OB_St <- log2(read.table("Data/lcm_normal.txt", header = F))
+# OB_Tu <- log2(read.table("Data/lcm_tumor.txt", header = F))
+# DT_Tu_mu <- as.numeric(testr.SA$Mu[, 1])
+# DT_St_mu <- as.numeric(testr.TA$Mu[, 1])
+# DT_Tu_sg <- as.numeric(testr.SA$Sigma[, 1])
+# DT_St_sg <- as.numeric(testr.TA$Sigma[, 1])
+# OB_St_m <- apply(OB_St, 1, mean)
+# OB_Tu_m <- apply(OB_Tu, 1, mean)
+# # filter out genes with large estimated standard deviations
+# condSt <- (DT_St_sg < 0.99)
+# condTu <- (DT_Tu_sg < 0.99)
+# DT_Tu_m <- as.numeric(apply(log2(testr.SA$ExprT), 1, mean))
+# DT_St_m <- as.numeric(apply(log2(testr.TA$ExprT), 1, mean))
+# OB_St_m <- OB_St_m[condSt]
+# OB_Tu_m <- OB_Tu_m[condTu]
+# DT_St_m <- DT_St_m[condSt]
+# DT_Tu_m <- DT_Tu_m[condTu]
+# 
+# # TPlot B - Mean expressions for Tumor
+# smoothScatter((DT_Tu_m + OB_Tu_m) / 2, DT_Tu_m - OB_Tu_m, 
+#               ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2", 
+#               xlim = c(2,16), ylim = c(-1.2,1.2), 
+#               main = "Mean expressions for Tumor", 
+#               pch = 1, nrpoints = 0, col = 'yellow', 
+#               colramp=colorRampPalette(c("white","yellow","yellow1","orange","orange1")))
+# tmp01 <- lowess((DT_Tu_m - OB_Tu_m) ~ ((DT_Tu_m + OB_Tu_m) / 2))
+# lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
+# abline(h = 0, col = 'red', lty = 2)
+# 
+# # Plot C - Mean expressions for Stroma
+# smoothScatter((DT_St_m + OB_St_m) / 2, DT_St_m - OB_St_m, 
+#               ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2", 
+#               xlim = c(2,16), ylim = c(-1.2,1.2), 
+#               main = "Mean expressions for Stroma", pch = 1, nrpoints = 0, 
+#               col = 'yellow', 
+#               colramp=colorRampPalette(c("white","yellow","yellow1","orange","orange1")))
+# tmp01 <- lowess((DT_St_m - OB_St_m) ~ ((DT_St_m + OB_St_m) / 2))
+# lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
+# abline(h = 0, col = 'red', lty = 2)
 ```

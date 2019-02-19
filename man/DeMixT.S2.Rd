@@ -12,11 +12,11 @@ DeMixT.S2(data.Y, data.comp1, data.comp2 = NULL, givenpi, nbin = 50, nthread = d
 }
 
 \arguments{
-  \item{data.Y}{A matrix of expression data from mixed tumor samples. It is a \eqn{G} by \eqn{Sy} matrix where \eqn{G} is the number of genes and \eqn{Sy} is the number of mixed samples. Samples with the same tissue type should be placed together in columns.}
+  \item{data.Y}{A SummarizedExperiment object of expression data from mixed tumor samples. It is a \eqn{G} by \eqn{Sy} matrix where \eqn{G} is the number of genes and \eqn{Sy} is the number of mixed samples. Samples with the same tissue type should be placed together in columns.}
 
-  \item{data.comp1}{A matrix of expression data from reference component 1 (e.g., normal). It is a \eqn{G} by \eqn{S1} matrix where \eqn{G} is the number of genes and \eqn{S1} is the number of samples for component 1. }
+  \item{data.comp1}{A SummarizedExperiment object of expression data from reference component 1 (e.g., normal). It is a \eqn{G} by \eqn{S1} matrix where \eqn{G} is the number of genes and \eqn{S1} is the number of samples for component 1. }
 
-  \item{data.comp2}{A matrix of expression data from additional reference samples. It is a \eqn{G} by \eqn{S2} matrix where \eqn{G} is the number of genes and \eqn{S2} is the number of samples for component 2. Component 2 is needed only for running a three-component model.}
+  \item{data.comp2}{A SummarizedExperiment object of expression data from additional reference samples. It is a \eqn{G} by \eqn{S2} matrix where \eqn{G} is the number of genes and \eqn{S2} is the number of samples for component 2. Component 2 is needed only for running a three-component model.}
   
  \item{givenpi}{A vector of proportions for all mixed tumor samples.
  In two-component analysis, it gives the proportions of the known reference component, and in three-component analysis, it gives the proportions for the two known components.}
@@ -44,15 +44,20 @@ DeMixT.S2(data.Y, data.comp1, data.comp2 = NULL, givenpi, nbin = 50, nthread = d
  
 \examples{
 # Example 1: two-component deconvolution given proportions 
-  data(test.data1)
-  givenpi <- c(t(as.matrix(test.data1$truth[-2,])))
-  res <- DeMixT.S2(data.Y = test.data1$y, data.comp1 = test.data1$comp1, givenpi = givenpi)
+  data(test.data1.truth)
+  data(test.data1.y)
+  data(test.data1.comp1)
+  givenpi <- c(t(as.matrix(test.data1.truth[-2,])))
+  res <- DeMixT.S2(data.Y = test.data1.y, data.comp1 = test.data1.comp1, givenpi = givenpi)
  
 # Example 2: three-component deconvolution given proportions 
 # This example takes 10 minutes to finish running
-#  data(test.data2)
-#  givenpi <- c(t(test.data2$truth[-3,]))
-#  res <- DeMixT.S2(data.Y = test.data2$y, data.comp1 = test.data2$comp1, data.comp2 = test.data2$comp2, givenpi = givenpi)
+#  data(test.data2.truth)
+#  data(test.data2.y)
+#  data(test.data2.comp1)
+#  data(test.data2.comp2)
+#  givenpi <- c(t(test.data2.truth[-3,]))
+#  res <- DeMixT.S2(data.Y = test.data2.y, data.comp1 = test.data2.comp1, data.comp2 = test.data2.comp2, givenpi = givenpi)
 }
 
 \references{J. Besag. “On the statistical analysis of dirty pictures”. In: Journal of the Royal Statistical Society. Series B (Methodological) (1986), pp. 259–302.

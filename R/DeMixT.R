@@ -1,4 +1,5 @@
 require(parallel)
+require(SummarizedExperiment)
 
 DeMixT <- function(data.Y, data.comp1, data.comp2 = NULL, 
                    niter = 10, nbin = 50, 
@@ -18,10 +19,10 @@ DeMixT <- function(data.Y, data.comp1, data.comp2 = NULL,
   cat("Deconvolution is finished\n")
   
   if (is.null(data.comp2)) { # two-component
-    if (output.more.info) return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma, pi.iter = res.S1$pi.iter, gene.name = res.S1$gene.name))
-    return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma))
+    if (output.more.info) return(list(pi = res.S1$pi, ExprT = res.S2$decovExprT, ExprN1 = res.S2$decovExprN1, Mu = res.S2$decovMu, Sigma = res.S2$decovSigma, pi.iter = res.S1$pi.iter, gene.name = res.S1$gene.name))
+    return(list(pi = res.S1$pi, ExprT = res.S2$decovExprT, ExprN1 = res.S2$decovExprN1, Mu = res.S2$decovMu, Sigma = res.S2$decovSigma))
   } else { # three-component
-    if (output.more.info) return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovExprN2 = res.S2$decovExprN2, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma, pi.iter = res.S1$pi.iter, gene.name = res.S1$gene.name))
-    return(list(pi = res.S1$pi, decovExprT = res.S2$decovExprT, decovExprN1 = res.S2$decovExprN1, decovExprN2 = res.S2$decovExprN2, decovMu = res.S2$decovMu, decovSigma = res.S2$decovSigma))
+    if (output.more.info) return(list(pi = res.S1$pi, ExprT = res.S2$decovExprT, ExprN1 = res.S2$decovExprN1, ExprN2 = res.S2$decovExprN2, Mu = res.S2$decovMu, Sigma = res.S2$decovSigma, pi.iter = res.S1$pi.iter, gene.name = res.S1$gene.name))
+    return(list(pi = res.S1$pi, ExprT = res.S2$decovExprT, ExprN1 = res.S2$decovExprN1, ExprN2 = res.S2$decovExprN2, Mu = res.S2$decovMu, Sigma = res.S2$decovSigma))
   }
 }

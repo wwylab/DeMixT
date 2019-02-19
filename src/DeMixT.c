@@ -531,7 +531,7 @@ void saveFiles(double *put1, double *put3, double *put5, double *put7, double *p
 void gettumor(int genes, int h) // option h = 1 for one component; h = 2 for two
 {
     double mu, sigma,upp,low,upps;
-
+    
     upp = 33;
     if(nHavepi == 1) {
         upps = 100;
@@ -545,14 +545,14 @@ void gettumor(int genes, int h) // option h = 1 for one component; h = 2 for two
         obj_old = mint(genes, h, p->Tavg[genes]);
         mu = tmin_y(low, upp, genes, h, mint, 0.001);
         obj_new = mint(genes, h, mu);
-        //if((obj_new < obj_old) || iteration1 == 0) 
-	    p->Tavg[genes] = mu;
+        //if((obj_new < obj_old) || iteration1 == 0)
+        p->Tavg[genes] = mu;
         
         obj_old = tf_y(genes, p->Tavg[genes], p->Tsigma[genes]);
         sigma =  tmin_y2(0.0001, upps, genes, p->Tavg[genes], tf_y, 0.0001);
         obj_new = tf_y(genes, p->Tavg[genes], sigma);
-        //if((obj_new < obj_old) || iteration1 == 0) 
-		p->Tsigma[genes] = sigma;
+        //if((obj_new < obj_old) || iteration1 == 0)
+        p->Tsigma[genes] = sigma;
         
         //printf("obj_old is %lf %d\t", obj_old, genes);
         //printf("obj_new is %lf %d\t", obj_new, genes);
@@ -561,16 +561,16 @@ void gettumor(int genes, int h) // option h = 1 for one component; h = 2 for two
         obj_old = mint(genes, h, p->Tavg[genes]);
         mu = tmin_y(low, upp, genes,h, mint, 0.001);
         obj_new = mint(genes, h, mu);
-        //if((obj_new < obj_old) || iteration1 == 0) 
-		p->Tavg[genes] = mu;
-
+        //if((obj_new < obj_old) || iteration1 == 0)
+        p->Tavg[genes] = mu;
+        
         obj_old = tf_y2(genes, p->Tavg[genes], p->Tsigma[genes]);
         sigma =  tmin_y2(0.0001, upps, genes, p->Tavg[genes], tf_y2, 0.0001);
         obj_new = tf_y2(genes, p->Tavg[genes], sigma);
-        //if((obj_new < obj_old) || iteration1 == 0) 
-	    p->Tsigma[genes] = sigma;
+        //if((obj_new < obj_old) || iteration1 == 0)
+        p->Tsigma[genes] = sigma;
     }
-
+    
 }
 
 double tf_y(int genes, double mu, double sigma)
@@ -1227,16 +1227,16 @@ void getpi(int samp, int h)  	// option h = 1 for 1 component, 2 for two compone
     double upp;
     pii1 = 0.0;
     pii2= 0.0;
-
+    
     double obj_old, obj_new;
     if(h == 1)
     {
         obj_old = pf_y(samp, p->pi1[samp]);
         pii1 =  pmin_y(0.01, 0.99, samp, pf_y, 0.0001);
         obj_new = pf_y(samp, pii1);
-        //if((obj_new < obj_old) || iteration1 == 0) 
-		p->pi1[samp] = pii1;
-
+        //if((obj_new < obj_old) || iteration1 == 0)
+        p->pi1[samp] = pii1;
+        
     }else{ //two component
         obj_old = pf_y2(samp, p->pi1[samp], p->pi2[samp]);
         pii2 = pmin_y(0.01, 0.99, samp, minpi, 0.0001);
@@ -1244,11 +1244,11 @@ void getpi(int samp, int h)  	// option h = 1 for 1 component, 2 for two compone
         pii1 = pmin_y2(0.01, upp, samp, pii2, pf_y2, 0.0001);
         obj_new = pf_y2(samp, pii1, pii2);
         //if((obj_new < obj_old) || iteration1 == 0){
-            p->pi1[samp] = pii1;
-            p->pi2[samp] = pii2;
+        p->pi1[samp] = pii1;
+        p->pi2[samp] = pii2;
         //}
     }
-
+    
 }
 
 //another function to get pi given piT
@@ -1267,10 +1267,10 @@ void getpiT(int samp)  	// for two component given piT
     pii2 = 1 - piiT - pii1;
     obj_new = pf_yT(samp, pii1, piiT);
     //if((obj_new < obj_old) || iteration1 == 0){
-        p->pi1[samp] = pii1;
-        p->pi2[samp] = pii2;
+    p->pi1[samp] = pii1;
+    p->pi2[samp] = pii2;
     //}
-
+    
 }
 
 

@@ -6,6 +6,12 @@ DeMixT.S2 <- function(data.Y, data.comp1, data.comp2 = NULL,
   filter.out = TRUE
   filter.option = 1
   
+  data.Y <- assays(data.Y)[[1]]
+  data.comp1 <- assays(data.comp1)[[1]]
+  if (! is.null(data.comp2)) 
+    data.comp2 <- assays(data.comp2)[[1]]
+  
+  
   ## index gene and sample names
   if (is.null(rownames(data.Y))) {
     rownames(data.Y) <- as.character(1:nrow(data.Y))

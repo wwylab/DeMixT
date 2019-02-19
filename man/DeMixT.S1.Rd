@@ -14,11 +14,11 @@ DeMixT(data.Y, data.comp1, data.comp2 = NULL, niter = 10, nbin = 50,
 }
 
 \arguments{
-   \item{data.Y}{A matrix of expression data from mixed tumor samples. It is a \eqn{G} by \eqn{Sy} matrix where \eqn{G} is the number of genes and \eqn{Sy} is the number of mixed samples. Samples with the same tissue type should be placed together in columns.}
+   \item{data.Y}{A SummarizedExperiment object of expression data from mixed tumor samples. It is a \eqn{G} by \eqn{Sy} matrix where \eqn{G} is the number of genes and \eqn{Sy} is the number of mixed samples. Samples with the same tissue type should be placed together in columns.}
 
-  \item{data.comp1}{A matrix of expression data from reference component 1 (e.g., normal). It is a \eqn{G} by \eqn{S1} matrix where \eqn{G} is the number of genes and \eqn{S1} is the number of samples for component 1. }
+  \item{data.comp1}{A SummarizedExperiment object of expression data from reference component 1 (e.g., normal). It is a \eqn{G} by \eqn{S1} matrix where \eqn{G} is the number of genes and \eqn{S1} is the number of samples for component 1. }
 
-  \item{data.comp2}{A matrix of expression data from additional reference samples. It is a \eqn{G} by \eqn{S2} matrix where \eqn{G} is the number of genes and \eqn{S2} is the number of samples for component 2. Component 2 is needed only for running a three-component model.}
+  \item{data.comp2}{A SummarizedExperiment object of expression data from additional reference samples. It is a \eqn{G} by \eqn{S2} matrix where \eqn{G} is the number of genes and \eqn{S2} is the number of samples for component 2. Component 2 is needed only for running a three-component model.}
   
   \item{niter}{The maximum number of iterations used in the algorithm of iterated conditional modes (ICM, Ref[1]). A larger value better guarantees the convergence in estimation but increases the running time. The default is 10.}
  
@@ -49,18 +49,23 @@ DeMixT(data.Y, data.comp1, data.comp2 = NULL, niter = 10, nbin = 50,
  
 \examples{
 # Example 1: estimate proportions for simulated two-component data 
- data(test.data1)
- res <- DeMixT.S1(data.Y = test.data1$y, data.comp1 = test.data1$comp1, if.filter = FALSE)
+ data(test.data1.y)
+ data(test.data1.comp1)
+ res <- DeMixT.S1(data.Y = test.data1.y, data.comp1 = test.data1.comp1, if.filter = FALSE)
 
 # Example 2: estimate proportions for simulated three-component data
 # This example takes 10 minutes to finish running
-# data(test.data2)
-# res <- DeMixT.S1(data.Y = test.data2$y, data.comp1 = test.data2$comp1, data.comp2 = test.data2$comp2, if.filter = FALSE)
+# data(test.data2.y)
+# data(test.data2.comp1)
+# data(test.data2.comp2)
+# res <- DeMixT.S1(data.Y = test.data2.y, data.comp1 = test.data2.comp1, data.comp2 = test.data2.comp2, if.filter = FALSE)
 	
 # Example 3: estimate proportions for simulated three-component  mixed cell line data 
 # This example takes 1 hour to finish running
-# data(test.data2$comp3)
-# res <- DeMixT.S1(data.Y = test.data3$y, data.comp1 = test.data3$comp1, data.comp2 = test.data3$comp2)
+# data(test.data2.y)
+# data(test.data3.comp1)
+# data(test.data3.comp2)
+# res <- DeMixT.S1(data.Y = test.data3.y, data.comp1 = test.data3.comp1, data.comp2 = test.data3.comp2)
 }
 
 \references{J. Besag. “On the statistical analysis of dirty pictures”. In: Journal of the Royal Statistical Society. Series B (Methodological) (1986), pp. 259–302.
