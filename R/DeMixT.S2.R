@@ -1,4 +1,5 @@
 require(parallel)
+require(SummarizedExperiment)
 
 DeMixT.S2 <- function(data.Y, data.comp1, data.comp2 = NULL, 
                       givenpi, nbin = 50, nthread = detectCores() - 1) {
@@ -10,7 +11,6 @@ DeMixT.S2 <- function(data.Y, data.comp1, data.comp2 = NULL,
   data.comp1 <- assays(data.comp1)[[1]]
   if (! is.null(data.comp2)) 
     data.comp2 <- assays(data.comp2)[[1]]
-  
   
   ## index gene and sample names
   if (is.null(rownames(data.Y))) {

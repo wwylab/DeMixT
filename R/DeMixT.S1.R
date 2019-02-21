@@ -1,4 +1,5 @@
 require(parallel)
+require(SummarizedExperiment)
 
 DeMixT.S1 <- function(data.Y, data.comp1, data.comp2 = NULL, 
                       niter = 10, nbin = 50, 
