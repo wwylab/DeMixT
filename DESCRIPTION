@@ -9,5 +9,5 @@ LazyData: TRUE
 Depends: R (>= 3.2), parallel, SummarizedExperiment, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
-License: GPL-2
+License: GPL-3
 
