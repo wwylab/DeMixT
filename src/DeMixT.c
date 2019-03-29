@@ -15,15 +15,13 @@
     #include<omp.h> /* parallel computing */
   #endif
 
-int checkopenmp()
+int checkopenmp(int* numthread)
 {
     #ifdef _OPENMP
-    printf("OpenMP installed.\n");
     #pragma omp parallel
     #pragma omp master
-    printf("number of threads = % d\n", omp_get_num_threads());
+    *numthread = omp_get_num_threads();
     #else
-    printf("Your machine does not have OpenMP installed!\n");
     #endif
     return 0;
 }
@@ -60,7 +58,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   integ = *ninteg;
   total_tol = *tol;
   iteration = *niter; // number of iterations
-  //printf("iteration is %d\n", iteration);
+  //Rprintf("iteration is %d\n", iteration);
 
 
 
@@ -71,7 +69,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   {
     if(nGroup[j]==1) fNorm1++;
     if(nGroup[j]==2) fNorm2++;
-    //printf("%d : %d \n", j, nGroup[j]);
+    //Rprintf("%d : %d \n", j, nGroup[j]);
   }
 
   // Determine the number of tumor sample
@@ -92,13 +90,13 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   for(j=0;j<nS;j++) FD[j]= calloc(nG, sizeof(double));
 
 
-  //printf("Setting is over\n");
+  //Rprintf("Setting is over\n");
 
   // Data transfer
   initialSet(p);
   load_data(data);
 
-  //printf("Loading is over\n");
+  //Rprintf("Loading is over\n");
 
   tmppi1 =calloc(iteration ,sizeof(double *));  // save pi1 estimates in each iteration
   tmppi2 =calloc(iteration ,sizeof(double *));  // save pi2 estimates in each iteration
@@ -108,7 +106,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     tmppi1[j]= calloc(intx, sizeof(double ));
     tmppi2[j]= calloc(intx, sizeof(double ));
   }
-  //printf("Loading1 is over\n");
+  //Rprintf("Loading1 is over\n");
 
   //calculate mean and sd of normal samples
   stroma1 = calloc(nG, sizeof(double *));
@@ -125,7 +123,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   st1_sig_2 = calloc(nG ,sizeof(double));
   st2_sig_2 = calloc(nG ,sizeof(double));
 
-  //printf("Loading2 is over\n");
+  //Rprintf("Loading2 is over\n");
 
   for(j=0;j<nG;j++) stroma1[j]= calloc(fNorm1, sizeof(double));
   for(j=0;j<nG;j++) stroma2[j]= calloc(fNorm2, sizeof(double));
@@ -136,7 +134,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     mixed = calloc(nG ,sizeof(double *));
     for(j=0;j<nG;j++) mixed[j]= calloc(intx, sizeof(double));
     mixedm = calloc(nG ,sizeof(double));
-  //printf("Loading3 is over\n");
+  //Rprintf("Loading3 is over\n");
 
     for(i=0;i<nG;i++)
     {
@@ -191,7 +189,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         p->Tavg[j] = (log(Tavgtmp) - p->Tsigma[j]/2.0*pow(log(2.0), 2.0))/log(2.0);
         if(mm0 > 0.0) p->Tavg[j] = mm0;
         //p->Tavg[j] = 10.0;
-        //printf("gene avg for %d is %lf\n", j, p->Tavg[j]);
+        //Rprintf("gene avg for %d is %lf\n", j, p->Tavg[j]);
     }
 
 
@@ -207,7 +205,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     for(k=0;k<intx;k++) p->piT[k] = fixpi3[k];
   }
 
-  //printf("Loading is over\n");
+  //Rprintf("Loading is over\n");
 
   free(st1_mu);
   free(st2_mu);
@@ -218,16 +216,16 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
 //  for(j=0;j<nG;j++)
   //  {
-  //    printf("nsigma1 for %d is %lf\n",j, p->Nsigma1[j]);
-  //    printf("nsigma2 for %d is %lf\n",j, p->Nsigma2[j]);
-  //    printf("navg1 for %d is %lf\n",j, p->Navg1[j]);
-  //    printf("navg2 for %d is %lf\n",j, p->Navg2[j]);
+  //    Rprintf("nsigma1 for %d is %lf\n",j, p->Nsigma1[j]);
+  //    Rprintf("nsigma2 for %d is %lf\n",j, p->Nsigma2[j]);
+  //    Rprintf("navg1 for %d is %lf\n",j, p->Navg1[j]);
+  //    Rprintf("navg2 for %d is %lf\n",j, p->Navg2[j]);
 //    }
 
 
   CD = calloc(intx ,sizeof(double *));
   for(j=0;j<intx;j++) CD[j]= calloc(nG, sizeof(double));
-  //printf("Iteration is starting\n");
+  //Rprintf("Iteration is starting\n");
 
   avgparT = calloc(iteration, sizeof(double *));
   sigparT = calloc(iteration, sizeof(double *));
@@ -252,7 +250,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
     for(i=0;i<iteration;i++)
     {
-      if (nHavepi != 1)  printf("Iteration %d: updating purities\n", i+1);
+      if (nHavepi != 1)  Rprintf("Iteration %d: updating purities\n", i+1);
         //updating pi value
         if(nHavepi==0)
         {
@@ -276,19 +274,19 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         for(j=0;j<intx;j++)
         {
             tmppi1[i][j] = p->pi1[j];
-          if (nHavepi != 1)  printf("%15.3f \t",  p->pi1[j]);
+          if (nHavepi != 1)  Rprintf("%15.3f \t",  p->pi1[j]);
             if(Cid == 2)
             {
                 tmppi2[i][j] = p->pi2[j];
-              if (nHavepi != 1)  printf(" %15.3f \t",  p->pi2[j]);
+              if (nHavepi != 1)  Rprintf(" %15.3f \t",  p->pi2[j]);
             }
-            if (nHavepi != 1)  printf("\n");
+            if (nHavepi != 1)  Rprintf("\n");
         }
         
         
         if(i==0) start_t=clock();
         
-        if (nHavepi != 1)  printf("Iteration %d: updating parameters\n", i+1);
+        if (nHavepi != 1)  Rprintf("Iteration %d: updating parameters\n", i+1);
         #ifdef _OPENMP
          #pragma omp parallel for //openmp
         for(j=0;j<nG;j++)
@@ -314,9 +312,9 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         if(i==1)
         {
             end_t=clock();
-            //printf("================================================================\n");
-            //printf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
-            //printf("================================================================\n");
+            //Rprintf("================================================================\n");
+            //Rprintf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
+            //Rprintf("================================================================\n");
         }
 
         // objective function 2D
@@ -331,8 +329,8 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 				}else{
 				 tttmp = ft_y(FD[l+fNorm][j], p->Navg1[j], p->Tavg[j], p->Nsigma1[j], p->Tsigma[j], p->pi1[l], p->pi2[l]);
 			    ttmp = ttmp - tttmp;
-			    //printf("obj teset is %f, %d\n", tttmp, j);
-			    //printf("obj val is %f\t%f\t%f\t %f\t%f\t%f\t%f\n",FD[l+fNorm][j], p->Navg1[j], p->Tavg[j], p->Nsigma1[j], p->Tsigma[j], p->pi1[l], p->pi2[l]);
+			    //Rprintf("obj teset is %f, %d\n", tttmp, j);
+			    //Rprintf("obj val is %f\t%f\t%f\t %f\t%f\t%f\t%f\n",FD[l+fNorm][j], p->Navg1[j], p->Tavg[j], p->Nsigma1[j], p->Tsigma[j], p->pi1[l], p->pi2[l]);
 			    
 				}
 
@@ -345,12 +343,12 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
 
         p->obj[i] = ttmp;
-//printf("obj teset is %f\n", ttmp);
+//Rprintf("obj teset is %f\n", ttmp);
         iteration1++;
-        //printf("Obj error is %f\n", fabs(ttmp - obj_old_all));
+        //Rprintf("Obj error is %f\n", fabs(ttmp - obj_old_all));
 
         if(fabs(ttmp - obj_old_all)<total_tol*fabs(obj_old_all)){
-            printf("Break at %d\n", iteration1);
+            Rprintf("Break at %d\n", iteration1);
             break;
         }
 
@@ -393,7 +391,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     fflush(NULL);
     saveFiles(output1, output3, output5, output7, output9, output11, obj_out, output31, output32);
 
-    //printf("Step 4: Save files done : \n");
+    //Rprintf("Step 4: Save files done : \n");
     //free variable
     free(p->Navg1);
     free(p->Navg2);
@@ -433,7 +431,7 @@ void load_data(double *mat1)
       FD[k][j]=  mat1[nG*k+j];
     }
   }
-  if (nHavepi != 1) printf("There are  %d normals and %d tumors\n", fNorm,intx);
+  if (nHavepi != 1) Rprintf("There are  %d normals and %d tumors\n", fNorm,intx);
 
 }
 
@@ -554,8 +552,8 @@ void gettumor(int genes, int h) // option h = 1 for one component; h = 2 for two
         //if((obj_new < obj_old) || iteration1 == 0)
         p->Tsigma[genes] = sigma;
         
-        //printf("obj_old is %lf %d\t", obj_old, genes);
-        //printf("obj_new is %lf %d\t", obj_new, genes);
+        //Rprintf("obj_old is %lf %d\t", obj_old, genes);
+        //Rprintf("obj_new is %lf %d\t", obj_new, genes);
         
     }else{
         obj_old = mint(genes, h, p->Tavg[genes]);
@@ -1521,7 +1519,7 @@ double fmin1(double ax, double bx,int iG, int iS, double y_sum, double pi_sum, d
     d = 0.;/* -Wall */
     e = 0.;
     fx = (*f)(iS, iG, y_sum, pi_sum, x);
-    //printf("optimized parameters are iS: %d, iG: %d, y_sum: %lf, pi_sum: %lf, x: %lf, fx:%lf \n",iS, iG, y_sum, pi_sum, x, fx);
+    //Rprintf("optimized parameters are iS: %d, iG: %d, y_sum: %lf, pi_sum: %lf, x: %lf, fx:%lf \n",iS, iG, y_sum, pi_sum, x, fx);
 
     fv = fx;
     fw = fx;
@@ -1580,7 +1578,7 @@ double fmin1(double ax, double bx,int iG, int iS, double y_sum, double pi_sum, d
             u = x - tol1;
 
         fu = (*f)(iS, iG, y_sum, pi_sum, u);
-        //printf("optimized parameters are iS: %d, iG: %d, y_sum: %lf, pi_sum: %lf, x: %lf, fx:%lf \n",iS, iG, y_sum, pi_sum, x, fu);
+        //Rprintf("optimized parameters are iS: %d, iG: %d, y_sum: %lf, pi_sum: %lf, x: %lf, fx:%lf \n",iS, iG, y_sum, pi_sum, x, fu);
 
         /*  update  a, b, v, w, and x */
 
