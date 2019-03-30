@@ -1,6 +1,6 @@
 Package: DeMixT
-Title: Cell type-specific deconvolution of heterogeneous tumor samples
-        with two or three components using expression data from RNAseq
+Title: Cell type-specific deconvolution of heterogeneous tumor samples with 
+        two or three components using expression data from RNAseq 
         or microarray platforms
 Version: 0.99.1
 Date: 2019-03-29
