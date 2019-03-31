@@ -2,7 +2,7 @@ Package: DeMixT
 Title: Cell type-specific deconvolution of heterogeneous tumor samples with 
         two or three components using expression data from RNAseq 
         or microarray platforms
-Version: 0.99.1
+Version: 0.99.2
 Date: 2019-03-29
 Author: Zeya Wang <zw17.rice@gmail.com>, Wenyi Wang <wwang7@@mdanderson.org>
 Maintainer: Zeya Wang <zw17.rice@gmail.com>, Fan Gao <fgao3@mdanderson.org>
