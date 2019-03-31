@@ -5,7 +5,7 @@ Title: Cell type-specific deconvolution of heterogeneous tumor samples with
 Version: 0.99.3
 Date: 2019-03-29
 Author: Zeya Wang <zw17.rice@gmail.com>, Wenyi Wang <wwang7@@mdanderson.org>
-Maintainer: Zeya Wang <zw17.rice@gmail.com>, Fan Gao <fgao3@mdanderson.org>
+Maintainer: Fan Gao <fgao3@mdanderson.org>
 Description: DeMixT is a software package that performs deconvolution on transcriptome data from a mixture of two or three components.
 LazyData: TRUE
 Depends: R (>= 3.6), parallel, SummarizedExperiment, knitr, KernSmooth
