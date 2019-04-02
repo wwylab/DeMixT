@@ -43,7 +43,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     int nthread=*thread;
   #endif
   
-    clock_t start_t, end_t;
+    //clock_t start_t, end_t;
     
     //initial value for sigma and mu
     double ss0 = *s0;
@@ -284,7 +284,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         }
         
         
-        if(i==0) start_t=clock();
+        //if(i==0) start_t=clock();
         
         if (nHavepi != 1)  Rprintf("Iteration %d: updating parameters\n", i+1);
         #ifdef _OPENMP
@@ -311,7 +311,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         // Total time expectation depending on the first five iterations
         if(i==1)
         {
-            end_t=clock();
+            //end_t=clock();
             //Rprintf("================================================================\n");
             //Rprintf("Deconvolution is estimated to be finished in at most %lf hours\n", (double)(end_t-start_t)/CLOCKS_PER_SEC*((double)iteration/3600.0));
             //Rprintf("================================================================\n");
