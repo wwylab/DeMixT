@@ -75,7 +75,7 @@ DeMixT_0.99.0 is the latest version, which is for a computer that has OpenMP.
 To install DeMixT_0.99.0, start R and enter:
 
 ```{r}
-#devtools::install_github("wwylab/DeMixT")
+# devtools::install_github("wwylab/DeMixT")
 ```
 
 For more information, please visit:
@@ -172,7 +172,6 @@ res <- DeMixT(data.Y = test.data1.y,
     output.more.info = TRUE)
 ```
 
-
 ```{r}
 res$pi
 head(res$ExprT, 3)
@@ -183,17 +182,16 @@ res$pi.iter
 res$gene.name
 ```
 
-
 ## 5.2 Simulated three-component data 
 
 ```{r, results="hide", message=FALSE}
-data(test.data2.y)
-data(test.data2.comp1)
-data(test.data2.comp2)
-res <- DeMixT(data.Y = test.data2.y,
-    data.comp1 = test.data2.comp1,
-    data.comp2 = test.data2.comp2,
-    if.filter = FALSE)
+# data(test.data2.y)
+# data(test.data2.comp1)
+# data(test.data2.comp2)
+# res <- DeMixT(data.Y = test.data2.y,
+#     data.comp1 = test.data2.comp1,
+#     data.comp2 = test.data2.comp2,
+#     if.filter = FALSE)
 ```
 
 ## 5.3 Laser-capture microdissection prostate cancer FFPE microarray dataset
