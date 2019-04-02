@@ -112,13 +112,13 @@ data(test.data1.y)
 data(test.data1.comp1)
 res <- DeMixT(data.Y = test.data1.y, data.comp1 = test.data1.comp1, 
 if.filter = FALSE, output.more.info = TRUE)
-res$pi
-head(res$ExprT, 3)
-head(res$ExprN1, 3)
-head(res$Mu, 3)
-head(res$Sigma, 3)
-res$pi.iter
-res$gene.name
+#res$pi
+#head(res$ExprT, 3)
+#head(res$ExprN1, 3)
+#head(res$Mu, 3)
+#head(res$Sigma, 3)
+#res$pi.iter
+#res$gene.name
 
 # Example 2: simulated three-component data
 # It takes about 15 minutes to finish running
