@@ -103,14 +103,14 @@ iteration \eqn{i \in \{1, \cdots, I\}} for the second known component}
 
 \examples{
 # Example 1: simulated two-component data
-#data.comp1 <- SummarizedExperiment::assays(test.data1.comp1)[[1]]
-#data.Y <- SummarizedExperiment::assays(test.data1.y)[[1]]
-#inputdata <- cbind(data.comp1, data.Y)
-#groupid <- c(rep(1, ncol(data.comp1)), rep(3, ncol(data.Y)))
-#Optimum_KernelC(inputdata, groupid, nhavepi = 0, 
-#givenpi = rep(0, 2 * ncol(data.y)), 
-#givenpiT = rep(0, ncol(data.y)), 
-#niter = 10, ninteg = 50, tol = 10^(-5))
+data.comp1 <- SummarizedExperiment::assays(test.data1.comp1)[[1]]
+data.Y <- SummarizedExperiment::assays(test.data1.y)[[1]]
+inputdata <- cbind(data.comp1, data.Y)
+groupid <- c(rep(1, ncol(data.comp1)), rep(3, ncol(data.Y)))
+Optimum_KernelC(inputdata, groupid, nhavepi = 0, 
+givenpi = rep(0, 2 * ncol(data.y)), 
+givenpiT = rep(0, ncol(data.y)), 
+niter = 10, ninteg = 30, tol = 10^(-4))
 }
 
 \author{Zeya Wang, Wenyi Wang}
