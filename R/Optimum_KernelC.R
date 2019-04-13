@@ -92,7 +92,7 @@ Optimum_KernelC <- function(
 
     if (nhavepi != 1) {
         message('Objective function in each step: ')
-        cat(paste(obj[seq(1,niter1)], " "))
+        message(paste(obj[seq(1,niter1)], " "))
         message(' \n')
         }
     
@@ -105,7 +105,11 @@ Optimum_KernelC <- function(
     outcome21<-matrix(rres[[23]], ncol=(intx), nrow=wgenes, byrow = TRUE)
     outcome22<-matrix(rres[[24]], ncol=(intx), nrow=wgenes, byrow = TRUE)
 
-    
+#                 if(nhavepi == 1){
+# 	            print(paste0('Totally ', round(100*sum(outcome4[,niter]>99.99)/wgenes,3),'% genes estimated touch the optimization bound'))
+#                 }else{
+#                  print(paste0('Totally ', round(100*sum(outcome4[,niter]>24.99)/wgenes,3),'% genes estimated touch the optimization bound'))
+#                 }
                     
     outcome4 <- sqrt(outcome4)
     return(list(obj_val = obj[niter1], pi = outcome1, decovExprT = outcome2, 
