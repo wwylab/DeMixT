@@ -84,7 +84,7 @@ DeMixT_S1 <- function(
         res <- Optimum_KernelC(inputdata, groupid, nhavepi = 0, 
                             givenpi = rep(0, 2 * ncol(data.Y)), 
                             givenpiT = rep(0, ncol(data.Y)), 
-                            niter = niter, ninteg = nbin, tol = tol)
+                            niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
     }
         
     ## case 2
@@ -108,7 +108,7 @@ DeMixT_S1 <- function(
         res <- Optimum_KernelC(inputdata2, groupid, nhavepi = 0, 
             givenpi = rep(0, 2 * ncol(data.Y)), 
             givenpiT = rep(0, ncol(data.Y)), 
-            niter = niter, ninteg = nbin, tol = tol)
+            niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
     }
     
     ## case 3: two-stage filtering
@@ -142,7 +142,7 @@ DeMixT_S1 <- function(
         #
         res1 <- Optimum_KernelC(inputdatamat2, cnvgroup, nhavepi = 0, 
                 givenpi = rep(0, ncol(data.Y)), givenpiT = rep(0,ncol(data.Y)), 
-                niter = niter, ninteg = nbin, tol = tol)
+                niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
         fixed.piT <- 1 - as.numeric(res1$pi[1, ])
         message("Filtering stage 1 is finished\n")
 
@@ -167,7 +167,7 @@ DeMixT_S1 <- function(
         gene.name <- rownames(inputdatamat3)
         res <- Optimum_KernelC(inputdatamat3, groupid, nhavepi = 2, 
             givenpi = rep(0, 2 * ncol(data.Y)), givenpiT = fixed.piT, 
-            niter = niter, ninteg = nbin, tol = tol)
+            niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
         message("Filtering stage 2 is finished")
     }
     
