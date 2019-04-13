@@ -92,7 +92,7 @@ Optimum_KernelC <- function(
 
     if (nhavepi != 1) {
         message('Objective function in each step: ')
-        cat(obj[seq(1,niter1)])
+        message(paste(obj[seq(1,niter1)], ""))
         message(' \n')
         }
     
