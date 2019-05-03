@@ -137,8 +137,14 @@ res$gene.name
 # data(test.data3.comp2)
 # res <- DeMixT(data.Y = test.data3.y, data.comp1 = test.data3.comp1, 
 #               data.comp2 = test.data3.comp2, if.filter = TRUE)
+  
+# Example: convert a matrix into the SummarizedExperiment format
+# library(SummarizedExperiment)
+# example <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE)
+# example.se <- SummarizedExperiment(assays = list(counts = example))
 }
 
+  
 \references{J. Besag. "On the statistical analysis of dirty pictures". 
 In: Journal of the Royal Statistical Society. Series B (Methodological) 
 (1986), pp. 259-302.
