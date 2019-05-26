@@ -1,0 +1,301 @@
+---
+title: "A Vignette for DeMixT"
+author: "Zeya Wang and Fan Gao"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+    %\VignetteIndexEntry{DeMixT.Rmd}
+    %\VignetteEngine{knitr::rmarkdown}
+    \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Introduction
+
+Transcriptomic deconvolution in cancer and other heterogeneous tissues remains 
+challenging. Available methods lack the ability to estimate both 
+component-specific proportions and expression profiles for individual samples. 
+We develop a three-component deconvolution model, DeMixT, for expression data 
+from a mixture of cancerous tissues, infiltrating immune cells and tumor 
+microenvironment. DeMixT is a software package that performs deconvolution on 
+transcriptome data from a mixture of two or three components.
+
+DeMixT is a frequentist-based method and fast in yielding accurate estimates of 
+cell proportions and compart-ment-specific expression profiles for 
+two-component \and three-component deconvolution problem. Our method promises 
+to provide deeper insight into cancer biomarkers and assist in the development 
+of novel prognostic markers and therapeutic strategies.
+
+The function DeMixT is designed to finish the whole pipeline of deconvolution 
+for two or three components. DeMixT.S1 function is designed to estimate the 
+proportions of all mixed samples for each mixing component. DeMixT.S2 function 
+is designed to estimate the component-specific deconvolved expressions of 
+individual mixed samples for a given set of genes.
+
+# 2 Feature Description
+
+The DeMixT R-package builds the transcriptomic deconvolution with a couple of 
+novel features into R-based standard analysis pipeline through Bioconductor. 
+DeMixT showed high accuracy and efficiency from our designed experiment. 
+Hence, DeMixT can be considered as an important step towards linking tumor 
+transcriptomic data with clinical outcomes.
+
+Different from most previous computational deconvolution methods, DeMixT has 
+integrated new features for the deconvolution with more than 2 components. 
+
+**Joint estimation**: jointly estimate component proportions and expression 
+profiles for individual samples by requiring reference samples instead of 
+reference genes; For the three-component deconvolution considering immune 
+infiltration, it provides a comprehensive view of tumor-stroma-immune 
+transcriptional dynamics, as compared to methods that address only immune 
+subtypes within the immune component, in each tumor sample. 
+
+**Efficient estimation**: DeMixT adopts an approach of iterated conditional 
+modes (ICM) to guarantee a rapid convergence to a local maximum. We also design 
+a novel gene-set-based component merging approach to reduce the bias of 
+proportion estimation for three-component deconvolutionthe. 
+
+
+**parallel computing**: OpenMP enables parallel computing on single computer by 
+taking advantage of the multiple cores shipped on modern CPUs. The ICM 
+framework further enables parallel computing, which helps compensate for the 
+expensive computing time used in the repeated numerical double integrations. 
+
+# 3. Installation
+
+## 3.1 Source file
+
+DeMixT source files are compatible with Windows, Linux and macOS.
+
+DeMixT_0.99.0 is the latest version, which is for a computer that has OpenMP. 
+To install DeMixT_0.99.0, start R and enter:
+
+```{r}
+# devtools::install_github("wwylab/DeMixT")
+```
+
+For more information, please visit:
+<http://bioinformatics.mdanderson.org/main/DeMixT>
+
+
+## 3.2 Functions
+
+The following table shows the functions included in DeMixT.
+
+Table Header  | Second Header
+------- | ----------------------------------
+DeMixT | Deconvolution of tumor samples with two or three components 
+DeMixT_S1 | Estimates the proportions of mixed samples for each mixing component
+DeMixT_S2 |Deconvolves expressions of each  sample for unknown component
+Optimum_KernelC | Call the C function used for parameter estimation in DeMixT
+
+# 4. Methods
+
+## 4.1 Model
+
+Let \(Y_{ig}\) be the observed expression levels of the raw measured data from 
+clinically derived malignant tumor samples for gene \(g, g = 1, \cdots, G\) and 
+sample \(i, i = 1, \cdots, S\). \(G\) denotes the total number of probes/genes 
+and \(S\) denotes the number of samples. The observed expression levels for 
+solid tumors can be modeled as a linear combination of raw expression levels 
+from three components:
+\[ {Y_{ig}} = \pi _{1,i}N_{1,ig} + \pi _{2,i}N_{2,ig} + 
+(1 - \pi_{1,i} - \pi _{2,i}){T_{ig}} \label{eq:1} \]
+
+Here \(N_{1,ig}\), \(N_{2,ig}\) and \({T_{ig}}\) are the unobserved raw 
+expression levels from each of the three components. We call the two components 
+for which we require reference samples the \(N_1\)-component and the 
+\(N_2\)-component. We call the unknown component the T-component. We let 
+\(\pi_{1,i}\) denote the proportion of the \(N_1\)-component, \(\pi_{2,i}\) 
+denote the proportion of the \(N_2\)-component, and \(1 - \pi_{1,i}-\pi_{2,i}\) 
+denote the proportion of the T-component. We assume that the mixing proportions 
+of one specific sample remain the same across all genes.
+
+Our model allows for one component to be unknown, and therefore does not 
+require reference profiles from all components. A set of samples for 
+\(N_{1,ig}\) and \(N_{2,ig}\), respectively, needs to be provided as input 
+data. This three-component deconvolution model is applicable to the linear 
+combination of any three components in any type of material. It can also be 
+simplified to a two-component model, assuming there is just one 
+\(N\)-component. For application in this paper, we consider tumor (\(T\)), 
+stromal (\(N_1\)) and immune components (\(N_2\)) in an admixed sample (\(Y\)).
+
+Following the convention that \(\log_2\)-transformed microarray gene expression 
+data follow a normal distribution, we assume that the raw measures \(N_{1,ig} 
+\sim LN({\mu _{{N_1}g}},\sigma _{{N_1}g}^2)\), \(N_{2,ig} 
+\sim LN({\mu _{{N_2}g}},\sigma _{{N_2}g}^2)\) and \({T_{ig}} 
+\sim LN({\mu _{Tg}}, \sigma _{Tg}^2)\), where LN denotes a \(\log_2\)-normal 
+distribution and \(\sigma _{{N_1}g}^2\),\(\sigma _{{N_2}g}^2\),
+\(\sigma _{Tg}^2\) reflect the variations under \(\log_2\)-transformed data. 
+Consequently, our model can be expressed as the convolution of the density 
+function for three \(\log_2\)-normal distributions. Because there is no closed 
+form of this convolution, we use numerical integration to evaluate the complete 
+likelihood function (see the full likelihood in the Supplementary Materials).
+
+## 4.2 The DeMixT algorithm for deconvolution
+
+DeMixT estimates all distribution parameters and cellular proportions and 
+reconstitutes the expression profiles for all three components for each gene 
+and each sample. The estimation procedure (summarized in Figure 1b) has two
+main steps as follows.
+
+1. Obtain a set of parameters \(\{\pi_{1,i}, \pi_{2,i}\}_{i=1}^S\), \(\{\mu_T,
+\sigma_T\}_{g=1}^G\) to maximize the complete likelihood function, for which
+\(\{\mu_{N_{1,g}}, \sigma_{N_{1,g}}, \mu_{N_{2,g}}, 
+\sigma_{N_{2,g}}\}_{g=1}^G\) were already estimated from the available 
+unmatched samples of the \(N_1\) and \(N_2\) component tissues. 
+(See further details in our paper.)
+
+2. Reconstitute the expression profiles by searching each set of \(\{n_{1,ig},
+n_{2,ig}\}\) that maximizes the joint density of \(N_{1,ig}\), \(N_{2,ig}\) and
+\(T_{ig}\). The value of \(t_{ig}\) is solved as \({y_{ig}} - 
+{{\hat \pi }_{1,i}}{n_{1,ig}} - {{\hat \pi }_{2,i}}{n_{2,ig}}\).
+
+These two steps can be separately implemented using the function DeMixT.S1 and 
+DeMixT.S2, which are combined in the function DeMixT.
+
+# 5. Examples
+
+## 5.1 Simulated two-component data 
+
+```{r, results="hide", message=FALSE}
+library(DeMixT)
+data(test.data1.y)
+data(test.data1.comp1)
+res <- DeMixT(data.Y = test.data1.y,
+    data.comp1 = test.data1.comp1,
+    if.filter = FALSE,
+    output.more.info = TRUE)
+```
+
+```{r}
+res$pi
+head(res$ExprT, 3)
+head(res$ExprN1, 3)
+head(res$Mu, 3)
+head(res$Sigma, 3)
+res$pi.iter
+res$gene.name
+```
+
+## 5.2 Simulated three-component data 
+
+```{r, results="hide", message=FALSE}
+# data(test.data2.y)
+# data(test.data2.comp1)
+# data(test.data2.comp2)
+# res <- DeMixT(data.Y = test.data2.y,
+#     data.comp1 = test.data2.comp1,
+#     data.comp2 = test.data2.comp2,
+#     if.filter = FALSE)
+```
+
+## 5.3 Laser-capture microdissection prostate cancer FFPE microarray dataset
+
+This dataset was generated at the Dana Farber Cancer Institute (GSE97284). 
+Radical prostatectomy specimens were annotated in detail by pathologists, and 
+regions of interest were identified that corresponded to benign epithelium, 
+prostatic intraepithelial neoplasia (abnormal tissue that is possibly 
+precancerous), and tumor, each with its surrounding stroma. FFPE samples are 
+known to generate overall lower quality expression data than those from fresh 
+frozen samples. We observed a small proportion of probesets that presented 
+large differences in mean expression levels between the dissected tissues: 
+tumor ($T$) and stroma ($N$) in this dataset. Only 53 probesets presented a mean
+difference $(| \bar{T} - \bar{N} |) >1$, as compared to 10,397 probesets in 
+GSE19830. We therefore chose the top 80 genes with the largest mean differences 
+and ran DeMixT under two settings: tumor unknown and stroma unknown. DeMixT is 
+able to obtain concordant estimates of the tumor proportions when the proportion
+of the stromal component was unknown and when the proportion of tumor tissue was
+unknown and also tended to provide accurate component-specific mean expression 
+levels. 
+
+```{r, results="hide", message=FALSE}
+library(DeMixT)
+data <- as.matrix(read.table("input.lcm.txt", header = FALSE))
+normal <- data[, 1:25]
+adm <- data[, 26:48]
+tumor <- data[, 49:73]
+
+nrows <- nrow(adm); ncols <- ncol(adm)
+lcm.data.adm <- matrix(2^adm, nrows)
+lcm.data.adm <- SummarizedExperiment(assays=list(counts=lcm.data.adm))
+
+nrows <- nrow(tumor); ncols <- ncol(tumor)
+lcm.data.tumor <- matrix(2^tumor, nrows)
+lcm.data.tumor <- SummarizedExperiment(assays=list(counts=lcm.data.tumor))
+
+nrows <- nrow(normal); ncols <- ncol(normal)
+lcm.data.normal <- matrix(2^normal, nrows)
+lcm.data.normal <- SummarizedExperiment(assays=list(counts=lcm.data.normal))
+
+testr.TA <- DeMixT(data.Y = lcm.data.adm, data.comp1 = lcm.data.tumor,
+    niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
+testr.SA <- DeMixT(data.Y = lcm.data.adm, data.comp1 = lcm.data.normal,
+    niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
+```
+
+```{r}
+# plot A
+dt_purT <- 1- as.numeric(testr.SA$pi)
+dt_purS <- 1- as.numeric(testr.TA$pi)
+plot(1 - dt_purS, dt_purT,
+    col = "blue", pch = 1, xlim = c(0, 1), ylim = c(0, 1),
+    xlab = expression(1 - hat(pi)[S]), ylab = expression(hat(pi)[T]))
+abline(0, 1, col = "red", lwd = 2)
+
+# Plot - Mean expressions for Tumor
+OB_St <- log2(read.table("lcm_normal.txt", header = FALSE))
+OB_Tu <- log2(read.table("lcm_tumor.txt", header = FALSE))
+DT_Tu_mu <- as.numeric(testr.SA$Mu[, 1])
+DT_St_mu <- as.numeric(testr.TA$Mu[, 1])
+DT_Tu_sg <- as.numeric(testr.SA$Sigma[, 1])
+DT_St_sg <- as.numeric(testr.TA$Sigma[, 1])
+OB_St_m <- apply(OB_St, 1, mean)
+OB_Tu_m <- apply(OB_Tu, 1, mean)
+
+# filter out genes with large estimated standard deviations
+condSt <- (DT_St_sg < 0.99)
+condTu <- (DT_Tu_sg < 0.99)
+DT_Tu_m <- as.numeric(apply(log2(testr.SA$ExprT), 1, mean))
+DT_St_m <- as.numeric(apply(log2(testr.TA$ExprT), 1, mean))
+OB_St_m <- OB_St_m[condSt]
+OB_Tu_m <- OB_Tu_m[condTu]
+DT_St_m <- DT_St_m[condSt]
+DT_Tu_m <- DT_Tu_m[condTu]
+
+# Plot - Mean expressions for Tumor
+smoothScatter((DT_Tu_m + OB_Tu_m) / 2, DT_Tu_m - OB_Tu_m,
+    ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2",
+    xlim = c(2,16), ylim = c(-1.2,1.2),
+    main = "Mean expressions for Tumor",
+    pch = 1, nrpoints = 0, col = 'yellow',
+    colramp=colorRampPalette(c("white","yellow",
+    "yellow1","orange","orange1")))
+
+tmp01 <- lowess((DT_Tu_m - OB_Tu_m) ~ ((DT_Tu_m + OB_Tu_m) / 2))
+lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
+abline(h = 0, col = 'red', lty = 2)
+
+# Plot - Mean expressions for Stroma
+smoothScatter((DT_St_m + OB_St_m) / 2, DT_St_m - OB_St_m,
+    ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2",
+    xlim = c(2,16), ylim = c(-1.2,1.2),
+    main = "Mean expressions for Stroma", pch = 1, nrpoints = 0,
+    col = 'yellow',
+    colramp=colorRampPalette(c("white","yellow",
+    "yellow1","orange","orange1")))
+
+tmp01 <- lowess((DT_St_m - OB_St_m) ~ ((DT_St_m + OB_St_m) / 2))
+lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
+abline(h = 0, col = 'red', lty = 2)
+```
+
+# 6. Session Info 
+
+```{r}
+sessionInfo(package = "DeMixT")
+```
