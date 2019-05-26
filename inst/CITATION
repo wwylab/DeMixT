@@ -1,16 +1,16 @@
-citHeader("To cite package "DeMixT" in publications use:")
+citHeader("To cite package DeMixT in publications use:")
 
 citEntry(entry = "Article",
-  title        = "Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration",
-  author       = personList(as.person("Zeya Wang"),
+  title        = "Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration.",
+  author       = personList(as.person("Zeya Wang,"),
                    as.person("et al")),
   journal      = "iScience",
   year         = "2018",
-  url          = "doi: 10.1016/j.isci.2018.10.028.",
+  url          = "doi:10.1016/j.isci.2018.10.028.",
 
   textVersion  =
-  paste("Zeya Wang et al(2019).",
-        "Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration",
-        "iScience",
-        "doi: 10.1016/j.isci.2018.10.028.")
+  paste("Zeya Wang, et al (2018).",
+        "Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration.",
+        "iScience.",
+        "doi:10.1016/j.isci.2018.10.028.")
 )
