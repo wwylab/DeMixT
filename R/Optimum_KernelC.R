@@ -34,11 +34,24 @@ Optimum_KernelC <- function(
     gene.id = row.names(inputdata)
     
     if(nCid == 1){
-        inputdata = cbind(inputdata[, groupid1], inputdata[, groupidT])
+        if(dim(inputdata)[1]==1){
+		    inputdata = cbind(t(as.matrix(inputdata[, groupid1])), 
+                              t(as.matrix(inputdata[, groupidT])))
+	    }else{
+	        inputdata = cbind(inputdata[, groupid1], 
+                              inputdata[, groupidT])
+	    }
         groupid = c(rep(1, length(groupid1)), rep(3, length(groupidT)))
         }else if(nCid == 2){
-        inputdata = cbind(inputdata[, groupid1], 
-                            inputdata[, groupid2], inputdata[, groupidT])
+            if(dim(inputdata)[1]==1){
+			    inputdata = cbind(t(as.matrix(inputdata[, groupid1])), 
+                                  t(as.matrix(inputdata[, groupid2])), 
+                                  t(as.matrix(inputdata[, groupidT])))
+			}else{
+			    inputdata = cbind(inputdata[, groupid1], 
+                                  inputdata[, groupid2], 
+                                  inputdata[, groupidT])
+			}
         groupid = c(rep(1, length(groupid1)), 
                     rep(2, length(groupid2)), rep(3, length(groupidT)))
         }
