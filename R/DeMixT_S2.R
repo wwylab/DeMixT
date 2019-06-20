@@ -49,13 +49,25 @@ DeMixT_S2 <- function(
     }
     
     ## filter out genes with constant value across all samples
-    inputdata < ifelse(is.null(data.comp2), 
-                        inputdata[apply(data.comp1, 1, 
-                            function(x) length(unique(x)) > 1), ], 
-                        inputdata[apply(data.comp1, 1, 
-                            function(x) length(unique(x)) > 1) & 
-                            apply(data.comp2, 1, 
-                            function(x) length(unique(x)) > 1), ])
+    if(is.null(data.comp2)){
+        if(dim(inputdata)[1]==1){
+            inputdata <- t(as.matrix(inputdata[apply(data.comp1, 
+                   1, function(x) length(unique(x)) > 1), ]))
+        }else{
+            inputdata <- inputdata[apply(data.comp1, 1, 
+            function(x) length(unique(x)) > 1), ]
+        }
+    }else{
+        if(dim(inputdata)[1]==1){
+            inputdata <- t(as.matrix(inputdata[apply(data.comp1, 1, 
+            function(x) length(unique(x)) > 1) & apply(data.comp2, 1, 
+            function(x) length(unique(x)) > 1), ]))
+        }else{
+            inputdata <- inputdata[apply(data.comp1, 1, 
+            function(x) length(unique(x)) > 1) & 
+            apply(data.comp2, 1, function(x) length(unique(x)) > 1), ]
+        }
+    }
     
     gene.id <- rownames(data.Y) 
     
