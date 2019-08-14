@@ -98,7 +98,7 @@ DeMixT_S1 <- function (data.Y, data.comp1, data.comp2 = NULL, niter = 10,
   }
   if (if.filter == TRUE & is.null(data.comp2)) {
     #inputdatans <- rowSds(log2(data.comp1))
-    inputdatans <- apply(data.comp1, 1, sd)
+    inputdatans <- apply(log2(data.comp1), 1, sd)
     id1 <- (inputdatans < filter.sd)
     if (sum(id1) < 20) 
       stop("The threshold of standard variation is too stringent. \n
