@@ -69,10 +69,13 @@ expensive computing time used in the repeated numerical double integrations.
 
 ## 3.1 Source file
 
-DeMixT source files are compatible with Windows, Linux and macOS.
+DeMixT source files are compatible with Windows, Linux and macOS. 
 
-DeMixT_0.99.0 is the latest version, which is for a computer that has OpenMP. 
-To install DeMixT_0.99.0, start R and enter:
+DeMixT_1.2.1 is the latest version, which is for a computer that has OpenMP. 
+It can be downloaded from Bioconductor website.
+https://bioconductor.org/packages/release/bioc/html/DeMixT.html
+
+To install DeMixT_1.2.1 from GitHub, start R and enter:
 
 ```{r}
 # devtools::install_github("wwylab/DeMixT")
