@@ -10,7 +10,7 @@ data from a mixture of two or three components.}
 \usage{
 DeMixT(data.Y, data.comp1, data.comp2 = NULL, niter = 10, nbin = 50, 
 if.filter = TRUE, ngene.selected.for.pi = 250, mean.diff.in.CM = 0.25, 
-tol = 10^(-5), output.more.info = FALSE, 
+nspikein = NULL, tol = 10^(-5), output.more.info = FALSE, 
 nthread = parallel::detectCores() - 1)
 }
 
@@ -55,6 +55,11 @@ by selecting genes with similar expressions for the two known components.
 Genes with the mean differences less than the threshold will be selected for
 component merging. It is used in the three-component setting, and is enabled
 when if.filter = TRUE. The default is 0.25.}
+
+\item{nspikein}{The number of spike in normal reference used for proportion
+estimation. The default value is the minimum value of 200 and 30 percent of
+mixed tumor samples. If it is set to 0, proportion estimation is performed
+without any spike in normal reference.}
 
 \item{tol}{The convergence criterion. The default is 10^(-5).}
 
