@@ -75,8 +75,8 @@ DeMixT_S2 <- function(data.Y, data.comp1, data.comp2 = NULL, givenpi, nbin = 50,
 
   gene.id <- rownames(inputdata)
   inputdata <- as.matrix(inputdata)
-  res <- Optimum_KernelC(inputdata, groupid, nhavepi = 1,  nspikein = 0, 
-    givenpi = givenpi, givenpiT = rep(0, ncol(data.Y)), niter = 1, ninteg = nbin, 
+  res <- Optimum_KernelC(inputdata, groupid, nhavepi = 1, givenpi = givenpi, 
+    givenpiT = rep(0, ncol(data.Y)), niter = 1, ninteg = nbin, 
     tol = 1e-05, nthread = nthread)
 
   
