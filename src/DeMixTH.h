@@ -65,6 +65,7 @@ double pmin_y2(double ax, double bx, int samp, double pi2, double (*f)(int, doub
 double minpi(int samp, double pi2);
 
 void getpi(int samp, int h);
+void getspikeinpi(int samp);
 void getpiT(int samp);
 double gammaln(double xx);
 double gamma(double xx);
@@ -119,7 +120,7 @@ double **avgparN, **sigparN, **avgparT, **sigparT;
 double  **tmppi1, **tmppi2;
 int iteration,iteration1;
 
-int nP,nG, nS, nHavepi, Cid, nmle;
+int nP,nG, nS, nSp, nHavepi, Cid, nmle;
 double vap1, del1, vap1m, del1m;
 double pvap1, pdel1, pvap1m, pdel1m;
 
