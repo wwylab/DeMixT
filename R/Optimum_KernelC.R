@@ -1,5 +1,5 @@
 Optimum_KernelC <- function(
-    inputdata, groupid, nspikein, nhavepi, givenpi, givenpiT, 
+    inputdata, groupid, nhavepi, givenpi, givenpiT, 
     niter, ninteg, tol, sg0 = 0.5^2, mu0 = 0.0, 
     nthread = 1){
 
@@ -34,11 +34,24 @@ Optimum_KernelC <- function(
     gene.id = row.names(inputdata)
     
     if(nCid == 1){
-        inputdata = cbind(inputdata[, groupid1], inputdata[, groupidT])
+        if(dim(inputdata)[1]==1){
+		    inputdata = cbind(t(as.matrix(inputdata[, groupid1])), 
+                              t(as.matrix(inputdata[, groupidT])))
+	    }else{
+	        inputdata = cbind(inputdata[, groupid1], 
+                              inputdata[, groupidT])
+	    }
         groupid = c(rep(1, length(groupid1)), rep(3, length(groupidT)))
         }else if(nCid == 2){
-        inputdata = cbind(inputdata[, groupid1], 
-                            inputdata[, groupid2], inputdata[, groupidT])
+        if(dim(inputdata)[1]==1){
+			    inputdata = cbind(t(as.matrix(inputdata[, groupid1])), 
+                                  t(as.matrix(inputdata[, groupid2])), 
+                                  t(as.matrix(inputdata[, groupidT])))
+			}else{
+			    inputdata = cbind(inputdata[, groupid1], 
+                                  inputdata[, groupid2], 
+                                  inputdata[, groupidT])
+			}
         groupid = c(rep(1, length(groupid1)), 
                     rep(2, length(groupid2)), rep(3, length(groupidT)))
         }
@@ -73,7 +86,7 @@ Optimum_KernelC <- function(
     s0 = sg0 + 0.0
     m0 = mu0 + 0.0
     rres <- .C("Tdemix", dataarray1, as.integer(groupid), as.integer(nsub), 
-                as.integer(wgenes), as.integer(nspikein), as.integer(nhavepi), givenpi1, givenpi2, 
+                as.integer(wgenes), as.integer(nhavepi), givenpi1, givenpi2, 
                 givenpi3, as.integer(nCid), as.integer(niter), 
                 as.integer(ninteg), tol, as.integer(nthread), 
                 s0, m0, rep(0, 2 * intx), 
@@ -82,7 +95,7 @@ Optimum_KernelC <- function(
                 rep(0, niter * intx), rep(0,niter), 
                 rep(0, intx * wgenes), rep(0, intx * wgenes))
     
-    obj<-rres[[23]]
+    obj<-rres[[22]]
     
     if(sum(obj == 0)>1){
         niter1 <- which(obj==0)[1]-1
@@ -96,14 +109,14 @@ Optimum_KernelC <- function(
         message(' \n')
         }
     
-    outcome1<-matrix(rres[[17]], ncol=intx, nrow=2, byrow=TRUE)
-    outcome2<-matrix(rres[[18]], ncol=(intx), nrow=wgenes, byrow = TRUE)
-    outcome3<-matrix(rres[[19]], ncol=niter, nrow=wgenes,byrow= TRUE)
-    outcome4<-matrix(rres[[20]], ncol=niter, nrow=wgenes,byrow=TRUE)
-    outcome5<-matrix(rres[[21]], ncol=niter, nrow=intx,byrow=TRUE)
-    outcome6<-matrix(rres[[22]], ncol=niter, nrow=intx,byrow=TRUE)
-    outcome21<-matrix(rres[[24]], ncol=(intx), nrow=wgenes, byrow = TRUE)
-    outcome22<-matrix(rres[[25]], ncol=(intx), nrow=wgenes, byrow = TRUE)
+    outcome1<-matrix(rres[[16]], ncol=intx, nrow=2, byrow=TRUE)
+    outcome2<-matrix(rres[[17]], ncol=(intx), nrow=wgenes, byrow = TRUE)
+    outcome3<-matrix(rres[[18]], ncol=niter, nrow=wgenes,byrow= TRUE)
+    outcome4<-matrix(rres[[19]], ncol=niter, nrow=wgenes,byrow=TRUE)
+    outcome5<-matrix(rres[[20]], ncol=niter, nrow=intx,byrow=TRUE)
+    outcome6<-matrix(rres[[21]], ncol=niter, nrow=intx,byrow=TRUE)
+    outcome21<-matrix(rres[[23]], ncol=(intx), nrow=wgenes, byrow = TRUE)
+    outcome22<-matrix(rres[[24]], ncol=(intx), nrow=wgenes, byrow = TRUE)
 
 #                 if(nhavepi == 1){
 # 	            print(paste0('Totally ', round(100*sum(outcome4[,niter]>99.99)/wgenes,3),'% genes estimated touch the optimization bound'))
@@ -112,7 +125,7 @@ Optimum_KernelC <- function(
 #                 }
                     
     outcome4 <- sqrt(outcome4)
-    return(list(obj_val = obj[niter1], obj_iter=obj, pi = outcome1, decovExprT = outcome2, 
+    return(list(obj_val = obj[niter1], pi = outcome1, decovExprT = outcome2, 
                 decovExprN1 = outcome21, decovExprN2 = outcome22, 
                 decovMu = as.matrix(outcome3[,seq(1,niter1)]), 
                 decovSigma = as.matrix(outcome4[,seq(1,niter1)]), 
