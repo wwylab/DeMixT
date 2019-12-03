@@ -11,7 +11,7 @@ estimation and expression deconvolution.
 }
 
 \usage{
-Optimum_KernelC(inputdata, groupid, nhavepi, givenpi, givenpiT, 
+Optimum_KernelC(inputdata, groupid, nspikein, nhavepi, givenpi, givenpiT, 
 niter, ninteg, tol, 
 sg0 = 0.5^2, mu0 = 0.0, nthread = 1)
 }
@@ -32,6 +32,11 @@ tumor samples. We use 3 to indicate mixed tumor samples prepared to be
 deconvolved. For example, in two-component deconvolution, we have 
 c(1,1,...,3,3) and in three-component deconvolution, we have 
 c(1,1,...,2,2,...,3,3).}
+
+\item{nspikein}{The number of spike in normal reference used for proportion
+estimation. The default value is the minimum value of 200 and 30 percent of
+mixed tumor samples. If it is set to 0, proportion estimation is performed
+without any spike in normal reference.}
 
 \item{nhavepi}{If it is set to 0, then deconvolution is performed without 
 any given proportions; if set to 1, deconvolution with given proportions 
