@@ -2,16 +2,15 @@ DeMixT <- function(
     data.Y, data.comp1, data.comp2 = NULL, 
     niter = 10, nbin = 50, 
     if.filter = TRUE, ngene.selected.for.pi = 250, 
-    mean.diff.in.CM = 0.25, nspikein = NULL,
+    mean.diff.in.CM = 0.25,
     tol = 10^(-5), output.more.info = FALSE, 
     nthread = parallel::detectCores() - 1) {
 
     message("Step 1: Estimation of Proportions\n")
-    if (!is.null(data.comp2)) nspikein = 0
     res.S1 <- DeMixT_S1(data.Y = data.Y, data.comp1 = data.comp1, 
                         data.comp2 = data.comp2, 
                         niter = niter, nbin = nbin, 
-                        if.filter = if.filter, nspikein = nspikein,
+                        if.filter = if.filter, 
                         ngene.selected.for.pi = ngene.selected.for.pi, 
                         mean.diff.in.CM = mean.diff.in.CM, 
                         tol = tol, nthread = nthread)
