@@ -10,7 +10,7 @@ for each mixing component with or without component merging.
 }
 \usage{
 DeMixT_S1(data.Y, data.comp1, data.comp2 = NULL, niter = 10, nbin = 50, 
-if.filter = FALSE, ngene.selected.for.pi = 250, 
+if.filter = FALSE, ngene.selected.for.pi = 250, nspikein = NULL,
 mean.diff.in.CM = 0.25, tol = 10^(-5), 
 nthread = parallel::detectCores() - 1) 
 }
@@ -49,6 +49,11 @@ proportion estimation. The difference between the expression levels from
 mixted tumor samples and the known component(s) are evaluated, and the most 
 differentially expressed genes are selected. It is enabled when 
 if.filter = TRUE. The default is 250.}
+
+\item{nspikein}{The number of spike in normal reference used for proportion
+estimation. The default value is the minimum value of 200 and 30 percent of
+mixed tumor samples. If it is set to 0, proportion estimation is performed
+without any spike in normal reference.}
 
 \item{mean.diff.in.CM}{Threshold of expression difference in selecting genes 
 in the component merging strategy. We merge three-component to two-component 
