@@ -27,7 +27,7 @@ int checkopenmp(int* numthread)
 }
 
 
-void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *nspikein, int *npi, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
+void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
 {
     //nCid = 1, we have just one stroma component; =2, we have 2
   int i, j, k, l;
@@ -55,7 +55,6 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *nspikein, i
   //get value from input parameter
   nS=*nsamp;            // Number of Samples
   nG=*ngenes;           // Number of Genes
-  nSp=*nspikein;  // Numer of Spike in Samples
   nHavepi =  *npi;      // Have pi or not: 0: Not given pi1 and pi2; 1: given pi1 and pi2; 2: given piT
   Cid = *nCid; //indicator for number of components
   integ = *ninteg;
@@ -260,30 +259,10 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *nspikein, i
             #ifdef _OPENMP
             // multithreaded OpenMP version of code
             #pragma omp parallel for //openmp
-            for(l=0;l<intx;l++) 
-			{
-				if(l < intx - nSp)
-				{
-					//Rprintf("Spike in %d \n", nSp);
-					getpi(l, Cid);
-					//Rprintf("Number of Spike in %d \n", l+1);
-				}else{
-					getspikeinpi(l);
-				}			
-			}
+            for(l=0;l<intx;l++) getpi(l, Cid);
            #else
             //single-threaded version of code
-            for(l=0;l<intx;l++) 
-			{
-				if(l < intx - nSp)
-				{
-					//Rprintf("Spike in %d \n", nSp);
-					getpi(l, Cid);
-					//Rprintf("Number of Spike in %d \n", l+1);
-				}else{
-					getspikeinpi(l);
-				}	
-			}
+            for(l=0;l<intx;l++) getpi(l, Cid);
           #endif
         }else if(nHavepi == 2){
           #ifdef _OPENMP
@@ -384,30 +363,9 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *nspikein, i
     {
       #ifdef _OPENMP
        #pragma omp parallel for //openmp
-        for(l=0;l<intx;l++)
-		{
-			if(l < intx - nSp)
-				{
-					//Rprintf("Spike in %d \n", nSp);
-					getpi(l, Cid);
-					//Rprintf("Number of Spike in %d \n", l+1);
-				}else{
-					getspikeinpi(l);
-				}	
-		}			
+        for(l=0;l<intx;l++) getpi(l, Cid);
        #else
-        for(l=0;l<intx;l++) 
-		{
-			if(l < intx - nSp)
-				{
-					//Rprintf("Spike in %d \n", nSp);
-					getpi(l, Cid);
-					//Rprintf("Number of Spike in %d \n", l+1);
-				}else{
-					getspikeinpi(l);
-				}	
-		}
-	
+        for(l=0;l<intx;l++) getpi(l, Cid);
        #endif
     }else if(nHavepi == 2){
        #ifdef _OPENMP
@@ -1291,18 +1249,6 @@ void getpi(int samp, int h)  	// option h = 1 for 1 component, 2 for two compone
         //}
     }
     
-}
-
-// another function to get spike in pi
-void getspikeinpi(int samp)
-{
-	double pii1;
-	double obj_old, obj_new;
-	
-	obj_old = pf_y(samp, p->pi1[samp]);
-	pii1 = 0.99;
-	obj_new = pf_y(samp, pii1);
-	p->pi1[samp] = pii1;
 }
 
 //another function to get pi given piT
