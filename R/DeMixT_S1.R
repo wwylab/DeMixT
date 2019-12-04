@@ -1,5 +1,5 @@
-DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10, 
-          nbin = 50, if.filter = FALSE, ngene.selected.for.pi = 250, nspikein = NULL,
+DeMixT_S1 <- function (data.Y, data.comp1, data.comp2 = NULL, niter = 10, 
+          nbin = 50, if.filter = FALSE, ngene.selected.for.pi = 250, 
           mean.diff.in.CM = 0.25, tol = 10^(-5), nthread = parallel::detectCores() - 
             1) 
 {
@@ -7,18 +7,6 @@ DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10,
   filter.sd = 0.5
   data.Y <- SummarizedExperiment::assays(data.Y)[[1]]
   data.comp1 <- SummarizedExperiment::assays(data.comp1)[[1]]
-  nS = ncol(data.Y)
-  if (is.null(nspikein)) nspikein = min(200, ceiling(ncol(data.Y)*0.3))
-  if (nspikein > 0){
-    MuN = apply(log2(data.comp1), 1, mean)
-    SigmaN = apply(log2(data.comp1), 1, sd)
-    
-    Spikein.normal = array(0, c(nrow(data.Y), nspikein))
-    for(k in 1:nrow(data.Y)) {
-      Spikein.normal[k, ] = 2^rnorm(n = nspikein, mean = MuN[k], sd = SigmaN[k])
-      }
-    data.Y = cbind(data.Y, Spikein.normal)
-  }
   if (!is.null(data.comp2)) 
     data.comp2 <- SummarizedExperiment::assays(data.comp2)[[1]]
   if (is.null(rownames(data.Y))) {
@@ -103,8 +91,8 @@ DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10,
  
   
   if (if.filter == FALSE) {
-    gene.name <- rownames(inputdata)                       
-    res <- Optimum_KernelC(inputdata, groupid, nhavepi = 0, nspikein = nspikein,
+    gene.name <- rownames(inputdata)
+    res <- Optimum_KernelC(inputdata, groupid, nhavepi = 0, 
       givenpi = rep(0, 2 * ncol(data.Y)), givenpiT = rep(0, ncol(data.Y)),
       niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
   }
@@ -123,7 +111,7 @@ DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10,
     inputdata1r <- inputdatamat1ym/inputdatamat1nm
     inputdata2 <- filter2(inputdata1r, ngene.selected.for.pi)
     gene.name <- rownames(inputdata2)
-    res <- Optimum_KernelC(inputdata2, groupid, nhavepi = 0, nspikein = nspikein,
+    res <- Optimum_KernelC(inputdata2, groupid, nhavepi = 0, 
       givenpi = rep(0, 2 * ncol(data.Y)), givenpiT = rep(0, ncol(data.Y)),
       niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
   }
@@ -153,7 +141,7 @@ DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10,
     inputdatamat2 <- filter2(inputdata1r, ngene.selected.for.pi)
     cnvgroup <- groupid
     cnvgroup[groupid == 2] <- 1
-    res1 <- Optimum_KernelC(inputdatamat2, cnvgroup, nhavepi = 0, nspikein = nspikein,
+    res1 <- Optimum_KernelC(inputdatamat2, cnvgroup, nhavepi = 0, 
       givenpi = rep(0, ncol(data.Y)), givenpiT = rep(0, ncol(data.Y)),
       niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
     fixed.piT <- 1 - as.numeric(res1$pi[1, ])
@@ -178,30 +166,18 @@ DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10,
     id5 <- (inputdata1s > quantile(inputdata1s, probs = 0.5))
     inputdatamat3 <- inputdatamat2[id5, ]
     gene.name <- rownames(inputdatamat3)
-    res <- Optimum_KernelC(inputdatamat3, groupid, 
-        nspikein = nspikein, nhavepi = 2, 
+    res <- Optimum_KernelC(inputdatamat3, groupid, nhavepi = 2, 
       givenpi = rep(0, 2 * ncol(data.Y)), givenpiT = fixed.piT, 
       niter = niter, ninteg = nbin, tol = tol, nthread = nthread)
     message("Filtering stage 2 is finished")
   }
-  
-  
-  if(nspikein == 0){
-    pi <- t(as.matrix(res$pi[1, ]))
-    row.names(pi)[1] <- "pi1"
-    pi1 <- as.matrix(res$pi1)
-    colnames(pi1) <- as.character(seq(1, ncol(pi1)))
-    row.names(pi1) = colnames(data.Y)
-    pi.iter <- array(t(res$pi1), dim <- c(ncol(res$pi1), nrow(res$pi1), 1))
-  }else{
-    pi <- t(as.matrix(res$pi[1, c(1:nS)]))
-    row.names(pi)[1] <- "pi1"
-    pi1 <- as.matrix(res$pi1[c(1:nS),])
-    colnames(pi1) <- as.character(seq(1, ncol(pi1)))
-    row.names(pi1) = colnames(data.Y[,c(1:nS)])
-    pi.iter <- array(t(res$pi1)[,c(1:nS)], dim <- c(ncol(res$pi1), nrow(res$pi1)-nspikein, 1))
-  }
-  
+  pi <- t(as.matrix(res$pi[1, ]))
+  row.names(pi)[1] <- "pi1"
+  pi1 <- as.matrix(res$pi1)
+  colnames(pi1) <- as.character(seq(1, ncol(pi1)))
+  row.names(pi1) = colnames(data.Y)
+  pi.iter <- array(t(res$pi1), dim <- c(ncol(res$pi1), nrow(res$pi1), 
+                                        1))
   if (!is.null(data.comp2)) {
     pi <- rbind(pi, res$pi[2, ])
     row.names(pi)[2] <- "pi2"
@@ -211,7 +187,6 @@ DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10,
     pi.iter <- array(t(rbind(res$pi1, res$pi2)), dim <- c(ncol(res$pi1), 
                                                           nrow(res$pi1), 2))
   }
-  if(nspikein == 0) colnames(pi) <- colnames(data.Y)
-  if(nspikein > 0) colnames(pi) <- colnames(data.Y)[c(1:nS)]
+  colnames(pi) <- colnames(data.Y)
   return(list(pi = pi, pi.iter = pi.iter, gene.name = gene.name))
 }
