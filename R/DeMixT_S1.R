@@ -1,4 +1,4 @@
-DeMixT_S1 <- function (data.Y, data.comp1, data.comp2 = NULL, niter = 10, 
+DeMixT_S1 <- function(data.Y, data.comp1, data.comp2 = NULL, niter = 10, 
           nbin = 50, if.filter = FALSE, ngene.selected.for.pi = 250, nspikein = NULL,
           mean.diff.in.CM = 0.25, tol = 10^(-5), nthread = parallel::detectCores() - 
             1) 
