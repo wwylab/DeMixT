@@ -1,0 +1,34 @@
+#' @title Simulated two-component test data
+#' 
+#' @description A list of simulated two-component test data used in 
+#' DeMixT function. Expression data with 500 genes and 100 samples 
+#' are simulated.
+#' 
+#' @return A list with 5 elements (2 more elements when output.more.info = 
+#' TRUE), which are
+#' \item{pi}{A matrix of estimated proportion. First row and second row 
+#' corresponds to the proportion estimate for the known components and unkown 
+#' component respectively for two or three component settings. Each column 
+#' corresponds to one sample.}
+#' \item{Mu}{Simulated \eqn{Mu} of log2-normal distribution for both known
+#' (\eqn{MuN1}) and unknown component (\eqn{MuT}).}
+#' \item{Sigma}{Simulated \eqn{Sigma} of log2-normal distribution for both 
+#' known (\eqn{SigmaN1}) and unknown component (\eqn{SigmaT}).}
+#' \item{data.Y}{A SummarizedExperiment object of expression data from mixed 
+#' tumor samples. It is a \eqn{G} by \eqn{My} matrix where \eqn{G} is the number
+#' of genes and \eqn{My} is the number of mixed samples. Samples with the same
+#' tissue type should be placed together in columns.}
+#' \item{data.N1}{A SummarizedExperiment object of expression data 
+#' from reference component 1 (e.g., normal). It is a \eqn{G} by \eqn{M1} matrix 
+#' where \eqn{G} is the number of genes and \eqn{M1} is the number of samples 
+#' for component 1.} 
+#' \item{True.data.T}{A SummarizedExperiment object of simulated tumor expression 
+#' data. It is a \eqn{G} by \eqn{My} matrix, where \eqn{G} is the number of 
+#' genes and \eqn{My} is the number of mixed samples. This is shown only when 
+#' output.more.info = TRUE.}
+#' \item{True.data.N1}{A SummarizedExperiment object of simulated true 
+#' expression data for reference component 1 (e.g., normal). It is a \eqn{G} 
+#' by \eqn{M1} matrix where \eqn{G} is the number of genes and \eqn{M1} is the 
+#' number of samples for component 1. This is shown only when 
+#' output.more.info = TRUE.}
+'test.data.2comp'

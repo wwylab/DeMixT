@@ -1,6 +1,6 @@
 ---
 title: "A Vignette for DeMixT"
-author: "Zeya Wang and Fan Gao"
+author: "Zeya Wang, Fan Gao, Shaolong Cao and Peng Yang"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -10,7 +10,9 @@ vignette: >
 ---
 
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
+library(ggplot2)
+library(DeMixT)
 # knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -31,10 +33,13 @@ to provide deeper insight into cancer biomarkers and assist in the development
 of novel prognostic markers and therapeutic strategies.
 
 The function DeMixT is designed to finish the whole pipeline of deconvolution 
-for two or three components. DeMixT.S1 function is designed to estimate the 
-proportions of all mixed samples for each mixing component. DeMixT.S2 function 
-is designed to estimate the component-specific deconvolved expressions of 
-individual mixed samples for a given set of genes.
+for two or three components. The newly added DeMixT_GS function is designed to 
+estimates the proportions of mixed samples for each mixing component based on a 
+new approach to select genes more effectively that utilizes profile likelihood. 
+DeMixT_S1 function is designed to estimate the proportions of all mixed samples 
+for each mixing component based on the gene differential expressions to select 
+genes. DeMixT_S2 function is designed to estimate the component-specific
+deconvolved expressions of individual mixed samples for a given set of genes.
 
 # 2 Feature Description
 
@@ -60,7 +65,7 @@ a novel gene-set-based component merging approach to reduce the bias of
 proportion estimation for three-component deconvolutionthe. 
 
 
-**parallel computing**: OpenMP enables parallel computing on single computer by 
+**Parallel computing**: OpenMP enables parallel computing on single computer by 
 taking advantage of the multiple cores shipped on modern CPUs. The ICM 
 framework further enables parallel computing, which helps compensate for the 
 expensive computing time used in the repeated numerical double integrations. 
@@ -71,13 +76,13 @@ expensive computing time used in the repeated numerical double integrations.
 
 DeMixT source files are compatible with Windows, Linux and macOS. 
 
-DeMixT_1.2.1 is the latest version, which is for a computer that has OpenMP. 
+DeMixT_1.3.0 is the latest version, which is for a computer that has OpenMP. 
 It can be downloaded from Bioconductor website.
 https://bioconductor.org/packages/release/bioc/html/DeMixT.html
 
-To install DeMixT_1.2.1 from GitHub, start R and enter:
+To install DeMixT_1.3.0 from GitHub, start R and enter:
 
-```{r}
+```{r install_DeMixT}
 # devtools::install_github("wwylab/DeMixT")
 ```
 
@@ -92,6 +97,7 @@ The following table shows the functions included in DeMixT.
 Table Header  | Second Header
 ------- | ----------------------------------
 DeMixT | Deconvolution of tumor samples with two or three components 
+DeMixT_GS | Estimates the proportions of mixed samples for each mixing component based on a new approach to select genes that utilizes profile likelihood 
 DeMixT_S1 | Estimates the proportions of mixed samples for each mixing component
 DeMixT_S2 |Deconvolves expressions of each  sample for unknown component
 Optimum_KernelC | Call the C function used for parameter estimation in DeMixT
@@ -102,8 +108,8 @@ Optimum_KernelC | Call the C function used for parameter estimation in DeMixT
 
 Let \(Y_{ig}\) be the observed expression levels of the raw measured data from 
 clinically derived malignant tumor samples for gene \(g, g = 1, \cdots, G\) and 
-sample \(i, i = 1, \cdots, S\). \(G\) denotes the total number of probes/genes 
-and \(S\) denotes the number of samples. The observed expression levels for 
+sample \(i, i = 1, \cdots, My\). \(G\) denotes the total number of probes/genes 
+and \(My\) denotes the number of samples. The observed expression levels for 
 solid tumors can be modeled as a linear combination of raw expression levels 
 from three components:
 \[ {Y_{ig}} = \pi _{1,i}N_{1,ig} + \pi _{2,i}N_{2,ig} + 
@@ -146,7 +152,7 @@ reconstitutes the expression profiles for all three components for each gene
 and each sample. The estimation procedure (summarized in Figure 1b) has two
 main steps as follows.
 
-1. Obtain a set of parameters \(\{\pi_{1,i}, \pi_{2,i}\}_{i=1}^S\), \(\{\mu_T,
+1. Obtain a set of parameters \(\{\pi_{1,i}, \pi_{2,i}\}_{i=1}^{My}\), \(\{\mu_T,
 \sigma_T\}_{g=1}^G\) to maximize the complete likelihood function, for which
 \(\{\mu_{N_{1,g}}, \sigma_{N_{1,g}}, \mu_{N_{2,g}}, 
 \sigma_{N_{2,g}}\}_{g=1}^G\) were already estimated from the available 
@@ -158,144 +164,242 @@ n_{2,ig}\}\) that maximizes the joint density of \(N_{1,ig}\), \(N_{2,ig}\) and
 \(T_{ig}\). The value of \(t_{ig}\) is solved as \({y_{ig}} - 
 {{\hat \pi }_{1,i}}{n_{1,ig}} - {{\hat \pi }_{2,i}}{n_{2,ig}}\).
 
-These two steps can be separately implemented using the function DeMixT.S1 and 
-DeMixT.S2, which are combined in the function DeMixT.
+These two steps can be separately implemented using the function DeMixT_S1 or 
+DeMixT_GS for the first step and DeMixT_S2 for the second, which are combined 
+in the function DeMixT(Note: DeMixT_GS is the default function for first step).
+
+In version 1.3.0, DeMixT added simulated normal reference samples, i.e., spike-in, 
+based on the observed normal reference samples. It has been shown to improve 
+accuracy in proportion estimation for the scenario where a dataset consists of 
+samples where true tumor proportions are skewed to the high end.
+
+```{r Algorithm, echo=FALSE, out.width='100%'}
+knitr::include_graphics(path = paste0("Algorithm.png"))
+```
+
 
 # 5. Examples
 
 ## 5.1 Simulated two-component data 
 
-```{r, results="hide", message=FALSE}
-library(DeMixT)
-data(test.data1.y)
-data(test.data1.comp1)
-res <- DeMixT(data.Y = test.data1.y,
-    data.comp1 = test.data1.comp1,
-    if.filter = FALSE,
-    output.more.info = TRUE)
+```{r, sim_2comp_GS, results="hide", message=FALSE}
+data("test.data.2comp")
+# res.GS = DeMixT_GS(data.Y = test.data.2comp$data.Y, 
+#                     data.N1 = test.data.2comp$data.N1,
+#                     niter = 30, nbin = 50, nspikein = 50,
+#                     if.filter = TRUE, ngene.Profile.selected = 150,
+#                     mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
+#                     tol = 10^(-5))
+load('Res_2comp/res.GS.RData')
 ```
 
-```{r}
-res$pi
-head(res$ExprT, 3)
-head(res$ExprN1, 3)
-head(res$Mu, 3)
-head(res$Sigma, 3)
-res$pi.iter
-res$gene.name
+```{r sim_2comp_GS_res}
+head(t(res.GS$pi))
+head(res.GS$gene.name)
 ```
 
-## 5.2 Simulated three-component data 
-
-```{r, results="hide", message=FALSE}
-# data(test.data2.y)
-# data(test.data2.comp1)
-# data(test.data2.comp2)
-# res <- DeMixT(data.Y = test.data2.y,
-#     data.comp1 = test.data2.comp1,
-#     data.comp2 = test.data2.comp2,
-#     if.filter = FALSE)
+```{r, sim_2comp_S2, results="hide", message=FALSE}
+data("test.data.2comp")
+# res.S2 <- DeMixT_S2(data.Y = test.data.2comp$data.Y, 
+#                     data.N1 = test.data.2comp$data.N1,
+#                     data.N2 = NULL, 
+#                     givenpi = c(t(res.S1$pi[-nrow(res.GS$pi),])), nbin = 50)
+load('Res_2comp/res.S2.RData')
 ```
 
-## 5.3 Laser-capture microdissection prostate cancer FFPE microarray dataset
-
-This dataset was generated at the Dana Farber Cancer Institute (GSE97284). 
-Radical prostatectomy specimens were annotated in detail by pathologists, and 
-regions of interest were identified that corresponded to benign epithelium, 
-prostatic intraepithelial neoplasia (abnormal tissue that is possibly 
-precancerous), and tumor, each with its surrounding stroma. FFPE samples are 
-known to generate overall lower quality expression data than those from fresh 
-frozen samples. We observed a small proportion of probesets that presented 
-large differences in mean expression levels between the dissected tissues: 
-tumor ($T$) and stroma ($N$) in this dataset. Only 53 probesets presented a mean
-difference $(| \bar{T} - \bar{N} |) >1$, as compared to 10,397 probesets in 
-GSE19830. We therefore chose the top 80 genes with the largest mean differences 
-and ran DeMixT under two settings: tumor unknown and stroma unknown. DeMixT is 
-able to obtain concordant estimates of the tumor proportions when the proportion
-of the stromal component was unknown and when the proportion of tumor tissue was
-unknown and also tended to provide accurate component-specific mean expression 
-levels. 
-
-```{r, results="hide", message=FALSE}
-library(DeMixT)
-data <- as.matrix(read.table("input.lcm.txt", header = FALSE))
-normal <- data[, 1:25]
-adm <- data[, 26:48]
-tumor <- data[, 49:73]
-
-nrows <- nrow(adm); ncols <- ncol(adm)
-lcm.data.adm <- matrix(2^adm, nrows)
-lcm.data.adm <- SummarizedExperiment(assays=list(counts=lcm.data.adm))
-
-nrows <- nrow(tumor); ncols <- ncol(tumor)
-lcm.data.tumor <- matrix(2^tumor, nrows)
-lcm.data.tumor <- SummarizedExperiment(assays=list(counts=lcm.data.tumor))
-
-nrows <- nrow(normal); ncols <- ncol(normal)
-lcm.data.normal <- matrix(2^normal, nrows)
-lcm.data.normal <- SummarizedExperiment(assays=list(counts=lcm.data.normal))
-
-testr.TA <- DeMixT(data.Y = lcm.data.adm, data.comp1 = lcm.data.tumor,
-    niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
-testr.SA <- DeMixT(data.Y = lcm.data.adm, data.comp1 = lcm.data.normal,
-    niter = 20, nbin = 60, if.filter = FALSE, tol = 10^-6)
+```{r sim_2comp_S2_res}
+head(res.S2$decovExprT[,1:5],3)
+head(res.S2$decovExprN1[,1:5],3)
+head(res.S2$decovMu,3)
+head(res.S2$decovSigma,3)
 ```
 
-```{r}
-# plot A
-dt_purT <- 1- as.numeric(testr.SA$pi)
-dt_purS <- 1- as.numeric(testr.TA$pi)
-plot(1 - dt_purS, dt_purT,
-    col = "blue", pch = 1, xlim = c(0, 1), ylim = c(0, 1),
-    xlab = expression(1 - hat(pi)[S]), ylab = expression(hat(pi)[T]))
-abline(0, 1, col = "red", lwd = 2)
+## 5.2 Simulated two-component data with DeMixT Spike-in Normal 
 
-# Plot - Mean expressions for Tumor
-OB_St <- log2(read.table("lcm_normal.txt", header = FALSE))
-OB_Tu <- log2(read.table("lcm_tumor.txt", header = FALSE))
-DT_Tu_mu <- as.numeric(testr.SA$Mu[, 1])
-DT_St_mu <- as.numeric(testr.TA$Mu[, 1])
-DT_Tu_sg <- as.numeric(testr.SA$Sigma[, 1])
-DT_St_sg <- as.numeric(testr.TA$Sigma[, 1])
-OB_St_m <- apply(OB_St, 1, mean)
-OB_Tu_m <- apply(OB_Tu, 1, mean)
+In the simulation, 
+````markdown
+## Simulate MuN and MuT for each gene
+  MuN <- rnorm(G, 7, 1.5)
+  MuT <- rnorm(G, 7, 1.5)
+  Mu <- cbind(MuN, MuT)
+## Simulate SigmaN and SigmaT for each gene
+  SigmaN <- runif(n = G, min = 0.1, max = 0.8)
+  SigmaT <- runif(n = G, min = 0.1, max = 0.8)
+## Simulate Tumor Proportion
+  PiT = truncdist::rtrunc(n = My,
+                          spec = 'norm', 
+                          mean = 0.55,
+                          sd = 0.2,
+                          a = 0.25,
+                          b = 0.95)
 
-# filter out genes with large estimated standard deviations
-condSt <- (DT_St_sg < 0.99)
-condTu <- (DT_Tu_sg < 0.99)
-DT_Tu_m <- as.numeric(apply(log2(testr.SA$ExprT), 1, mean))
-DT_St_m <- as.numeric(apply(log2(testr.TA$ExprT), 1, mean))
-OB_St_m <- OB_St_m[condSt]
-OB_Tu_m <- OB_Tu_m[condTu]
-DT_St_m <- DT_St_m[condSt]
-DT_Tu_m <- DT_Tu_m[condTu]
+## Simulate Data
+  for(k in 1:G){
+    
+    data.N1[k,] <- 2^rnorm(M1, MuN[k], SigmaN[k]); # normal reference
+    
+    True.data.T[k,] <- 2^rnorm(My, MuT[k], SigmaT[k]);  # True Tumor
+    
+    True.data.N1[k,] <- 2^rnorm(My, MuN[k], SigmaN[k]);  # True Normal
+    
+    data.Y[k,] <- pi[1,]*True.data.N1[k,] + pi[2,]*True.data.T[k,] # Mixture Tumor
+    
+  }
+````
+where $\pi_i \in (0.25, 0.95)$ is from truncated normal distribution. In general, the true distribution of tumor proportion does not follow a uniform distribution between $[0,1]$, but instead skewed to the upper part of the interval.
 
-# Plot - Mean expressions for Tumor
-smoothScatter((DT_Tu_m + OB_Tu_m) / 2, DT_Tu_m - OB_Tu_m,
-    ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2",
-    xlim = c(2,16), ylim = c(-1.2,1.2),
-    main = "Mean expressions for Tumor",
-    pch = 1, nrpoints = 0, col = 'yellow',
-    colramp=colorRampPalette(c("white","yellow",
-    "yellow1","orange","orange1")))
-
-tmp01 <- lowess((DT_Tu_m - OB_Tu_m) ~ ((DT_Tu_m + OB_Tu_m) / 2))
-lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
-abline(h = 0, col = 'red', lty = 2)
-
-# Plot - Mean expressions for Stroma
-smoothScatter((DT_St_m + OB_St_m) / 2, DT_St_m - OB_St_m,
-    ylab = "Estimate - Truth", xlab = "(Estimate + Truth)/2",
-    xlim = c(2,16), ylim = c(-1.2,1.2),
-    main = "Mean expressions for Stroma", pch = 1, nrpoints = 0,
-    col = 'yellow',
-    colramp=colorRampPalette(c("white","yellow",
-    "yellow1","orange","orange1")))
-
-tmp01 <- lowess((DT_St_m - OB_St_m) ~ ((DT_St_m + OB_St_m) / 2))
-lines(tmp01$x, tmp01$y, col="blue", lwd = 5)
-abline(h = 0, col = 'red', lty = 2)
+```{r read_data_2comp,  warning=FALSE, message=FALSE}
+# ## DeMixT_S1 without Spike-in Normal
+# res.S1 = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+#                    data.N1 = test.data.2comp$data.N1,
+#                    niter = 30, nbin = 50, nspikein = 0,
+#                    if.filter = TRUE, 
+#                    mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
+#                    tol = 10^(-5))
+# ## DeMixT_S1 with Spike-in Normal
+# res.S1.SP = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+#                      data.N1 = test.data.2comp$data.N1,
+#                      niter = 30, nbin = 50, nspikein = 50,
+#                      if.filter = TRUE, 
+#                      mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
+#                      tol = 10^(-5))
+# ## DeMixT_GS with Spike-in Normal
+# res.GS.SP = DeMixT_GS(data.Y = test.data.2comp$data.Y, 
+#                      data.N1 = test.data.2comp$data.N1,
+#                      niter = 30, nbin = 50, nspikein = 50,
+#                      if.filter = TRUE, ngene.Profile.selected = 150,
+#                      mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
+#                      tol = 10^(-5))
+load('Res_2comp/res.S1.RData'); load('Res_2comp/res.S1.SP.RData'); 
+load('Res_2comp/res.GS.RData'); load('Res_2comp/res.GS.SP.RData'); 
 ```
+
+This simulation was designed to compare previous DeMixT resutls with DeMixT spike-in results under both gene selection method.
+```{r sim_2comp, fig.height = 4, fig.width = 6, fig.align='center', warning=FALSE} 
+res.2comp = as.data.frame(cbind(round(rep(t(test.data.2comp$pi[2,]),3),2), 
+                                round(c(t(res.S1$pi[2,]),t(res.S1.SP$pi[2,]), t(res.GS.SP$pi[2,])),2),
+                                rep(c('S1','S1-SP','GS-SP'), each = 100)), num = 1:2)
+res.2comp$V1 <- as.numeric(as.character(res.2comp$V1))
+res.2comp$V2 <- as.numeric(as.character(res.2comp$V2))
+res.2comp$V3 = as.factor(res.2comp$V3)
+names(res.2comp) = c('True.Proportion', 'Estimated.Proportion', 'Method')
+## Plot
+ggplot(res.2comp, aes(x=True.Proportion, y=Estimated.Proportion, group = Method, color=Method, shape=Method)) +
+  geom_point() + 
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black", lwd = 0.5) +
+  xlim(0,1) + ylim(0,1)  +
+  scale_shape_manual(values=c(seq(1:3))) +
+  labs(x = 'True Proportion', y = 'Estimated Proportion')  
+```
+
+## 5.3 Simulated three-component data 
+
+In this simulation, 
+````markdown
+G <- G1 + G2
+## Simulate MuN1, MuN2 and MuT for each gene
+  MuN1 <- rnorm(G, 7, 1.5)
+  MuN2_1st <- MuN1[1:G1] + truncdist::rtrunc(n = 1, 
+                                             spec = 'norm',
+                                             mean = 0,
+                                             sd = 1.5,
+                                             a = -0.1, 
+                                             b = 0.1)
+  MuN2_2nd <- c()
+  for(l in (G1+1):G){
+    tmp <- MuN1[l] + truncdist::rtrunc(n = 1, 
+                                       spec = 'norm',
+                                       mean = 0,
+                                       sd = 1.5,
+                                       a = 0.1, 
+                                       b = 3)^rbinom(1, size=1, prob=0.5)
+    while(tmp <= 0) tmp <- MuN1[l] + truncdist::rtrunc(n = 1, 
+                                                       spec = 'norm',
+                                                       mean = 0,
+                                                       sd = 1.5,
+                                                       a = 0.1, 
+                                                       b = 3)^rbinom(1, size=1, prob=0.5)
+    MuN2_2nd <- c(MuN2_2nd, tmp)
+  }
+## Simulate SigmaN1, SigmaN2 and SigmaT for each gene
+  SigmaN1 <- runif(n = G, min = 0.1, max = 0.8)
+  SigmaN2 <- runif(n = G, min = 0.1, max = 0.8)
+  SigmaT <- runif(n = G, min = 0.1, max = 0.8)
+## Simulate Tumor Proportion
+  pi <- matrix(0, 3, My)
+  pi[1,] <- runif(n = My, min = 0.01, max = 0.97)
+  for(j in 1:My){
+    pi[2, j] <- runif(n = 1, min = 0.01, max = 0.98 - pi[1,j])
+    pi[3, j] <- 1 - sum(pi[,j])
+  }
+## Simulate Data
+  for(k in 1:G){
+    
+    data.N1[k,] <- 2^rnorm(M1, MuN1[k], SigmaN1[k]); # normal reference 1
+    
+    data.N2[k,] <- 2^rnorm(M2, MuN2[k], SigmaN2[k]); # normal reference 1
+    
+    True.data.T[k,] <- 2^rnorm(My, MuT[k], SigmaT[k]);  # True Tumor
+    
+    True.data.N1[k,] <- 2^rnorm(My, MuN1[k], SigmaN1[k]);  # True Normal 1
+    
+    True.data.N2[k,] <- 2^rnorm(My, MuN2[k], SigmaN2[k]);  # True Normal 1
+    
+    data.Y[k,] <- pi[1,]*True.data.N1[k,] + pi[2,]*True.data.N2[k,] +
+      pi[3,]*True.data.T[k,] # Mixture Tumor
+    
+  }
+````
+where $G1$ is the number of genes that $\mu_{N1}$ is close to $\mu_{N2}$.
+
+```{r read_data_3comp,  warning=FALSE, message=FALSE}
+data("test.data.3comp")
+# res.1 <- DeMixT(data.Y = test.data.3comp$data.Y, data.N1 = test.data.3comp$data.N1,
+#                 data.N2 = test.data.3comp$data.N2, if.filter = TRUE,
+#                 gene.selection.method = 'S1')
+load('Res_3comp/res.S1.RData'); 
+```
+
+```{r sim_3comp, fig.height = 4, fig.width = 6, fig.align='center', warning=FALSE} 
+res.3comp= as.data.frame(cbind(round(t(matrix(t(test.data.3comp$pi), nrow = 1)),2), 
+                                round(t(matrix(t(res.S1$pi), nrow = 1)),2), 
+                                rep(c('N1','N2','T'), each = 20)))
+res.3comp$V1 <- as.numeric(as.character(res.3comp$V1))
+res.3comp$V2 <- as.numeric(as.character(res.3comp$V2))
+res.3comp$V3 = as.factor(res.3comp$V3)
+names(res.3comp) = c('True.Proportion', 'Estimated.Proportion', 'Component')
+## Plot
+ggplot(res.3comp, aes(x=True.Proportion, y=Estimated.Proportion, group = Component, color=Component, shape=Component)) +
+  geom_point() + 
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black", lwd = 0.5) +
+  xlim(0,1) + ylim(0,1)  +
+  scale_shape_manual(values=c(seq(1:3))) +
+  labs(x = 'True Proportion', y = 'Estimated Proportion')  
+```
+
+
+
+## 5.4 PRAD in TCGA Dataset
+
+```{r read_data_PRAD,  warning=FALSE, message=FALSE} 
+load('res.PRAD.RData'); 
+```
+
+```{r PRAD, fig.height = 4, fig.width = 6, fig.align='center', warning=FALSE} 
+res.PRAD.df = as.data.frame(cbind(res.PRAD$res.GS.PRAD, res.PRAD$res.GS.SP.PRAD))
+res.PRAD.df$V1 <- as.numeric(as.character(res.PRAD.df$V1))
+res.PRAD.df$V2 <- as.numeric(as.character(res.PRAD.df$V2))
+names(res.PRAD.df) = c('Estimated.Proportion', 'Estimated.Proportion.SP')
+## Plot
+ggplot(res.PRAD.df, aes(x=Estimated.Proportion, y=Estimated.Proportion.SP)) +
+  geom_point() + 
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black", lwd = 0.5) +
+  xlim(0,1) + ylim(0,1)  +
+  scale_shape_manual(values=c(seq(1:3))) +
+  labs(x = 'Estimated Proportion', y = 'Estimated Proportion After Spike-in')  
+```
+Tumor proportion estimation remains consistence with and without spike-in normal, when its distribution is roughly symmetric around 0.5.
+
 
 # 6. Session Info 
 

@@ -27,7 +27,7 @@ int checkopenmp(int* numthread)
 }
 
 
-void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
+void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *nspikein, int *npi, double *pi01, double *pi02, double *fixpi1, double *fixpi2, double *fixpi3,int *nCid, int *niter, int *ninteg, double *tol, int *thread, double *s0, double *m0, double *output1, double *output3, double *output5, double *output7, double *output9, double *output11, double *obj_out, double *output31, double *output32)
 {
     //nCid = 1, we have just one stroma component; =2, we have 2
   int i, j, k, l;
@@ -55,6 +55,7 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
   //get value from input parameter
   nS=*nsamp;            // Number of Samples
   nG=*ngenes;           // Number of Genes
+  nSp=*nspikein;  // Numer of Spike in Samples
   nHavepi =  *npi;      // Have pi or not: 0: Not given pi1 and pi2; 1: given pi1 and pi2; 2: given piT
   Cid = *nCid; //indicator for number of components
   integ = *ninteg;
@@ -193,8 +194,15 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
         //p->Tavg[j] = 10.0;
         //Rprintf("gene avg for %d is %lf\n", j, p->Tavg[j]);
     }
-
-
+	
+	//Rprintf("Initial pi0 \n");
+	for(k=0;k<intx;k++)
+    {
+      p->pi1[k]= pi01[k];
+	  //Rprintf("%15.3f \t",  p->pi1[k], '\n');
+      if(Cid == 2) p->pi2[k]= pi02[k];
+    }
+	
 
     if(nHavepi==1)
   {
@@ -252,17 +260,57 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
 
     for(i=0;i<iteration;i++)
     {
-      if (nHavepi != 1)  Rprintf("Iteration %d: updating purities\n", i+1);
+		//if(i==0) start_t=clock();
+        
+        if (nHavepi != 1)  Rprintf("Iteration %d: updating parameters\n", i+1);
+        #ifdef _OPENMP
+         #pragma omp parallel for //openmp
+        for(j=0;j<nG;j++)
+        {
+            gettumor(j, Cid);
+            avgparT[i][j] = p->Tavg[j];
+            sigparT[i][j] = p->Tsigma[j];
+        }
+         #else
+        for(j=0;j<nG;j++)
+        {
+            gettumor(j, Cid);
+            avgparT[i][j] = p->Tavg[j];
+            sigparT[i][j] = p->Tsigma[j];
+        }
+         #endif
+        
+      if (nHavepi != 1)  Rprintf("Iteration %d: updating proportions\n", i+1);
         //updating pi value
         if(nHavepi==0)
         {
             #ifdef _OPENMP
             // multithreaded OpenMP version of code
             #pragma omp parallel for //openmp
-            for(l=0;l<intx;l++) getpi(l, Cid);
+            for(l=0;l<intx;l++) 
+			{
+				if(l < intx - nSp)
+				{
+					//Rprintf("Spike in %d \n", nSp);
+					getpi(l, Cid);
+					//Rprintf("Number of Spike in %d \n", l+1);
+				}else{
+					getspikeinpi(l);
+				}			
+			}
            #else
             //single-threaded version of code
-            for(l=0;l<intx;l++) getpi(l, Cid);
+            for(l=0;l<intx;l++) 
+			{
+				if(l < intx - nSp)
+				{
+					//Rprintf("Spike in %d \n", nSp);
+					getpi(l, Cid);
+					//Rprintf("Number of Spike in %d \n", l+1);
+				}else{
+					getspikeinpi(l);
+				}	
+			}
           #endif
         }else if(nHavepi == 2){
           #ifdef _OPENMP
@@ -284,30 +332,6 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
             }
             if (nHavepi != 1)  Rprintf("\n");
         }
-        
-        
-        //if(i==0) start_t=clock();
-        
-        if (nHavepi != 1)  Rprintf("Iteration %d: updating parameters\n", i+1);
-        #ifdef _OPENMP
-         #pragma omp parallel for //openmp
-        for(j=0;j<nG;j++)
-        {
-            gettumor(j, Cid);
-            avgparT[i][j] = p->Tavg[j];
-            sigparT[i][j] = p->Tsigma[j];
-        }
-         #else
-        for(j=0;j<nG;j++)
-        {
-            gettumor(j, Cid);
-            avgparT[i][j] = p->Tavg[j];
-            sigparT[i][j] = p->Tsigma[j];
-        }
-         #endif
-        
-        
-        
         
         
         // Total time expectation depending on the first five iterations
@@ -363,9 +387,30 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *npi, double
     {
       #ifdef _OPENMP
        #pragma omp parallel for //openmp
-        for(l=0;l<intx;l++) getpi(l, Cid);
+        for(l=0;l<intx;l++)
+		{
+			if(l < intx - nSp)
+				{
+					//Rprintf("Spike in %d \n", nSp);
+					getpi(l, Cid);
+					//Rprintf("Number of Spike in %d \n", l+1);
+				}else{
+					getspikeinpi(l);
+				}	
+		}			
        #else
-        for(l=0;l<intx;l++) getpi(l, Cid);
+        for(l=0;l<intx;l++) 
+		{
+			if(l < intx - nSp)
+				{
+					//Rprintf("Spike in %d \n", nSp);
+					getpi(l, Cid);
+					//Rprintf("Number of Spike in %d \n", l+1);
+				}else{
+					getspikeinpi(l);
+				}	
+		}
+	
        #endif
     }else if(nHavepi == 2){
        #ifdef _OPENMP
@@ -538,7 +583,7 @@ void gettumor(int genes, int h) // option h = 1 for one component; h = 2 for two
     }else{
         upps = 25;
     }
-    low = -15;
+    low = 0;
     double obj_old, obj_new;
     if(h == 1)
     {
@@ -1249,6 +1294,18 @@ void getpi(int samp, int h)  	// option h = 1 for 1 component, 2 for two compone
         //}
     }
     
+}
+
+// another function to get spike in pi
+void getspikeinpi(int samp)
+{
+	double pii1;
+	double obj_old, obj_new;
+	
+	obj_old = pf_y(samp, p->pi1[samp]);
+	pii1 = 0.99;
+	obj_new = pf_y(samp, pii1);
+	p->pi1[samp] = pii1;
 }
 
 //another function to get pi given piT
