@@ -4,9 +4,22 @@
 \alias{Optimum_KernelC}
 \title{Kernel function for optimizing parameters and hidden variables in DeMixT}
 \usage{
-Optimum_KernelC(inputdata, groupid, nspikein, setting.pi, givenpi,
-  givenpiT, niter, ninteg, tol, sg0 = 0.5^2, mu0 = 0, pi01 = NULL,
-  pi02 = NULL, nthread = 1)
+Optimum_KernelC(
+  inputdata,
+  groupid,
+  nspikein,
+  setting.pi,
+  givenpi,
+  givenpiT,
+  niter,
+  ninteg,
+  tol,
+  sg0 = 0.5^2,
+  mu0 = 0,
+  pi01 = NULL,
+  pi02 = NULL,
+  nthread = 1
+)
 }
 \arguments{
 \item{inputdata}{A matrix of expression data (e.g gene expressions) from

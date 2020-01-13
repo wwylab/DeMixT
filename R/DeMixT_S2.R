@@ -74,8 +74,9 @@
 #' @keywords DeMixT_S2
 #' 
 #' @export 
-DeMixT_S2 <- function(data.Y, data.N1, data.N2 = NULL, givenpi, nbin = 50, 
-          nthread = parallel::detectCores() - 1) 
+DeMixT_S2 <- function(data.Y, data.N1, data.N2 = NULL, 
+                      givenpi, nbin = 50, 
+                      nthread = parallel::detectCores() - 1) 
 {
   filter.out = TRUE
   filter.option = 1
@@ -156,15 +157,15 @@ DeMixT_S2 <- function(data.Y, data.N1, data.N2 = NULL, givenpi, nbin = 50,
 
   
   decovExprT <- res$decovExprT
-  decovExprT[which(decovExprT < 0,arr.ind = T)] <- 0
+  decovExprT[which(decovExprT < 0,arr.ind = TRUE)] <- 0
   colnames(decovExprT) <- sample.id
   row.names(decovExprT) <- gene.id
   decovExprN1 <- res$decovExprN1
-  decovExprN1[which(decovExprN1 < 0,arr.ind = T)] <- 0
+  decovExprN1[which(decovExprN1 < 0,arr.ind = TRUE)] <- 0
   colnames(decovExprN1) <- sample.id
   row.names(decovExprN1) <- gene.id
   decovExprN2 <- res$decovExprN2
-  decovExprN2[which(decovExprN2 < 0,arr.ind = T)] <- 0
+  decovExprN2[which(decovExprN2 < 0,arr.ind = TRUE)] <- 0
   colnames(decovExprN2) <- sample.id
   row.names(decovExprN2) <- gene.id
   

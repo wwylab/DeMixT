@@ -55,11 +55,11 @@
 #' @export
 #'
 #' @examples
-#' test.data = simulate_3comp(G1 = 2750, G2 = 250, My = 20, M1 = 100, M2 = 100)
+#' test.data = simulate_3comp(G1 = 675, G2 = 25, My = 20, M1 = 100, M2 = 100)
 #' test.data$pi
 #' test.data$Mu
 #' test.data$Sigma
-simulate_3comp <- function(G1 = 475, G2 = 25, My = 5, M1 = 100, M2 = 100,
+simulate_3comp <- function(G1 = 675, G2 = 25, My = 20, M1 = 100, M2 = 100,
                            output.more.info = FALSE){
   requireNamespace("truncdist", quietly=TRUE)
   requireNamespace("SummarizedExperiment", quietly=TRUE)

@@ -5,12 +5,25 @@
 \title{Deconvolution of heterogeneous tumor samples with two or three 
 components using expression data from RNAseq or microarray platforms}
 \usage{
-DeMixT(data.Y, data.N1, data.N2 = NULL, niter = 10, nbin = 50,
-  if.filter = TRUE, filter.sd = 0.5, ngene.selected.for.pi = NA,
-  mean.diff.in.CM = 0.25, nspikein = NULL,
-  gene.selection.method = "GS", ngene.Profile.selected = NA,
-  tol = 10^(-5), output.more.info = FALSE, pi01 = NULL,
-  pi02 = NULL, nthread = parallel::detectCores() - 1)
+DeMixT(
+  data.Y,
+  data.N1,
+  data.N2 = NULL,
+  niter = 10,
+  nbin = 50,
+  if.filter = TRUE,
+  filter.sd = 0.5,
+  ngene.selected.for.pi = NA,
+  mean.diff.in.CM = 0.25,
+  nspikein = NULL,
+  gene.selection.method = "GS",
+  ngene.Profile.selected = NA,
+  tol = 10^(-5),
+  output.more.info = FALSE,
+  pi01 = NULL,
+  pi02 = NULL,
+  nthread = parallel::detectCores() - 1
+)
 }
 \arguments{
 \item{data.Y}{A SummarizedExperiment object of expression data from mixed 

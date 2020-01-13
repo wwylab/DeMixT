@@ -4,8 +4,7 @@
 \alias{simulate_2comp}
 \title{Function to simulate two-component test data}
 \usage{
-simulate_2comp(G = 500, My = 100, M1 = 100,
-  output.more.info = FALSE)
+simulate_2comp(G = 500, My = 100, M1 = 100, output.more.info = FALSE)
 }
 \arguments{
 \item{G}{Number of genes for simulation.}

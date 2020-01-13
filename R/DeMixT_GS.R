@@ -2,7 +2,7 @@
 #' using profile likelihood gene selection
 #'
 #' @description This function is designed to estimate the proportions of all 
-#' mixed samplesfor each mixing component with a new proposed profile likelihood 
+#' mixed samples for each mixing component with a new proposed profile likelihood 
 #' based gene selection, which can select most identifiable genes as reference 
 #' gene sets to achieve better model fitting quality. We first calculated the
 #' Hessian matrix of the parameter spaces and then derive the confidence interval 
@@ -126,7 +126,9 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
                       tol = 10^(-5), pi01 = NULL, pi02 = NULL,
                       nthread = parallel::detectCores() - 1) {
   
-  IF_inverse <- function(m) class(try(solve(m),silent=T))=="matrix"
+  IF_inverse <- function(m){
+    return(class(try(solve(m),silent = TRUE)) == "matrix")
+  } 
   nS = ncol(data.Y)
   ## Creat a folder for saving hessian matrix
   path = getwd()
@@ -309,8 +311,8 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
     sdn.obs<-apply(log2(inputdata2[, groupid == 1]+0.001),1,sd)
     mun.obs<-rowMeans(log2(inputdata2[, groupid == 3]+0.001))
     
-    n.normal<-sum(groupid==1)
-    n.mix<-sum(groupid==3)
+    n.normal<-sum(groupid == 1)
+    n.mix<-sum(groupid == 3)
     
     res.all <- Optimum_KernelC(inputdatamat1, groupid, setting.pi = 1, 
                                nspikein = nspikein, givenpi = Pi.all, 
@@ -323,26 +325,33 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
     sdn.obs<-apply(log2(inputdatamat1[, groupid == 1]+0.001),1,sd)
     mun.obs<-rowMeans(log2(inputdatamat1[, groupid == 3]+0.001))
     
-    n.normal<-sum(groupid==1)
-    n.mix<-sum(groupid==3)
+    n.normal<-sum(groupid == 1)
+    n.mix<-sum(groupid == 3)
     
-    if(file.exists(paste0(path, '/Hessian_Matrix/', data.Y_encode,'_Hessian.RData'))){
-      load(paste0(path, '/Hessian_Matrix/', data.Y_encode,'_Hessian.RData'))
+    if(file.exists(paste0(path, '/Hessian_Matrix/', 
+                          data.Y_encode,'_Hessian.RData'))){
+      load(paste0(path, '/Hessian_Matrix/', 
+                  data.Y_encode,'_Hessian.RData'))
       message(paste0('Loading Hessian matrix from ',
-                     paste0(path, '/Hessian_Matrix/', data.Y_encode,'_Hessian.RData \n')))
+                     paste0(path, '/Hessian_Matrix/', 
+                            data.Y_encode,'_Hessian.RData \n')))
     }else{
       if(nspikein > 0){
-        Hessian <- D2Loglikelihood_2D(y=inputdatamat1[,(n.normal+1):(n.normal+n.mix-nspikein)], 
+        Hessian <- D2Loglikelihood_2D(y=inputdatamat1[,(n.normal+1):
+                                                        (n.normal+n.mix-nspikein)], 
                                       Pi=Pi.all, MuN=mun.obs, MuT=MuT.all, 
                                       SigmaN=sdn.obs, SigmaT=SigmaT.all)
       }else{
-        Hessian <- D2Loglikelihood_2D(y=inputdatamat1[,(n.normal+1):(n.normal+n.mix)], 
+        Hessian <- D2Loglikelihood_2D(y=inputdatamat1[,(n.normal+1):
+                                                        (n.normal+n.mix)], 
                                       Pi=Pi.all, MuN=mun.obs, MuT=MuT.all, 
                                       SigmaN=sdn.obs, SigmaT=SigmaT.all)
       }
-      save(Hessian, file = paste0(path, '/Hessian_Matrix/', data.Y_encode,'_Hessian.RData'))
+      save(Hessian, file = paste0(path, '/Hessian_Matrix/',
+                                  data.Y_encode,'_Hessian.RData'))
       message(paste0('Hessian matrix has been saved in ',
-                     paste0(path, '/Hessian_Matrix/', data.Y_encode,'_Hessian.RData \n')))
+                     paste0(path, '/Hessian_Matrix/', 
+                            data.Y_encode,'_Hessian.RData \n')))
     }
     
     ## Check if the Hessian matrix contains infinity

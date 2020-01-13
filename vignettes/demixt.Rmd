@@ -76,11 +76,11 @@ expensive computing time used in the repeated numerical double integrations.
 
 DeMixT source files are compatible with Windows, Linux and macOS. 
 
-DeMixT_1.3.0 is the latest version, which is for a computer that has OpenMP. 
+DeMixT_1.4.0 is the latest version, which is for a computer that has OpenMP. 
 It can be downloaded from Bioconductor website.
 https://bioconductor.org/packages/release/bioc/html/DeMixT.html
 
-To install DeMixT_1.3.0 from GitHub, start R and enter:
+To install DeMixT_1.4.0 from GitHub, start R and enter:
 
 ```{r install_DeMixT}
 # devtools::install_github("wwylab/DeMixT")
@@ -168,7 +168,7 @@ These two steps can be separately implemented using the function DeMixT_S1 or
 DeMixT_GS for the first step and DeMixT_S2 for the second, which are combined 
 in the function DeMixT(Note: DeMixT_GS is the default function for first step).
 
-In version 1.3.0, DeMixT added simulated normal reference samples, i.e., spike-in, 
+In version 1.4.0, DeMixT added simulated normal reference samples, i.e., spike-in, 
 based on the observed normal reference samples. It has been shown to improve 
 accuracy in proportion estimation for the scenario where a dataset consists of 
 samples where true tumor proportions are skewed to the high end.
@@ -354,9 +354,8 @@ where $G1$ is the number of genes that $\mu_{N1}$ is close to $\mu_{N2}$.
 
 ```{r read_data_3comp,  warning=FALSE, message=FALSE}
 data("test.data.3comp")
-# res.1 <- DeMixT(data.Y = test.data.3comp$data.Y, data.N1 = test.data.3comp$data.N1,
-#                 data.N2 = test.data.3comp$data.N2, if.filter = TRUE,
-#                 gene.selection.method = 'S1')
+# res.S1 <- DeMixT_S1(data.Y = test.data.3comp$data.Y, data.N1 = test.data.3comp$data.N1,
+#                    data.N2 = test.data.3comp$data.N2, if.filter = TRUE)
 load('Res_3comp/res.S1.RData'); 
 ```
 

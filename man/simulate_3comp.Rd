@@ -4,8 +4,14 @@
 \alias{simulate_3comp}
 \title{Function to simulate three-component mixed cell line test data}
 \usage{
-simulate_3comp(G1 = 475, G2 = 25, My = 5, M1 = 100, M2 = 100,
-  output.more.info = FALSE)
+simulate_3comp(
+  G1 = 675,
+  G2 = 25,
+  My = 20,
+  M1 = 100,
+  M2 = 100,
+  output.more.info = FALSE
+)
 }
 \arguments{
 \item{G1}{Number of genes, where \eqn{\mu_{N1}} is close to \eqn{\mu_{N2}}.}
@@ -63,7 +69,7 @@ Function to simulate three-component mixed cell line test
 data used in DeMixT function.
 }
 \examples{
-test.data = simulate_3comp(G1 = 2750, G2 = 250, My = 20, M1 = 100, M2 = 100)
+test.data = simulate_3comp(G1 = 675, G2 = 25, My = 20, M1 = 100, M2 = 100)
 test.data$pi
 test.data$Mu
 test.data$Sigma

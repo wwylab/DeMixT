@@ -49,8 +49,8 @@ output.more.info = TRUE.}
 }
 \description{
 A list of simulated three-component mixed cell line
-test data used in DeMixT function. Expression data with 3000 genes 
-and 20 samples are simulated, where 2750 genes' \eqn{MuN1} is close 
+test data used in DeMixT function. Expression data with 700 genes 
+and 20 samples are simulated, where 675 genes' \eqn{MuN1} is close 
 to \eqn{MuN2}.
 }
 \keyword{datasets}

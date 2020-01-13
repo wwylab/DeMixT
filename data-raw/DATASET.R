@@ -215,5 +215,5 @@ simulate_3comp <- function(G1 = 475, G2 = 25, My = 5, M1 = 100, M2 = 100,
   return(test.data)
 }
 set.seed(123)
-test.data.3comp = simulate_3comp(G1 = 2750, G2 = 250, My = 20, M1 = 100, M2 = 100)
+test.data.3comp = simulate_3comp(G1 = 675, G2 = 25, My = 20, M1 = 100, M2 = 100)
 usethis::use_data(test.data.3comp, compress = 'xz', overwrite = TRUE)

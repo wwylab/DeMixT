@@ -5,11 +5,23 @@
 \title{Estimates the proportions of mixed samples for each mixing component 
 using profile likelihood gene selection}
 \usage{
-DeMixT_GS(data.Y, data.N1, data.N2 = NULL, niter = 10, nbin = 50,
-  if.filter = TRUE, filter.sd = 0.5, ngene.Profile.selected = NA,
-  ngene.selected.for.pi = NA, mean.diff.in.CM = 0.25,
-  nspikein = NULL, tol = 10^(-5), pi01 = NULL, pi02 = NULL,
-  nthread = parallel::detectCores() - 1)
+DeMixT_GS(
+  data.Y,
+  data.N1,
+  data.N2 = NULL,
+  niter = 10,
+  nbin = 50,
+  if.filter = TRUE,
+  filter.sd = 0.5,
+  ngene.Profile.selected = NA,
+  ngene.selected.for.pi = NA,
+  mean.diff.in.CM = 0.25,
+  nspikein = NULL,
+  tol = 10^(-5),
+  pi01 = NULL,
+  pi02 = NULL,
+  nthread = parallel::detectCores() - 1
+)
 }
 \arguments{
 \item{data.Y}{A SummarizedExperiment object of expression data from mixed 
@@ -95,7 +107,7 @@ be automatically indexed.}
 }
 \description{
 This function is designed to estimate the proportions of all 
-mixed samplesfor each mixing component with a new proposed profile likelihood 
+mixed samples for each mixing component with a new proposed profile likelihood 
 based gene selection, which can select most identifiable genes as reference 
 gene sets to achieve better model fitting quality. We first calculated the
 Hessian matrix of the parameter spaces and then derive the confidence interval 

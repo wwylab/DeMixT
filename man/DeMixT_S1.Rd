@@ -4,10 +4,22 @@
 \alias{DeMixT_S1}
 \title{Estimates the proportions of mixed samples for each mixing component}
 \usage{
-DeMixT_S1(data.Y, data.N1, data.N2 = NULL, niter = 10, nbin = 50,
-  if.filter = TRUE, filter.sd = 0.5, ngene.selected.for.pi = NA,
-  nspikein = NULL, mean.diff.in.CM = 0.25, tol = 10^(-5),
-  pi01 = NULL, pi02 = NULL, nthread = parallel::detectCores() - 1)
+DeMixT_S1(
+  data.Y,
+  data.N1,
+  data.N2 = NULL,
+  niter = 10,
+  nbin = 50,
+  if.filter = TRUE,
+  filter.sd = 0.5,
+  ngene.selected.for.pi = NA,
+  nspikein = NULL,
+  mean.diff.in.CM = 0.25,
+  tol = 10^(-5),
+  pi01 = NULL,
+  pi02 = NULL,
+  nthread = parallel::detectCores() - 1
+)
 }
 \arguments{
 \item{data.Y}{A SummarizedExperiment object of expression data from mixed 

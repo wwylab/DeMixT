@@ -4,8 +4,14 @@
 \alias{DeMixT_S2}
 \title{Deconvolves expressions of each individual sample for unknown component}
 \usage{
-DeMixT_S2(data.Y, data.N1, data.N2 = NULL, givenpi, nbin = 50,
-  nthread = parallel::detectCores() - 1)
+DeMixT_S2(
+  data.Y,
+  data.N1,
+  data.N2 = NULL,
+  givenpi,
+  nbin = 50,
+  nthread = parallel::detectCores() - 1
+)
 }
 \arguments{
 \item{data.Y}{A SummarizedExperiment object of expression data from mixed 
