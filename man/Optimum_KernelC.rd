@@ -122,16 +122,16 @@ gene expression profile of all components.
 }
 \examples{
 # Example 1: simulated two-component data
-data(test.data.2comp)
-data.N1 <- SummarizedExperiment::assays(test.data.2comp$data.N1)[[1]]
-data.Y <- SummarizedExperiment::assays(test.data.2comp$data.Y)[[1]]
-inputdata <- cbind(data.N1, data.Y)
-groupid <- c(rep(1, ncol(data.N1)), rep(3, ncol(data.Y)))
-nspikein <- 0
-Optimum_KernelC(inputdata, groupid, 
-                nspikein = nspikein, setting.pi = 0, 
-                givenpi = rep(0, 2 * ncol(data.y)), 
-                niter = 10, ninteg = 30, tol = 10^(-4))
+  data(test.data.2comp)
+# data.N1 <- SummarizedExperiment::assays(test.data.2comp$data.N1)[[1]]
+# data.Y <- SummarizedExperiment::assays(test.data.2comp$data.Y)[[1]]
+# inputdata <- cbind(data.N1, data.Y)
+# groupid <- c(rep(1, ncol(data.N1)), rep(3, ncol(data.Y)))
+# nspikein <- 0
+# Optimum_KernelC(inputdata, groupid, 
+#                 nspikein = nspikein, setting.pi = 0, 
+#                 givenpi = rep(0, 2 * ncol(data.y)), 
+#                 niter = 10, ninteg = 30, tol = 10^(-4))
                 
 }
 \references{

@@ -67,14 +67,14 @@ of individual mixed tumor samples for unknown component for each gene.
 }
 \examples{
 # Example 1: two-component deconvolution given proportions 
-data(test.data.2comp)
-givenpi <- c(t(as.matrix(test.data.2comp$pi[-2,])))
-res.S2 <- DeMixT_S2(data.Y = test.data.2comp$data.Y, 
-                    data.N1 = test.data.2comp$data.N1,
-                    data.N2 = NULL, 
-                    givenpi = givenpi, 
-                    nbin = 50)
-                 
+  data(test.data.2comp)
+  givenpi <- c(t(as.matrix(test.data.2comp$pi[-2,])))
+  res.S2 <- DeMixT_S2(data.Y = test.data.2comp$data.Y, 
+                      data.N1 = test.data.2comp$data.N1,
+                      data.N2 = NULL, 
+                      givenpi = givenpi, 
+                      nbin = 50)
+#                  
 # Example 2: three-component deconvolution given proportions 
 # data(test.data.3comp)
 # givenpi = c(t(test.data.3comp$pi[-3,])) 

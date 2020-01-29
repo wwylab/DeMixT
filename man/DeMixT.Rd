@@ -138,20 +138,20 @@ data from a mixture of two or three components.
 }
 \examples{
 # Example 1: simulated two-component data by using GS(gene selection method)
-data(test.data.2comp)
-res <- DeMixT(data.Y = test.data.2comp$data.Y, 
-              data.N1 = test.data.2comp$data.N1, 
-              data.N2 = NULL, nspikein = 50, 
-              gene.selection.method = 'GS',
-              niter = 10, nbin = 50, if.filter = TRUE, 
-              ngene.selected.for.pi = 150,
-              mean.diff.in.CM = 0.25, tol = 10^(-5))
-res$pi
-head(res$ExprT, 3)
-head(res$ExprN1, 3)
-head(res$Mu, 3)
-head(res$Sigma, 3)
-
+  data(test.data.2comp)
+# res <- DeMixT(data.Y = test.data.2comp$data.Y, 
+#               data.N1 = test.data.2comp$data.N1, 
+#               data.N2 = NULL, nspikein = 50, 
+#               gene.selection.method = 'GS',
+#               niter = 10, nbin = 50, if.filter = TRUE, 
+#               ngene.selected.for.pi = 150,
+#               mean.diff.in.CM = 0.25, tol = 10^(-5))
+# res$pi
+# head(res$ExprT, 3)
+# head(res$ExprN1, 3)
+# head(res$Mu, 3)
+# head(res$Sigma, 3)
+# 
 # Example 2: simulated two-component data by using S1(gene selection method)
 # data(test.data.2comp)
 # res <- DeMixT(data.Y = test.data.2comp$data.Y,
