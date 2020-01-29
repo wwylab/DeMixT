@@ -75,14 +75,14 @@
 #' @examples
 #' # Example 1: estimate proportions for simulated two-component data 
 #' # with spike-in normal reference
-#' data(test.data.2comp)
-#' res.S1 = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
-#'                    data.N1 = test.data.2comp$data.N1,
-#'                    niter = 10, nbin = 50, nspikein = 50,
-#'                    if.filter = TRUE, 
-#'                    mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
-#'                    tol = 10^(-5))
-#' 
+#'   data(test.data.2comp)
+#' # res.S1 = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+#' #                    data.N1 = test.data.2comp$data.N1,
+#' #                    niter = 10, nbin = 50, nspikein = 50,
+#' #                    if.filter = TRUE, 
+#' #                    mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
+#' #                    tol = 10^(-5))
+#' #
 #' # Example 2: estimate proportions for simulated two-component data 
 #' # without spike-in normal reference
 #' # data(test.data.2comp)

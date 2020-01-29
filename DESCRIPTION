@@ -2,7 +2,7 @@ Package: DeMixT
 Title: Cell type-specific deconvolution of heterogeneous tumor samples with two or three 
        components using expression data from RNAseq or microarray platforms
 Version: 1.2.3
-Date: 2020-01-28
+Date: 2020-01-06
 Author: Zeya Wang <zw17.rice@gmail.com>, Shaolong
         Cao<scao@mdanderson.org>, Wenyi Wang <wwang7@@mdanderson.org>
 Maintainer: Shaolong Cao<scao@mdanderson.org>, Peng Yang <pyang7@mdanderson.org>
@@ -10,7 +10,7 @@ Description: DeMixT is a software package that performs deconvolution on transcr
              data from a mixture of two or three components.
 LazyData: TRUE
 Depends: R (>= 3.6.0), parallel, Rcpp (>= 1.0.0), SummarizedExperiment,
-        knitr, KernSmooth
+        knitr, KernSmooth, matrixcalc
 Imports: matrixStats, stats, truncdist, base64enc, ggplot2
 LinkingTo: Rcpp
 NeedsCompilation: yes

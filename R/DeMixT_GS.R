@@ -92,14 +92,14 @@
 #' 
 #' # Example 1: estimate proportions for simulated two-component data 
 #' # with spike-in normal reference
-#' data(test.data.2comp)
-#' res.GS = DeMixT_GS(data.Y = test.data.2comp$data.Y, 
-#'                    data.N1 = test.data.2comp$data.N1,
-#'                    niter = 10, nbin = 50, nspikein = 50,
-#'                    if.filter = TRUE, ngene.Profile.selected = 150,
-#'                    mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
-#'                    tol = 10^(-5))
-#' 
+#'   data(test.data.2comp)
+#' # res.GS = DeMixT_GS(data.Y = test.data.2comp$data.Y, 
+#' #                    data.N1 = test.data.2comp$data.N1,
+#' #                    niter = 10, nbin = 50, nspikein = 50,
+#' #                    if.filter = TRUE, ngene.Profile.selected = 150,
+#' #                    mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
+#' #                    tol = 10^(-5))
+#' #
 #' # Example 2: estimate proportions for simulated two-component data 
 #' # without spike-in normal reference
 #' # data(test.dtat.2comp)
@@ -127,7 +127,7 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
                       nthread = parallel::detectCores() - 1) {
   
   IF_inverse <- function(m){
-    return(class(try(solve(m),silent = TRUE)) == "matrix")
+    return(matrixcalc::is.singular.matrix(m))
   } 
   nS = ncol(data.Y)
   ## Creat a folder for saving hessian matrix
