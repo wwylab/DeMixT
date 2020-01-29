@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{DeMixT}}
 
-\section{Version 1.3.0}{
+\section{Version 1.2.3}{
 \itemize{
 \item
 Added pi01 and pi02 as input values for users to initialize the
