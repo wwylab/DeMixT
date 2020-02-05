@@ -309,7 +309,7 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
     MuT.S1 <- as.numeric(res.S1$decovMu[,dim(res.S1$decovMu)[2]])
     SigmaT.S1 <- as.numeric(res.S1$decovSigma[,dim(res.S1$decovMu)[2]])
     sdn.obs<-apply(log2(inputdata2[, groupid == 1]+0.001),1,sd)
-    mun.obs<-rowMeans(log2(inputdata2[, groupid == 3]+0.001))
+    mun.obs<-rowMeans(log2(inputdata2[, groupid == 1]+0.001))
     
     n.normal<-sum(groupid == 1)
     n.mix<-sum(groupid == 3)
@@ -323,7 +323,7 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
     MuT.all <- as.numeric(res.all$decovMu[,dim(res.all$decovMu)[2]])
     SigmaT.all <- as.numeric(res.all$decovSigma[,dim(res.all$decovMu)[2]])
     sdn.obs<-apply(log2(inputdatamat1[, groupid == 1]+0.001),1,sd)
-    mun.obs<-rowMeans(log2(inputdatamat1[, groupid == 3]+0.001))
+    mun.obs<-rowMeans(log2(inputdatamat1[, groupid == 1]+0.001))
     
     n.normal<-sum(groupid == 1)
     n.mix<-sum(groupid == 3)
