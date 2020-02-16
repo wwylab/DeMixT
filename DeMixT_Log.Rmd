@@ -7,6 +7,16 @@ header-includes: \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 # DeMixT Log
 Cell type-specific deconvolution of heterogeneous tumor samples with two or three components using expression data from RNAseq or microarray platforms.
 
+## Update from version 1.2.4 to 1.2.5
+
+Error appears if the number of genes is not mutiplied by 10.
+````markdown
+ngene.Profile.selected<-min(1500, 0.3*nrow(data.Y))
+````
+````markdown
+ngene.Profile.selected<-min(1500, round(0.3*nrow(data.Y)))
+````
+
 
 ## Update from version 1.2.3 to 1.2.4
 

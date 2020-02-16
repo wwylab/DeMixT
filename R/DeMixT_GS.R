@@ -127,9 +127,8 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
                       nthread = parallel::detectCores() - 1) {
   
   IF_inverse <- function(m){
-    return(matrixcalc::is.singular.matrix(m))
+    return(class(try(solve(m),silent=T))=="matrix")
   } 
-  nS = ncol(data.Y)
   ## Creat a folder for saving hessian matrix
   path = getwd()
   if (!file.exists(paste0(path,'/Hessian_Matrix'))){
@@ -138,6 +137,7 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
   ## Transfering data format
   data.Y <- SummarizedExperiment::assays(data.Y)[[1]]
   data.N1 <- SummarizedExperiment::assays(data.N1)[[1]]
+  nS = ncol(data.Y)
   ## Encode data.Y for hessian matrix
   if(nS > 10){
     data.Y_encode = base64encode(log2(as.matrix(data.Y)[1, 1:10] + 1))
@@ -150,7 +150,7 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
     nspikein = 0
   }
   if (is.na(ngene.selected.for.pi)){
-    ngene.selected.for.pi = min(1500, 0.3*ncol(data.Y))
+    ngene.selected.for.pi = min(1500, round(0.3*nrow(data.Y)))
   } 
   ## Generate Spike-in normal reference 
   if (is.null(nspikein)) nspikein = min(200, ceiling(ncol(data.Y)*0.3))
@@ -196,7 +196,7 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
   ## Create the default value for ngene.Profile.selected
   filter.option = 1
   if(is.na(ngene.Profile.selected)){
-    ngene.Profile.selected<-min(1500,0.3*nrow(data.Y))
+    ngene.Profile.selected<-min(1500, round(0.3*nrow(data.Y)))
   }
   
   ## filter.option: 1 - remove genes containing zero; 2 - add 1 to to kill zeros
@@ -383,21 +383,19 @@ DeMixT_GS <- function(data.Y, data.N1, data.N2 = NULL,
       }else{
         theta.valid <- x_update_2D(Pi.all, MuT.all, SigmaT.all, S, G)
       }
-      CI.upper <- theta.valid + qnorm(0.975)*sqrt(abs(C))
+      CI.upper <- theta.valid + sqrt(abs(qchisq(0.95,1)*C))
       CI.upper.MuT <- x_update_inv_2D(CI.upper,S,G)$MuT
       CI.upper.SigmaT <- x_update_inv_2D(CI.upper,S,G)$SigmaT
-      CI.lower <- theta.valid - qnorm(0.975)*sqrt(abs(C))
+      CI.lower <- theta.valid - sqrt(abs(qchisq(0.95,1)*C))
       CI.lower.MuT <- x_update_inv_2D(CI.lower,S,G)$MuT
       CI.lower.SigmaT <- x_update_inv_2D(CI.lower,S,G)$SigmaT
       
-      id.SigmaT.CI <- order(CI.upper.SigmaT-CI.lower.SigmaT)
-      id.MuT.CI <- order(CI.upper.MuT-CI.lower.MuT)
-      id1.ID <- order(CI.upper.MuT-CI.lower.MuT + 
-                        CI.upper.SigmaT-CI.lower.SigmaT)
+      id1.ID <- order(CI.upper.MuT-CI.lower.MuT)
       
       id2 <- id1.ID[1:min(ngene.Profile.selected, length(id1.ID))]
       inputmat<-inputdatamat1[id2,]
       
+      pi01 = Pi.all; pi02 = PiT.all;
       res <- Optimum_KernelC(inputmat, groupid, setting.pi = 0, 
                              nspikein = nspikein, 
                              givenpi = rep(0, 2 * n.mix), 

@@ -119,7 +119,7 @@ DeMixT_S1 <- function (data.Y, data.N1, data.N2 = NULL, niter = 10,
   data.Y <- SummarizedExperiment::assays(data.Y)[[1]]
   data.N1 <- SummarizedExperiment::assays(data.N1)[[1]]
   if (is.na(ngene.selected.for.pi)){
-    ngene.selected.for.pi = min(1500, 0.3*ncol(data.Y))
+    ngene.selected.for.pi = min(1500, round(0.3*nrow(data.Y)))
   } 
   nS = ncol(data.Y)
   ## Generate Spike-in normal reference 

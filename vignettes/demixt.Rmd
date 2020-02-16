@@ -76,11 +76,11 @@ expensive computing time used in the repeated numerical double integrations.
 
 DeMixT source files are compatible with Windows, Linux and macOS. 
 
-DeMixT_1.2.4 is the latest version, which is for a computer that has OpenMP. 
+DeMixT_1.2.5 is the latest version, which is for a computer that has OpenMP. 
 It can be downloaded from Bioconductor website.
 https://bioconductor.org/packages/release/bioc/html/DeMixT.html
 
-To install DeMixT_1.2.4 from GitHub, start R and enter:
+To install DeMixT_1.2.5 from GitHub, start R and enter:
 
 ```{r install_DeMixT}
 # devtools::install_github("wwylab/DeMixT")
@@ -168,7 +168,7 @@ These two steps can be separately implemented using the function DeMixT_S1 or
 DeMixT_GS for the first step and DeMixT_S2 for the second, which are combined 
 in the function DeMixT(Note: DeMixT_GS is the default function for first step).
 
-In version 1.2.4, DeMixT added simulated normal reference samples, i.e., spike-in, 
+In version 1.2.5, DeMixT added simulated normal reference samples, i.e., spike-in, 
 based on the observed normal reference samples. It has been shown to improve 
 accuracy in proportion estimation for the scenario where a dataset consists of 
 samples where true tumor proportions are skewed to the high end.
