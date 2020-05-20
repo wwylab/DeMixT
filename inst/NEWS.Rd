@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{DeMixT}}
 
+\section{Version 1.4.0}{
+\itemize{
+\item
+Disabled OpenMP under R 4.0.0 for Mac OS platform.
+}}
+
 \section{Version 1.2.5}{
 \itemize{
 \item

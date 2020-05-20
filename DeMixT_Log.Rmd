@@ -7,6 +7,10 @@ header-includes: \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 # DeMixT Log
 Cell type-specific deconvolution of heterogeneous tumor samples with two or three components using expression data from RNAseq or microarray platforms.
 
+## Update from version 1.2.5 to 1.4.0
+
+Disabled OpenMP under R 4.0.0 for Mac OS platform.
+
 ## Update from version 1.2.4 to 1.2.5
 
 Error appears if the number of genes is not mutiplied by 10.
