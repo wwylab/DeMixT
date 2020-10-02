@@ -1,6 +1,6 @@
 Transcriptomic deconvolution in cancer and other heterogeneous tissues remains challenging. Available methods lack the ability to estimate both component-specific proportions and expression profiles for individual samples. We present DeMixT, a new tool to deconvolve high dimensional data from mixtures of more than two components. DeMixT implements an iterated conditional mode algorithm and a novel gene-set-based component merging approach to improve accuracy. In a series of experimental validation studies and application to TCGA data, DeMixT showed high accuracy. Improved deconvolution is an important step towards linking tumor transcriptomic data with clinical outcomes. An R package, scripts and data are available. The latest version is DeMixT 1.4.0, also available from Bioconductor.
 
-# DeMixT 1.6.0 is upcoming with the following changes:
+# DeMixT 1.6.0 is upcoming (mid Oct) with the following changes:
 MPI for parallel computing under R 4.0.0 for linux, windows and Mac OS platforms. Gene expression data of normal tissues (Lung, Prostate and Thyroid) from the GTEx study and the deconvolution pipepine on github.
 
 # DeMixT
