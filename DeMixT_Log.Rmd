@@ -7,6 +7,13 @@ header-includes: \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 # DeMixT Log
 Cell type-specific deconvolution of heterogeneous tumor samples with two or three components using expression data from RNAseq or microarray platforms.
 
+## Update from version 1.4.0 to 1.6.0
+
+Raw count data for selected normal tissues (lung, prostate and thyroid) obtained from the GTEx study are provided on github (wwylab/DeMixTallmaterials/Data/Reference_profile data_from_the GTEx_study/)
+
+Rename DeMixT_S1 function to DeMixT_DE.
+
+
 ## Update from version 1.2.5 to 1.4.0
 
 Disabled OpenMP under R 4.0.0 for Mac OS platform.

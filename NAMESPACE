@@ -1,6 +1,6 @@
 useDynLib(DeMixT, .registration = TRUE)
 export(DeMixT)
-export(DeMixT_S1)
+export(DeMixT_DE)
 export(DeMixT_S2)
 export(DeMixT_GS)
 export(simulate_2comp)

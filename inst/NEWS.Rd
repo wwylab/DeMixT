@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{DeMixT}}
 
+\section{Version 1.6.0}{
+\itemize{
+\item
+Raw count data for selected normal tissues (lung, prostate and thyroid) obtained from the GTEx study are provided on github (wwylab/DeMixTallmaterials/Data/Reference_profile data_from_the GTEx_study/)
+\item
+Rename DeMixT_S1 function to DeMixT_DE.
+}}
+
 \section{Version 1.4.0}{
 \itemize{
 \item

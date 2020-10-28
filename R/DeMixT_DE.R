@@ -32,7 +32,7 @@
 #' @param ngene.selected.for.pi The percentage or the number of genes used for
 #' proportion estimation. The difference between the expression levels from
 #' mixed tumor samples and the known component(s) are evaluated, and the most
-#' differential expressed genes are selected, which is called S1. It is enabled
+#' differential expressed genes are selected, which is called DE. It is enabled
 #' when if.filter = TRUE. The default is \eqn{min(1500, 0.3*My)}, where
 #' \eqn{My} is the number of mixed sample. Users can also try using more genes,
 #' ranging from \eqn{0.3*My} to \eqn{0.5*My}, and evaluate the outcome.
@@ -76,7 +76,7 @@
 #' # Example 1: estimate proportions for simulated two-component data 
 #' # with spike-in normal reference
 #'   data(test.data.2comp)
-#' # res.S1 = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+#' # res.DE = DeMixT_DE(data.Y = test.data.2comp$data.Y, 
 #' #                    data.N1 = test.data.2comp$data.N1,
 #' #                    niter = 10, nbin = 50, nspikein = 50,
 #' #                    if.filter = TRUE, 
@@ -86,7 +86,7 @@
 #' # Example 2: estimate proportions for simulated two-component data 
 #' # without spike-in normal reference
 #' # data(test.data.2comp)
-#' # res.S1 = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+#' # res.DE = DeMixT_DE(data.Y = test.data.2comp$data.Y, 
 #' #                    data.N1 = test.data.2comp$data.N1,
 #' #                    niter = 10, nbin = 50, nspikein = 0,
 #' #                    if.filter = TRUE, 
@@ -96,7 +96,7 @@
 #' # Example 3: estimate proportions for simulated three-component 
 #' # mixed cell line data 
 #' # data(test.data.3comp)
-#' # res.S1 <- DeMixT_S1(data.Y = test.data.3comp$data.Y,
+#' # res.DE <- DeMixT_DE(data.Y = test.data.3comp$data.Y,
 #' #                     data.N1 = test.data.3comp$data.N1,
 #' #                     data.N2 = test.data.3comp$data.N2, 
 #' #                     if.filter = TRUE)
@@ -104,10 +104,10 @@
 #' @references Wang Z, Cao S, Morris J S, et al. Transcriptome Deconvolution of 
 #' Heterogeneous Tumor Samples with Immune Infiltration. iScience, 2018, 9: 451-460.
 #' 
-#' @keywords DeMixT_S1
+#' @keywords DeMixT_DE
 #' 
 #' @export 
-DeMixT_S1 <- function (data.Y, data.N1, data.N2 = NULL, niter = 10, 
+DeMixT_DE <- function (data.Y, data.N1, data.N2 = NULL, niter = 10, 
                        nbin = 50, if.filter = TRUE, filter.sd = 0.5,
                        ngene.selected.for.pi = NA, nspikein = NULL,
                        mean.diff.in.CM = 0.25, tol = 10^(-5),

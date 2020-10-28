@@ -42,7 +42,7 @@
 #' @param ngene.selected.for.pi The percentage or the number of genes used for
 #' proportion estimation. The difference between the expression levels from
 #' mixed tumor samples and the known component(s) are evaluated, and the most
-#' differential expressed genes are selected, which is called S1. It is enabled
+#' differential expressed genes are selected, which is called DE. It is enabled
 #' when if.filter = TRUE. The default is \eqn{min(1500, 0.3*My)}, where
 #' \eqn{My} is the number of mixed sample. Users can also try using more genes,
 #' ranging from \eqn{0.3*My} to \eqn{0.5*My}, and evaluate the outcome.

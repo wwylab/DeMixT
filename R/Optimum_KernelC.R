@@ -1,6 +1,6 @@
 #' @title Kernel function for optimizing parameters and hidden variables in DeMixT
 #' 
-#' @description This function is invoked by DeMixT_GS or DeMixT_S1 and DeMixT_S2 to 
+#' @description This function is invoked by DeMixT_GS or DeMixT_DE and DeMixT_S2 to 
 #' finish parameter estimation by iterated conditional mode algorithm and reconstitute
 #' gene expression profile of all components.
 #'

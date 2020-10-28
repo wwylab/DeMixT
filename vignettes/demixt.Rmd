@@ -13,7 +13,51 @@ vignette: >
 ```{r setup, include=FALSE, message=FALSE}
 library(ggplot2)
 library(DeMixT)
-# knitr::opts_chunk$set(echo = TRUE)
+plot.PCA =function(indata, batch, figure.dir, PCA.fig.title, legend.position = 'bottomleft',
+                   label = FALSE, xlimit = NULL, ofile=TRUE, lines = TRUE) {
+# data is a data matrix with samples in columns and genes in rows.
+# batch is a vector with the order matching the order in indata.
+    #batch=as.numeric(batch)
+    N.batch = length(unique(batch))
+    if(file.exists(paste0('Batch_Effect/', PCA.fig.title, '.RData'))){
+      load(paste0('Batch_Effect/', PCA.fig.title, '.RData'))
+    }else{
+      pca <- SamplePCA(indata, usecor=F, center=T)
+      save(pca, file = paste0('Batch_Effect/', PCA.fig.title, '.RData'))
+    }
+    pct1 <- round (pca@variances[1]/sum(pca@variances), digits=3)*100
+    pct2 <- round (pca@variances[2]/sum(pca@variances), digits=3)*100
+    xlab.text = paste("First Comp: ", as.character(pct1), "% variance", sep="")
+    ylab.text = paste("Second Comp: ", as.character(pct2), "% variance", sep="")    
+    
+    #jpeg(file=file.path(figure.dir, paste("PCA_", PCA.fig.title, ".jpeg", sep="")), width = 600, height = 600, quality=100, pointsize=16)
+    if(ofile) pdf(file=file.path(figure.dir, paste("PCA_", PCA.fig.title, ".pdf", sep="")))
+    plot(pca@scores[,1], pca@scores[,2],  cex=1, xlab=xlab.text, ylab=ylab.text, col=rainbow(N.batch)[as.numeric(factor(batch))],
+    pch=as.numeric(factor((batch))),lwd=1.5, main=PCA.fig.title)
+    if(label == TRUE) {
+      library(calibrate)
+      textxy(pca@scores[,1], pca@scores[,2],colnames(indata), cex=0.75)
+    }
+    abline(h=0, v=0, col="brown", lty=2)
+    abline(h=0, v=0, col="brown", lty=2)
+    center1<-tapply(pca@scores[,1], factor(batch), mean)
+    center2<-tapply(pca@scores[,2], factor(batch), mean)
+    if(lines){
+      for (ii in 1:length(center1)) {
+        groupi<-pca@scores[as.numeric(factor(batch))==ii, 1:2]
+        if (class(groupi)=="matrix") {
+            for (j in (1:nrow(groupi))) {
+                segments( groupi[j,1], groupi[j,2], center1[ii], center2[ii], col=rainbow(N.batch)[ii] , lwd=0.3)
+            }
+        }else {
+            segments( groupi[1], groupi[2], center1[ii], center2[ii], col=rainbow(N.batch)[ii] , lwd=0.3)
+        }
+       }
+    }
+    points(center1, center2, pch=7, lwd=1.5,col=rainbow(N.batch))
+    legend(legend.position,legend=names(table(factor(batch))), text.col=rainbow(N.batch), pch=1:8, col=rainbow(N.batch), lty=1)
+   if(ofile) invisible(dev.off())
+}
 ```
 
 # 1. Introduction
@@ -36,7 +80,7 @@ The function DeMixT is designed to finish the whole pipeline of deconvolution
 for two or three components. The newly added DeMixT_GS function is designed to 
 estimates the proportions of mixed samples for each mixing component based on a 
 new approach to select genes more effectively that utilizes profile likelihood. 
-DeMixT_S1 function is designed to estimate the proportions of all mixed samples 
+DeMixT_DE function is designed to estimate the proportions of all mixed samples 
 for each mixing component based on the gene differential expressions to select 
 genes. DeMixT_S2 function is designed to estimate the component-specific
 deconvolved expressions of individual mixed samples for a given set of genes.
@@ -65,10 +109,11 @@ a novel gene-set-based component merging approach to reduce the bias of
 proportion estimation for three-component deconvolutionthe. 
 
 
-**Parallel computing**: OpenMP enables parallel computing on single computer by 
-taking advantage of the multiple cores shipped on modern CPUs. The ICM 
-framework further enables parallel computing, which helps compensate for the 
-expensive computing time used in the repeated numerical double integrations. 
+**Parallel computing**: OpenMP enable parallel computing on single 
+computer by taking advantage of the multiple cores shipped on modern CPUs. 
+The ICM framework further enables parallel computing, which helps compensate 
+for the expensive computing time used in the repeated numerical double 
+integrations. 
 
 # 3. Installation
 
@@ -76,11 +121,11 @@ expensive computing time used in the repeated numerical double integrations.
 
 DeMixT source files are compatible with Windows, Linux and macOS. 
 
-DeMixT_1.2.5 is the latest version, which is for a computer that has OpenMP. 
+DeMixT_1.6.0 is the latest version, which is for a computer that has OpenMP. 
 It can be downloaded from Bioconductor website.
 https://bioconductor.org/packages/release/bioc/html/DeMixT.html
 
-To install DeMixT_1.2.5 from GitHub, start R and enter:
+To install DeMixT_1.6.0 from GitHub, start R and enter:
 
 ```{r install_DeMixT}
 # devtools::install_github("wwylab/DeMixT")
@@ -98,7 +143,7 @@ Table Header  | Second Header
 ------- | ----------------------------------
 DeMixT | Deconvolution of tumor samples with two or three components 
 DeMixT_GS | Estimates the proportions of mixed samples for each mixing component based on a new approach to select genes that utilizes profile likelihood 
-DeMixT_S1 | Estimates the proportions of mixed samples for each mixing component
+DeMixT_DE | Estimates the proportions of mixed samples for each mixing component
 DeMixT_S2 |Deconvolves expressions of each  sample for unknown component
 Optimum_KernelC | Call the C function used for parameter estimation in DeMixT
 
@@ -164,11 +209,11 @@ n_{2,ig}\}\) that maximizes the joint density of \(N_{1,ig}\), \(N_{2,ig}\) and
 \(T_{ig}\). The value of \(t_{ig}\) is solved as \({y_{ig}} - 
 {{\hat \pi }_{1,i}}{n_{1,ig}} - {{\hat \pi }_{2,i}}{n_{2,ig}}\).
 
-These two steps can be separately implemented using the function DeMixT_S1 or 
+These two steps can be separately implemented using the function DeMixT_DE or 
 DeMixT_GS for the first step and DeMixT_S2 for the second, which are combined 
 in the function DeMixT(Note: DeMixT_GS is the default function for first step).
 
-In version 1.2.5, DeMixT added simulated normal reference samples, i.e., spike-in, 
+In version 1.6.0, DeMixT added simulated normal reference samples, i.e., spike-in, 
 based on the observed normal reference samples. It has been shown to improve 
 accuracy in proportion estimation for the scenario where a dataset consists of 
 samples where true tumor proportions are skewed to the high end.
@@ -249,22 +294,22 @@ In the simulation,
 where $\pi_i \in (0.25, 0.95)$ is from truncated normal distribution. In general, the true distribution of tumor proportion does not follow a uniform distribution between $[0,1]$, but instead skewed to the upper part of the interval.
 
 ```{r read_data_2comp,  warning=FALSE, message=FALSE}
-# ## DeMixT_S1 without Spike-in Normal
-# res.S1 = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+# ## DeMixT_DE without Spike-in Normal
+# res.S1 = DeMixT_DE(data.Y = test.data.2comp$data.Y, 
 #                    data.N1 = test.data.2comp$data.N1,
 #                    niter = 30, nbin = 50, nspikein = 0,
 #                    if.filter = TRUE, 
 #                    mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
 #                    tol = 10^(-5))
-# ## DeMixT_S1 with Spike-in Normal
-# res.S1.SP = DeMixT_S1(data.Y = test.data.2comp$data.Y, 
+# ## DeMixT_DE with Spike-in Normal
+# res.S1.SP = DeMixT_DE(data.Y = test.data.2comp$data.Y, 
 #                      data.N1 = test.data.2comp$data.N1,
 #                      niter = 30, nbin = 50, nspikein = 50,
 #                      if.filter = TRUE, 
 #                      mean.diff.in.CM = 0.25, ngene.selected.for.pi = 150,
 #                      tol = 10^(-5))
 # ## DeMixT_GS with Spike-in Normal
-# res.GS.SP = DeMixT_GS(data.Y = test.data.2comp$data.Y, 
+# res.GS.SP = DeMixT_GS(data.Y = test.data.2comp$data.Y,
 #                      data.N1 = test.data.2comp$data.N1,
 #                      niter = 30, nbin = 50, nspikein = 50,
 #                      if.filter = TRUE, ngene.Profile.selected = 150,
@@ -278,7 +323,7 @@ This simulation was designed to compare previous DeMixT resutls with DeMixT spik
 ```{r sim_2comp, fig.height = 4, fig.width = 6, fig.align='center', warning=FALSE} 
 res.2comp = as.data.frame(cbind(round(rep(t(test.data.2comp$pi[2,]),3),2), 
                                 round(c(t(res.S1$pi[2,]),t(res.S1.SP$pi[2,]), t(res.GS.SP$pi[2,])),2),
-                                rep(c('S1','S1-SP','GS-SP'), each = 100)), num = 1:2)
+                                rep(c('DE','DE-SP','GS-SP'), each = 100)), num = 1:2)
 res.2comp$V1 <- as.numeric(as.character(res.2comp$V1))
 res.2comp$V2 <- as.numeric(as.character(res.2comp$V2))
 res.2comp$V3 = as.factor(res.2comp$V3)
@@ -354,7 +399,7 @@ where $G1$ is the number of genes that $\mu_{N1}$ is close to $\mu_{N2}$.
 
 ```{r read_data_3comp,  warning=FALSE, message=FALSE}
 data("test.data.3comp")
-# res.S1 <- DeMixT_S1(data.Y = test.data.3comp$data.Y, data.N1 = test.data.3comp$data.N1,
+# res.S1 <- DeMixT_DE(data.Y = test.data.3comp$data.Y, data.N1 = test.data.3comp$data.N1,
 #                    data.N2 = test.data.3comp$data.N2, if.filter = TRUE)
 load('Res_3comp/res.S1.RData'); 
 ```
@@ -398,6 +443,31 @@ ggplot(res.PRAD.df, aes(x=Estimated.Proportion, y=Estimated.Proportion.SP)) +
   labs(x = 'Estimated Proportion', y = 'Estimated Proportion After Spike-in')  
 ```
 Tumor proportion estimation remains consistence with and without spike-in normal, when its distribution is roughly symmetric around 0.5.
+
+
+## 5.5 Deconvolution using normal reference samples from GTEx
+
+We conducted experiments across cancer types to evaluate the impact of technical artifacts such as batch effects to the proportion estimation when using a different cohort. We applied GTEx expression data from normal prostate samples as the normal reference to deconvolute the TCGA prostate cancer samples, where normal tissues were selected without significant pathology. The estimated proportions showed a reasonable correlation (Spearman correlation coefficient = 0.65) with those generated using TCGA normal prostate samples as the normal reference.
+
+````markdown
+## Deconvolute TCGA prostate cancer samples from GTEx normal samples
+res.GS.GTEx = DeMixT_GS(data.Y = TCGA_PRAD_Tumor,
+                        data.N1 = GTEx_PRAD_Normal,
+                        niter = 50, nbin = 50, nspikein = 49, filter.sd = 0.6,
+                        if.filter = TRUE, ngene.Profile.selected = 1500,
+                        mean.diff.in.CM = 0.25, ngene.selected.for.pi = 1500,
+                        tol = 10^(-5))
+## Deconvolute TCGA prostate cancer samples from TCGA normal samples
+res.GS.TCGA = DeMixT_GS(data.Y = TCGA_PRAD_Tumor,
+                        data.N1 = TCGA_PRAD_Normal,
+                        niter = 50, nbin = 50, nspikein = 49, filter.sd = 0.6,
+                        if.filter = TRUE, ngene.Profile.selected = 1500,
+                        mean.diff.in.CM = 0.25, ngene.selected.for.pi = 1500,
+                        tol = 10^(-5))                 
+````
+```{r GTEx, echo=FALSE, out.width='65%', fig.align='center'}
+knitr::include_graphics(path = paste0("GTEx_normal.png"))
+```
 
 
 # 6. Session Info 

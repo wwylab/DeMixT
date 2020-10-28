@@ -116,7 +116,7 @@ iteration, where \eqn{I} is the number of iteration, for the second
 known component.}
 }
 \description{
-This function is invoked by DeMixT_GS or DeMixT_S1 and DeMixT_S2 to 
+This function is invoked by DeMixT_GS or DeMixT_DE and DeMixT_S2 to 
 finish parameter estimation by iterated conditional mode algorithm and reconstitute
 gene expression profile of all components.
 }

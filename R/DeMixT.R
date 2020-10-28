@@ -32,7 +32,7 @@
 #' @param ngene.selected.for.pi The percentage or the number of genes used for
 #' proportion estimation. The difference between the expression levels from
 #' mixed tumor samples and the known component(s) are evaluated, and the most
-#' differential expressed genes are selected, which is called S1. It is enabled
+#' differential expressed genes are selected, which is called DE. It is enabled
 #' when if.filter = TRUE. The default is \eqn{min(1500, 0.3*My)}, where
 #' \eqn{My} is the number of mixed sample. Users can also try using more genes,
 #' ranging from \eqn{0.3*My} to \eqn{0.5*My}, and evaluate the outcome.
@@ -48,7 +48,7 @@
 #' estimation is performed without any spike in normal reference.
 #' @param gene.selection.method The method of gene selection used for proportion
 #' estimation. The default method is 'GS', which applies a profile likelihood based
-#' method for gene selection. If it is set to 'S1', the most differential expressed 
+#' method for gene selection. If it is set to 'DE', the most differential expressed 
 #' genes are selected.
 #' @param ngene.Profile.selected The number of genes used for proportion
 #' estimation ranked by profile likelihood. The default is 
@@ -114,12 +114,12 @@
 #' # head(res$Mu, 3)
 #' # head(res$Sigma, 3)
 #' # 
-#' # Example 2: simulated two-component data by using S1(gene selection method)
+#' # Example 2: simulated two-component data by using DE(gene selection method)
 #' # data(test.data.2comp)
 #' # res <- DeMixT(data.Y = test.data.2comp$data.Y,
 #' #               data.N1 = test.data.2comp$data.N1, 
 #' #               data.N2 = NULL, nspikein = 50, g
-#' #               ene.selection.method = 'S1',
+#' #               ene.selection.method = 'DE',
 #' #               niter = 10, nbin = 50, if.filter = TRUE, 
 #' #               ngene.selected.for.pi = 150,
 #' #               mean.diff.in.CM = 0.25, tol = 10^(-5))
@@ -158,8 +158,8 @@ DeMixT <- function(
     message("Step 1: Estimation of Proportions\n")
     if (!is.null(data.N2)) nspikein = 0
     
-    if (gene.selection.method == 'S1'){
-      res.pi <- DeMixT_S1(data.Y = data.Y, data.N1 = data.N1, 
+    if (gene.selection.method == 'DE'){
+      res.pi <- DeMixT_DE(data.Y = data.Y, data.N1 = data.N1, 
                           data.N2 = data.N2, 
                           niter = niter, nbin = nbin, 
                           if.filter = if.filter, filter.sd= filter.sd,
