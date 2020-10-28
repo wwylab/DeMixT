@@ -25,7 +25,7 @@ The Genotype-Tissue Expression (GTEx) project provides a comprehensive public re
 lung samples without significant pathology in the corresponding tissue types are downloaded. For more information on how DeMixT uses unmatched reference profile data from the GTEx study, please refer to the vignette and our recent bioRxiv preprint [2].
 
 Raw count matrices of selected samples for prostate, lung and thyroid normal tissues can be downloaded from: 
-<a href=“https://github.com/wwylab/DeMixTallmaterials/tree/master/Data/Reference_profile%20data_from_the%20GTEx_study%20”>Download here</a>
+https://github.com/wwylab/DeMixTallmaterials/tree/master/Data/Reference_profile_data_from_the_GTEx_study
 
 
 
