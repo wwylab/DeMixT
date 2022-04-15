@@ -4,7 +4,9 @@
 \name{test.data.3comp}
 \alias{test.data.3comp}
 \title{Simulated three-component mixed cell line test data}
-\format{An object of class \code{list} of length 6.}
+\format{
+An object of class \code{list} of length 6.
+}
 \usage{
 test.data.3comp
 }

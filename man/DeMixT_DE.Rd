@@ -58,9 +58,9 @@ the cut-off will be selected into the model. The default is 0.5.}
 proportion estimation. The difference between the expression levels from
 mixed tumor samples and the known component(s) are evaluated, and the most
 differential expressed genes are selected, which is called DE. It is enabled
-when if.filter = TRUE. The default is \eqn{min(1500, 0.3*My)}, where
-\eqn{My} is the number of mixed sample. Users can also try using more genes,
-ranging from \eqn{0.3*My} to \eqn{0.5*My}, and evaluate the outcome.}
+when if.filter = TRUE. The default is \eqn{min(1500, 0.3*G)}, where
+\eqn{G} is the number of genes. Users can also try using more genes,
+ranging from \eqn{0.3*G} to \eqn{0.5*G}, and evaluate the outcome.}
 
 \item{nspikein}{The number of spikes in normal reference used for proportion
 estimation. The default value is \eqn{ min(200, 0.3*My)}, where 

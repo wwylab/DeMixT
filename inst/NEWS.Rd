@@ -4,7 +4,11 @@
 \section{Version 1.6.0}{
 \itemize{
 \item
-Raw count data for selected normal tissues (lung, prostate and thyroid) obtained from the GTEx study are provided on github (wwylab/DeMixTallmaterials/Data/Reference_profile data_from_the GTEx_study/)
+MPI for parallel computing is avaliable under R 4.0.0 for linux and
+Mac OS platforms.
+\item
+Gene expression data of normal tissues (Lung, Prostate and Thyroid) 
+from the GTEx study are included.
 \item
 Rename DeMixT_S1 function to DeMixT_DE.
 }}

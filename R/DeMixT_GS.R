@@ -38,14 +38,14 @@
 #' the cut-off will be selected into the model. The default is TRUE.
 #' @param ngene.Profile.selected The number of genes used for proportion
 #' estimation ranked by profile likelihood. The default is 
-#' \eqn{min(1500,0.1*My)}, where \eqn{My} is the number of mixed samples. 
+#' \eqn{min(1500,0.1*G)}, where \eqn{G} is the number of genes. 
 #' @param ngene.selected.for.pi The percentage or the number of genes used for
 #' proportion estimation. The difference between the expression levels from
 #' mixed tumor samples and the known component(s) are evaluated, and the most
 #' differential expressed genes are selected, which is called DE. It is enabled
-#' when if.filter = TRUE. The default is \eqn{min(1500, 0.3*My)}, where
-#' \eqn{My} is the number of mixed sample. Users can also try using more genes,
-#' ranging from \eqn{0.3*My} to \eqn{0.5*My}, and evaluate the outcome.
+#' when if.filter = TRUE. The default is \eqn{min(1500, 0.3*G)}, where
+#' \eqn{G} is the number of genes. Users can also try using more genes,
+#' ranging from \eqn{0.3*G} to \eqn{0.5*G}, and evaluate the outcome.
 #' @param mean.diff.in.CM Threshold of expression difference for selecting
 #' genes in the component merging strategy. We merge three-component to 
 #' two-component by selecting genes with similar expressions for the two known

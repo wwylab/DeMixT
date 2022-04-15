@@ -4,7 +4,9 @@
 \name{test.data.2comp}
 \alias{test.data.2comp}
 \title{Simulated two-component test data}
-\format{An object of class \code{list} of length 5.}
+\format{
+An object of class \code{list} of length 5.
+}
 \usage{
 test.data.2comp
 }

@@ -6,11 +6,11 @@ citEntry(entry = "Article",
                    as.person("et al")),
   journal      = "iScience",
   year         = "2018",
-  url          = "doi:10.1016/j.isci.2018.10.028.",
+  url          = "https://doi.org/10.1016/j.isci.2018.10.028",
 
   textVersion  =
   paste("Zeya Wang, et al (2018).",
         "Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration.",
         "iScience.",
-        "doi:10.1016/j.isci.2018.10.028.")
+        "doi:https://doi.org/10.1016/j.isci.2018.10.028")
 )

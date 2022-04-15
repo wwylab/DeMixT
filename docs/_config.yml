@@ -1,0 +1,76 @@
+
+name: DeMixT
+
+project:
+  version: 1.10.0
+  download_url: https://github.com/wwylab/DeMixT/archive/refs/heads/master.zip
+  download_text: Download
+ 
+remote_theme: allejo/jekyll-docs-theme
+plugins:
+- jekyll-remote-theme # add this line to the plugins list if you already have one
+
+
+
+links:
+  header:
+    - title: GitHub
+      icon: github
+      brand: true
+      url: https://github.com/wwylab/DeMixT/
+  homepage:
+    - title: View on GitHub
+      icon: github
+      brand: true
+      url: https://github.com/wwylab/DeMixT/
+  footer:
+    - title: GitHub
+      icon: github
+      brand: true
+      url: https://github.com/wwylab/DeMixT/
+    - title: Issues
+      icon: bug
+      url: https://github.com/wwylab/DeMixT/issues?state=open
+
+ui:
+  mode: 'auto' # 'auto', 'dark', 'light'
+  brand:
+    dark: "#00ceff"
+    light: "#a20000"
+  border_color:
+    dark: "#5f5f5f"
+    light: "#dee2e6"
+  header:
+    trianglify: true
+    dark:
+      color1: "#062a48"
+      color2: "#304e67"
+    light:
+      color1: "#080331"
+      color2: "#673051"
+  masthead:
+    color:
+      dark: "#fff"
+      light: "#fff"
+    align:
+      homepage: 'center'
+      page: 'left'
+
+social:
+  github:
+    user: wwang4
+    repo: DeMixT
+  twitter:
+    enabled: false
+    via:
+    hash:
+    account:
+  facebook:
+    enabled: false
+    profileUrl:
+
+# Build settings
+markdown: kramdown
+exclude:
+  - LICENSE.md
+  - README.md
