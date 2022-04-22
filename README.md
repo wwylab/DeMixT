@@ -1,20 +1,29 @@
-# DeMixT
-A deconvolution framework for mixed transcriptomes from heterogeneous tumor samples with two or three components using expression data from RNAseq or microarray platforms
-
-DeMixT is a frequentist-based method and fast in yielding accurate estimates of cell proportions and compart-ment-specific expression profiles for two-component and three-component deconvolution problem. Our method promises to provide deeper insight into cancer biomarkers and assist in the development of novel prognostic markers and therapeutic strategies. 
-
-The function DeMixT is designed to finish the whole pipeline of deconvolution for two or three components. ``DeMixT_S1`` function is designed to estimate the proportions of all mixed samples for each mixing component. ``DeMixT_GS`` function is designed to estimate the proportions of all mixed samples for each mixing component with profile likelihood based gene selection. ``DeMixT_S2`` function is designed to estimate the component-specific deconvolved expressions of individual mixed samples for a given set of genes.
+# DeMixT (v 1.10.1)
+DeMixT is a frequentist-based method and fast in yielding accurate estimates of cell proportions and compartment-specific expression profiles for two- and three-component deconvolution from heterogeneous tumor samples. 
 
 # Installation
-DeMixT source files are compatible with windows, linux and mac os.
+The DeMixT source files are compatible with Windows, Linux and MacOS.
 
-This version is for users who have OpenMP or MPI on the computer. To install this package, start R and enter:
+This version is for users who have OpenMP on the computer. 
+We recommend the user to install ``DeMixT`` (v 1.10.0) from Bioconductor: 
 ```
-# install devtools if necessary
-install.packages('devtools')
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DeMixT")
+```
+
+If needed, the user can install the latest ``DeMixT``  (v 1.10.1) from GitHub:
+
+```
+if (!require("devtools", quietly = TRUE))
+    install.packages('devtools')
 
 devtools::install_github("wwylab/DeMixT")
+```
 
+Check if ``DeMixT`` is installed successfully:
+```
 # load package
 library(DeMixT)
 ```
@@ -23,4 +32,7 @@ library(DeMixT)
 A tutorial is available at [https://wwylab.github.io/DeMixT/](https://wwylab.github.io/DeMixT/).
 
 # Cite ``DeMixT``
-Wang, Z. et al. Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration. iScience 9, 451–460 (2018).
+
+[1] Ahn, J. et al. DeMix: Deconvolution for mixed cancer transcriptomes using raw measured data. Bioinformatics 29, 1865–1871 (2013).
+
+[2] Wang, Z. et al. Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration. iScience 9, 451–460 (2018).

@@ -6,11 +6,13 @@ description: ~
 
 Cite DeMixT
 -------------------
-Wang, Z. et al. Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration. iScience 9, 451–460 (2018).
+[1] Ahn, J. et al. DeMix: Deconvolution for mixed cancer transcriptomes using raw measured data. Bioinformatics 29, 1865–1871 (2013).
+
+[2] Wang, Z. et al. Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration. iScience 9, 451–460 (2018).
 
 Contact
 -------------------
-if you have questions, feel free to leave messages on the [github issues](https://github.com/wwylab/DeMixT/issues) or contact me through email: WWang7@mdanderson.org
+If you have questions, feel free to leave messages on the [github issues](https://github.com/wwylab/DeMixT/issues) or contact me through email: WWang7@mdanderson.org
 
 Our group
 -------------------

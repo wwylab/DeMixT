@@ -2,13 +2,14 @@
 name: DeMixT
 
 project:
-  version: 1.10.0
+  version: 1.10.1
   download_url: https://github.com/wwylab/DeMixT/archive/refs/heads/master.zip
   download_text: Download
  
 remote_theme: allejo/jekyll-docs-theme
+#theme: minimal-jekyll-theme
 plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+- jekyll-remote-theme 
 
 
 
