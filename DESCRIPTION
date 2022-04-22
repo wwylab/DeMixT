@@ -3,7 +3,7 @@ Title: Cell type-specific deconvolution of heterogeneous tumor samples
         with two or three components using expression data from RNAseq
         or microarray platforms
 Version: 1.10.1
-Date: 2022-04-20
+Date: 2022-04-22
 Author: Zeya Wang <zw17.rice@gmail.com>, Shaolong
         Cao<caoshaolong@gmail.com>, Wenyi Wang <wwang7@@mdanderson.org>
 Maintainer: Shuangxi Ji<sji@mdanderson.org>
@@ -23,6 +23,6 @@ RoxygenNote: 7.1.1
 git_url: https://git.bioconductor.org/packages/DeMixT
 git_branch: master
 git_last_commit: c4b178c
-git_last_commit_date: 2022-04-20
-Date/Publication: 2022-04-20
-Packaged: 2022-10-26 16:16:19 UTC; biocbuild
+git_last_commit_date: 2022-04-22
+Date/Publication: 2022-04-22
+Packaged: 2022-04-22 16:16:19 UTC; biocbuild
