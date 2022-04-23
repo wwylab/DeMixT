@@ -65,7 +65,11 @@ cutoff_normal_range = c(0.1, 1.0)
 cutoff_tumor_range = c(0, 2.5)
 cutoff_step = 0.2
 
-preprocessed_data = DeMixT_preprocessing(PRAD, label, cutoff_normal_range, cutoff_tumor_range, cutoff_step)
+preprocessed_data = DeMixT_preprocessing(PRAD, 
+                                         label, 
+                                         cutoff_normal_range, 
+                                         cutoff_tumor_range, 
+                                         cutoff_step)
 PRAD_filter = preprocessed_data$count.matrix
 sd_cutoff_normal = preprocessed_data$sd_cutoff_normal
 sd_cutoff_tumor = preprocessed_data$sd_cutoff_tumor
@@ -93,27 +97,32 @@ We first select ~9000 genes before running DeMixT with the GS (Gene Selection) m
  - To optimize the ``DeMixT`` parameter setting for the input data, we recommend testing an array of combinations of the number of spike-ins and the number of selected genes.
 
 ```
-# Because of the random initial values and the spike-in samples within the DeMixT function, we would like to remind the user to set seeds to keep track. This seed setting will be internalized in DeMixT in the next update.
+# Because of the random initial values and the spike-in samples within the DeMixT function, 
+# we would like to remind the user to set seeds to keep track. This seed setting will be 
+# internalized in DeMixT in the next update.
 
 set.seed(1234)
 
 data.Y = SummarizedExperiment(assays = list(counts = PRAD.filter[, Tumor.id]))
 data.N1 <- SummarizedExperiment(assays = list(counts = PRAD.filter[, Normal.id]))
 
-# In practice, we set the maximum number of spike-in as min(n/3, 200), where n is the number of samples. 
+# In practice, we set the maximum number of spike-in as min(n/3, 200), 
+# where n is the number of samples. 
 nspikesin_list = c(0, 50, 100, 150)
 # One may set a wider range than provided below for studies other than TCGA.
 ngene.selected_list = c(500, 1000, 1500, 2500)
 
 for(nspikesin in nspikesin_list){
     for(ngene.selected in ngene.selected_list){
-        name = paste("PRAD_demixt_GS_res_nspikesin", nspikesin, "ngene.selected", ngene.selected,  sep = "_");
+        name = paste("PRAD_demixt_GS_res_nspikesin", nspikesin, "ngene.selected", 
+                      ngene.selected,  sep = "_");
         name = paste(name, ".RData", sep = "");
         res = DeMixT(data.Y = data.Y,
                      data.N1 = data.N1,
                      ngene.selected.for.pi = ngene.selected,
                      ngene.Profile.selected = ngene.selected,
-                     filter.sd = 0.7, # same upper bound of gene expression standard deviation for normal reference. i.e., preprocessed_data$sd_cutoff_normal[2]
+                     filter.sd = 0.7, # same upper bound of gene expression standard deviation 
+                     # for normal reference. i.e., preprocessed_data$sd_cutoff_normal[2]
                      gene.selection.method = "GS",
                      nspikein = nspikesin)
         save(res, file = name)
@@ -130,7 +139,8 @@ for(nspikesin in nspikesin_list){
         name_simplify <- paste(nspikesin, negene.selected,  sep = "_")
         row_names <- c(row_names, name_simplify)
         
-        name = paste("PRAD_demixt_GS_res_nspikesin", nspikesin, "negene.selected", negene.selected,  sep = "_");
+        name = paste("PRAD_demixt_GS_res_nspikesin", nspikesin, 
+                      "negene.selected", negene.selected,  sep = "_");
         name = paste("Data/", name, ".RData", sep = "")
         load(name)
         PiT_GS_PRAD <- cbind(PiT_GS_PRAD, res$pi[2, ])
@@ -146,7 +156,8 @@ colnames(PiT_GS_PRAD) <- row_names
              hist.col = "#00AFBB",
              density = TRUE,  # show density plots
              ellipses = TRUE, # show correlation ellipses
-             main = 'Correlations of Tumor Proportions with GS between Different Parameter Combination',
+             main = 'Correlations of Tumor Proportions with GS between Different Parameter 
+             Combination',
              xlim = c(0,1),
              ylim = c(0,1))
  ```
@@ -164,7 +175,10 @@ for(entry_1 in colnames(PiT_GS_PRAD)) {
     if (entry_1 == entry_2)
       next
     
-    cor.values <- c(cor.values, cor(PiT_GS_PRAD[, entry_1], PiT_GS_PRAD[, entry_2], method = "spearman"))
+    cor.values <- c(cor.values, 
+                    cor(PiT_GS_PRAD[, entry_1], 
+                    PiT_GS_PRAD[, entry_2], 
+                    method = "spearman"))
   }
   
   Spearman_correlations[[entry_1]] <- mean(cor.values)
