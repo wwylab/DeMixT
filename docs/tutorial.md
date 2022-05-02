@@ -96,6 +96,11 @@ We first select ~9000 genes before running DeMixT with the GS (Gene Selection) m
 ### 4. Deconvolution using DeMixT
  - To optimize the ``DeMixT`` parameter setting for the input data, we recommend testing an array of combinations of the number of spike-ins and the number of selected genes.
 
+ - The number of CPU cores used by the ``DeMixT`` function for parallel computing is specified by the parameter ``nthread``. By default (such as in the code block below), ``nthread = total_number_of_cores_on_the_machine - 1``. The user can change ``nthread`` to a number between 0 and the total number of cores on the machine.
+
+- Running time: ``DeMixT`` takes ~25 mins to finish running the PRAD data in this tutorial for each parameter combination. Here, ``nthread = 55``.
+
+
 ```
 # Because of the random initial values and the spike-in samples within the DeMixT function, 
 # we would like to remind the user to set seeds to keep track. This seed setting will be 
