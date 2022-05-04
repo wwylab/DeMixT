@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Installation
+disable_anchors: true
 description: ~
 ---
 

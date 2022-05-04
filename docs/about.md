@@ -1,6 +1,7 @@
 ---
 layout: page
 title: About
+disable_anchors: true
 description: ~
 ---
 

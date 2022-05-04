@@ -2,7 +2,7 @@
 layout: full
 homepage: true
 title: "DeMixT"
-disable_anchors: false
+disable_anchors: true
 description: Cell type-specific deconvolution of heterogeneous tumor samples with two or three components using expression data from RNAseq or microarray platforms
 ---
 

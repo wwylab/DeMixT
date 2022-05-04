@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Tutorial
+disable_anchors: true
 description: ~
 ---
 
@@ -94,11 +95,11 @@ We first select ~9000 genes before running DeMixT with the GS (Gene Selection) m
 
 
 ### 4. Deconvolution using DeMixT
- - To optimize the ``DeMixT`` parameter setting for the input data, we recommend testing an array of combinations of the number of spike-ins and the number of selected genes.
+  To optimize the ``DeMixT`` parameter setting for the input data, we recommend testing an array of combinations of the number of spike-ins and the number of selected genes.
 
- - The number of CPU cores used by the ``DeMixT`` function for parallel computing is specified by the parameter ``nthread``. By default (such as in the code block below), ``nthread = total_number_of_cores_on_the_machine - 1``. The user can change ``nthread`` to a number between 0 and the total number of cores on the machine.
+  The number of CPU cores used by the ``DeMixT`` function for parallel computing is specified by the parameter ``nthread``. By default (such as in the code block below), ``nthread = total_number_of_cores_on_the_machine - 1``. The user can change ``nthread`` to a number between 0 and the total number of cores on the machine.
 
-- Running time: ``DeMixT`` takes ~25 mins to finish running the PRAD data in this tutorial for each parameter combination. Here, ``nthread = 55``.
+  Running time: ``DeMixT`` takes ~25 mins to finish running the PRAD data in this tutorial for each parameter combination. Here, ``nthread = 55``.
 
 
 ```
@@ -153,7 +154,7 @@ for(nspikesin in nspikesin_list){
 }
 colnames(PiT_GS_PRAD) <- row_names
 ```
- - Calculate and plot the pairwise correlations of estimated tumor proportions across different parameter combinations.
+Calculate and plot the pairwise correlations of estimated tumor proportions across different parameter combinations.
 
  ```
  pairs.panels(PiT_GS_PRAD,
@@ -168,7 +169,7 @@ colnames(PiT_GS_PRAD) <- row_names
  ```
 <img src="./etc/pairwise_correlation.png" alt="pairwise_correlation" width="800"/>
 
- - Print out the average pairwise correlation of tumor proportions across different parameter combinations.
+Print out the average pairwise correlation of tumor proportions across different parameter combinations.
 
 ```
 PiT_GS_PRAD <- as.data.frame(PiT_GS_PRAD)
@@ -195,7 +196,7 @@ Spearman_correlations <- data.frame(num.spikein_num.selected.gene=names(Spearman
 Spearman_correlations
 ```
 
-- The average correlation coefficient coefficients are listed below.
+The average correlation coefficient coefficients are listed below.
 
 ```
 num.spikein_num.selected.gene   mean.correlation
@@ -217,7 +218,7 @@ num.spikein_num.selected.gene   mean.correlation
 150_2500	                0.9407026
 ```
 
- - We suggest selecting the optimal parameter combination that produces the largest average correlation of estimated tumor propotions with those produced by other combinations. The location of the mode of the Pi estimation may also be considered. The mode located too high or too low may suggest biased estimation.
+We suggest selecting the optimal parameter combination that produces the largest average correlation of estimated tumor propotions with those produced by other combinations. The location of the mode of the Pi estimation may also be considered. The mode located too high or too low may suggest biased estimation.
 
 Based on the above criteria, both ``spike-ins = 50`` and ``number of selected genes = 1000``, ``spike-ins = 50`` and ``number of selected genes = 1500`` are the optimal parameter combinations. We can then obtain the corresponding tumor proportions based on ``spike-ins = 50`` and ``number of selected genes = 1000``
 
@@ -251,5 +252,6 @@ FUCA2          4182.57010        4963.5248         801.0699        4344.4320    
 GCLC           2044.58982        1519.3045        1197.8271        1253.2875        2041.3444
 ```
 
-- Instead of selecting using the parameter combination with the highest correlation, one can also select the parameter combination that produces estimated tumor proportions that are most biologically meaningful.
+Instead of selecting using the parameter combination with the highest correlation, one can also select the parameter combination that produces estimated tumor proportions that are most biologically meaningful.
 
+The estimated tumor-specific proportions (PiT) can be used to calculate TmS. See our [TmS tutorial](https://github.com/wwylab/TmS).
