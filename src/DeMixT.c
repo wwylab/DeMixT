@@ -9,6 +9,7 @@
   #include <math.h>
   #include <time.h>
   #include <string.h>
+  #include <R.h> 
   #include <float.h> /* DBL_EPSILON */
   #include "DeMixTH.h"
   #ifdef _OPENMP

@@ -1,4 +1,4 @@
-# DeMixT (v 1.10.1)
+# DeMixT (v 1.12.1)
 DeMixT is a frequentist-based method and fast in yielding accurate estimates of cell proportions and compartment-specific expression profiles for two- and three-component deconvolution from heterogeneous tumor samples. 
 
 # Updates
@@ -6,9 +6,7 @@ DeMixT is a frequentist-based method and fast in yielding accurate estimates of 
 
 
 # Installation
-The DeMixT source files are compatible with Windows, Linux and MacOS.
-
-This version is for users who have OpenMP on the computer. The user can install the latest ``DeMixT``  (v 1.10.1) from GitHub:
+The DeMixT package is compatible with Windows, Linux and MacOS. Specifically, for Linux and MacOS, the user can install the latest ``DeMixT``  (v 1.12.1) from GitHub:
 
 ```
 if (!require("devtools", quietly = TRUE))
@@ -17,11 +15,27 @@ if (!require("devtools", quietly = TRUE))
 devtools::install_github("wwylab/DeMixT")
 ```
 
+For Windows, we recommend the user to install DeMixT (v 1.12.0) from ``Bioconductor``:
+```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DeMixT")
+```
+
+Please note, Linux and MacOS users can also install DeMixT from ``Bioconductor``. 
+
 Check if ``DeMixT`` is installed successfully:
 ```
 # load package
 library(DeMixT)
 ```
+
+**We highly recommend the user to use DeMixT on Linux or Windows machines.**
+# Issues of DeMixT on MacOS
+
+1. DeMixT relies on OpenMP for parallel computing. Starting from R 4.00, R no longer supports OpenMP on MacOS, meaning the user can only run DeMixT with one core on MacOS.
+2. We noticed there may be installation/running errors for DeMixT on MacOS machines with M1 chips. We are tring to fix it.
 
 # Use ``DeMixT``
 A tutorial is available at [https://wwylab.github.io/DeMixT/](https://wwylab.github.io/DeMixT/).
