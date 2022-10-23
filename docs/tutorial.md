@@ -28,6 +28,8 @@ library(DSS)
 library(ClassDiscovery)
 source('DeMixT_preprocessing.R')
 ```
+The ``R`` function ``DeMixT_preprocessing`` is available in [DeMixT_preprocessing.R](./etc/DeMixT_preprocessing.R)
+
 
 ##### 2.2 Load input data
 
@@ -57,7 +59,7 @@ Number of genes:  59427
 
 ### 3. Data preprocessing
 
-We first conduct data cleaning and normalization before running DeMixT as a preprocessing procedure. The ``R`` function ``DeMixT_preprocessing`` below is available in [DeMixT_preprocessing.R](./etc/DeMixT_preprocessing.R)
+We first conduct data cleaning and normalization before running DeMixT as a preprocessing procedure. 
 
 ```
 PRAD = PRAD[, c(Normal.id, Tumor.id)]
@@ -109,8 +111,8 @@ We first select ~9000 genes before running DeMixT with the GS (Gene Selection) m
 
 set.seed(1234)
 
-data.Y = SummarizedExperiment(assays = list(counts = PRAD.filter[, Tumor.id]))
-data.N1 <- SummarizedExperiment(assays = list(counts = PRAD.filter[, Normal.id]))
+data.Y = SummarizedExperiment(assays = list(counts = PRAD_filter[, Tumor.id]))
+data.N1 <- SummarizedExperiment(assays = list(counts = PRAD_filter[, Normal.id]))
 
 # In practice, we set the maximum number of spike-in as min(n/3, 200), 
 # where n is the number of samples. 
@@ -141,13 +143,13 @@ PiT_GS_PRAD <- c()
 row_names <- c()
 
 for(nspikesin in nspikesin_list){
-    for(ngene.selected in negene.selected_list){
-        name_simplify <- paste(nspikesin, negene.selected,  sep = "_")
+    for(ngene.selected in ngene.selected_list){
+        name_simplify <- paste(nspikesin, ngene.selected,  sep = "_")
         row_names <- c(row_names, name_simplify)
         
         name = paste("PRAD_demixt_GS_res_nspikesin", nspikesin, 
-                      "negene.selected", negene.selected,  sep = "_");
-        name = paste("Data/", name, ".RData", sep = "")
+                      "ngene.selected", ngene.selected,  sep = "_");
+        name = paste(name, ".RData", sep = "")
         load(name)
         PiT_GS_PRAD <- cbind(PiT_GS_PRAD, res$pi[2, ])
     }
