@@ -28,12 +28,12 @@ library(DSS)
 library(ClassDiscovery)
 source('DeMixT_preprocessing.R')
 ```
-The ``R`` function ``DeMixT_preprocessing`` is available in [DeMixT_preprocessing.R](./etc/DeMixT_preprocessing.R)
+The ``R`` function ``DeMixT_preprocessing`` is available in [DeMixT_preprocessing.R](./etc/DeMixT_preprocessing.R). Please download it and put it in your R working directory.
 
 
 ##### 2.2 Load input data
 
-Three data are included in the ``PRAD.RData`` file. 
+Three data are included in the ``PRAD.RData`` file (available at [PRAD.RData](./etc/PRAD.RData)). 
 - ``PRAD``: read counts matrix, gene x sample; row names are genes, column names are sample ids.
 - ``Normal.id``: TCGA ids of PRAD normal samples.
 - ``Tumor.id`` TCGA ids of PRAD tumor samples.
