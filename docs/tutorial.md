@@ -39,7 +39,7 @@ Three data are included in the ``PRAD.RData`` file (available at [PRAD.RData](./
 - ``Tumor.id`` TCGA ids of PRAD tumor samples.
 
 ```
-load("Data/PRAD.RData")
+load("PRAD.RData")
 ```
 
 A glimpse of ``PRAD``:
