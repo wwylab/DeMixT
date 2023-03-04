@@ -177,7 +177,7 @@ DeMixT <- function(
                           ngene.selected.for.pi = ngene.selected.for.pi, 
                           mean.diff.in.CM = mean.diff.in.CM, nspikein = nspikein,
                           tol = tol, pi01 = pi01, pi02 = pi02,
-                          nthread = parallel::detectCores() - 1)
+                          nthread = nthread)
     }
     
     
