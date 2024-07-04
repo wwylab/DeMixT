@@ -7,7 +7,7 @@ description: ~
 
 ## Dataset used in this tutorial
 ### TCGA PRAD
-Raw expression counts of 458 samples (406 tumor and 52 normal) were downloaded from TCGA data portal (v14.0) ([https://portal.gdc.cancer.gov/](https://portal.gdc.cancer.gov/)). After filtering out the tumor samples whose expression profiles are highly similar to those of normal samples, and the normal samples whose expression profiles are highly similar to those of tumor samples, 342 samples (295 tumor and 47 normal) are remaining and used in the tutorial. The row counts of these samples contained in the file ([PRAD.RData](./etc/PRAD.RData)). 
+Raw expression counts of 458 samples (406 tumor and 52 normal) were downloaded from TCGA data portal (v14.0) ([https://portal.gdc.cancer.gov/](https://portal.gdc.cancer.gov/)). After filtering out the tumor samples whose expression profiles are highly similar to those of normal samples, and the normal samples whose expression profiles are highly similar to those of tumor samples, 342 samples (295 tumor and 47 normal) are remaining. For simplicity, we randomly selected 20 normal and 30 tumor from them in this tutorial. The row counts of these samples contained in the file ([PRAD.RData](./etc/PRAD.RData)). 
 
 ## Dataset used in DeMixT paper[1]
 ### Reference profile data from the GTEx study
