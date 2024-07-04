@@ -29,7 +29,7 @@ GTEx Project - The Genotype-Tissue Expression (GTEx) Project was supported by th
 
 [2] GTEx Consortium. The Genotype-Tissue Expression (GTEx) pilot analysis: Multitissue gene regulation in humans. Science 348, 648–660 (2015).
 
-[3] Cao, S. et al. Estimation of tumor cell total mRNA expression in 6,590 cancers predicts disease progression. Nature Biotechnology (2022) (in press).
+[3] Cao, S., Wang, J.R., Ji, S. et al. Estimation of tumor cell total mRNA expression in 15 cancer types predicts disease progression. Nat Biotechnol 40, 1624–1633 (2022). https://doi.org/10.1038/s41587-022-01342-x.
 
 
 

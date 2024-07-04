@@ -8,8 +8,8 @@
   #include <stdlib.h>
   #include <math.h>
   #include <time.h>
+  #include <R.h>
   #include <string.h>
-  #include <R.h> 
   #include <float.h> /* DBL_EPSILON */
   #include "DeMixTH.h"
   #ifdef _OPENMP
@@ -328,13 +328,13 @@ void Tdemix(double *data, int *nGroup, int *nsamp, int *ngenes, int *nspikein, i
         for(j=0;j<intx;j++)
         {
             tmppi1[i][j] = p->pi1[j];
-          if (nHavepi != 1)  Rprintf("%15.3f \t",  p->pi1[j]);
+	    if (nHavepi != 1) {};  //Rprintf("%15.3f \t",  p->pi1[j]);
             if(Cid == 2)
             {
                 tmppi2[i][j] = p->pi2[j];
-              if (nHavepi != 1)  Rprintf(" %15.3f \t",  p->pi2[j]);
+		if (nHavepi != 1){};  //Rprintf(" %15.3f \t",  p->pi2[j]);
             }
-            if (nHavepi != 1)  Rprintf("\n");
+            if (nHavepi != 1) {};  //Rprintf("\n");
         }
         
         

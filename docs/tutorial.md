@@ -5,7 +5,7 @@ disable_anchors: true
 description: ~
 ---
 
-We use the bulk RNAseq data of prostate adenocarcinoma (PRAD) from TCGA (https://portal.gdc.cancer.gov/) as an example to demonstrate how to run ``DeMixT``. The analysis pipeline consists of the following steps:
+We use a subset of the bulk RNAseq data of prostate adenocarcinoma (PRAD) from TCGA (https://portal.gdc.cancer.gov/) as an example to demonstrate how to run ``DeMixT``. The analysis pipeline consists of the following steps:
  
    - Obtaining raw read counts for the tumor and normal RNAseq data 
    - Loading libraries and data
@@ -17,19 +17,12 @@ The raw read counts for the tumor and normal samples from TCGA PRAD are download
 
 ### 2. Load libraries and data
 
-##### 2.1 Load libraries
+##### 2.1 Load library
 
 ```
 library(DeMixT)
-library(dplyr)
-library(dendextend)
 library(psych)
-library(DSS)
-library(ClassDiscovery)
-source('DeMixT_preprocessing.R')
 ```
-The ``R`` function ``DeMixT_preprocessing`` is available in [DeMixT_preprocessing.R](./etc/DeMixT_preprocessing.R). Please download it and put it in your R working directory.
-
 
 ##### 2.2 Load input data
 
@@ -46,15 +39,19 @@ A glimpse of ``PRAD``:
 ```
 head(PRAD[,1:5])
 cat('Number of genes: ', dim(PRAD)[1], '\n')
+cat('Number of normal sample: ', length(Normal.id), '\n')
+cat('Number of tumor sample: ', length(Tumor.id), '\n')
 
-         TCGA-2A-A8VL-01A TCGA-2A-A8VO-01A TCGA-2A-A8VT-01A TCGA-2A-A8VV-01A TCGA-2A-A8W1-01A
-TSPAN6               2859             1660             3121             3979             2165
-TNMD                    6                0                0               45                0
-DPM1                 1348              884             1760             1404             1588
-SCYL3                 763              478             1845             1202              654
-C1orf112              100               75              274              143              143
-FGR                   158              171              227              171              159
+         TCGA-CH-5761-11A TCGA-CH-5767-11B TCGA-EJ-7115-11A TCGA-EJ-7123-11A TCGA-EJ-7125-11A
+TSPAN6               3876             7095             5542             2747             8465
+TNMD                   14               51               13               24               63
+DPM1                 1162             2665             1544             1974             2984
+SCYL3                 777             1517             1096             1231             1514
+C1orf112              136              343              214              280              339
+FGR                   230              511              263              755              262
 Number of genes:  59427 
+Number of normal sample:  20 
+Number of tumor sample:  30 
 ```
 
 ### 3. Data preprocessing
@@ -63,13 +60,15 @@ We first conduct data cleaning and normalization before running DeMixT as a prep
 
 ```
 PRAD = PRAD[, c(Normal.id, Tumor.id)]
-label = factor(c(rep('Normal', length(Normal.id)), rep('Tumor', length(Tumor.id))))
+selected.genes = 9000
 cutoff_normal_range = c(0.1, 1.0)
 cutoff_tumor_range = c(0, 2.5)
-cutoff_step = 0.2
+cutoff_step = 0.1
 
 preprocessed_data = DeMixT_preprocessing(PRAD, 
-                                         label, 
+                                         Normal.id, 
+                                         Tumor.id, 
+                                         selected.genes,
                                          cutoff_normal_range, 
                                          cutoff_tumor_range, 
                                          cutoff_step)
@@ -84,9 +83,9 @@ cat('Number of genes after filtering: ', dim(PRAD_filter)[1], '\n')
 Output:
 
 ```
-Normal sd cutoff: 0.1 0.7
-Tumor sd cutoff: 0 0.8
-Number of genes after filtering: 9037
+Normal sd cutoff: 0.1 0.9 
+Tumor sd cutoff: 0 0.6 
+Number of genes after filtering:  9103 
 ```
 
 We first select ~9000 genes before running DeMixT with the GS (Gene Selection) method so that our model-based gene selection maintains good statistical properties. ``DeMixT_preprocessing`` finds the a range of variance in genes from normal samples (``cutoff_normal_range``) and from tumor samples (``cutoff_tumor_range``) which results in roughly 9,000 genes.  ``DeMixT_preprocessing`` outputs a list object ``preprocessed_data``:
@@ -96,12 +95,13 @@ We first select ~9000 genes before running DeMixT with the GS (Gene Selection) m
 - ``preprocessed_data$sd_cutoff_tumor`` 
 
 
+
 ### 4. Deconvolution using DeMixT
   To optimize the ``DeMixT`` parameter setting for the input data, we recommend testing an array of combinations of the number of spike-ins and the number of selected genes.
 
   The number of CPU cores used by the ``DeMixT`` function for parallel computing is specified by the parameter ``nthread``. By default (such as in the code block below), ``nthread = total_number_of_cores_on_the_machine - 1``. The user can change ``nthread`` to a number between 0 and the total number of cores on the machine.
 
-  Running time: ``DeMixT`` takes ~25 mins to finish running the PRAD data in this tutorial for each parameter combination. Here, ``nthread = 55``.
+  Running time: ``DeMixT`` takes 3-4 mins to finish running the PRAD data in this tutorial for each parameter combination. Here, ``nthread = 55``.
 
 
 ```
@@ -116,7 +116,7 @@ data.N1 <- SummarizedExperiment(assays = list(counts = PRAD_filter[, Normal.id])
 
 # In practice, we set the maximum number of spike-in as min(n/3, 200), 
 # where n is the number of samples. 
-nspikesin_list = c(0, 50, 100, 150)
+nspikesin_list = c(0, 5, 10)
 # One may set a wider range than provided below for studies other than TCGA.
 ngene.selected_list = c(500, 1000, 1500, 2500)
 
@@ -137,6 +137,9 @@ for(nspikesin in nspikesin_list){
     }
 }
 ```
+
+**Note:** In the above function ``DeMixT``, the gene selection method of ``GS`` ranks genes using a profile likelihood method that assesses each gene's identifiability based on the length of its confidence interval, which is calculated using the Hessian matrix in the parameter space. In cases of sparse input data, such as spatial transcriptomics, where values in the Hessian matrix can approach infinity, DeMixT_GS might select the same genes as the other one, which is based on differential expression (see ``DeMixT_DE``).
+
 
 ```
 PiT_GS_PRAD <- c()
@@ -202,56 +205,53 @@ The average correlation coefficient coefficients are listed below.
 
 ```
 num.spikein_num.selected.gene   mean.correlation
-0_500                           0.9090589	
-0_1000	                        0.9380000		
-0_1500	                        0.9494419		
-0_2500	                        0.9671224		
-50_500	                        0.9602793		
-50_1000	                        0.9732144		
-50_1500	                        0.9716844		
-50_2500	                        0.9588510		
-100_500	                        0.9632491		
-100_1000	                0.9695658	
-100_1500	                0.9644836	
-100_2500	                0.9487125	
-150_500	                        0.9631112	
-150_1000	                0.9644836	
-150_1500	                0.9546158	
-150_2500	                0.9407026
+0_500	0_500	0.8641319		
+0_1000	0_1000	0.9453534		
+0_1500	0_1500	0.9401355		
+0_2500	0_2500	0.9375468		
+5_500	5_500	0.9207604		
+5_1000	5_1000	0.9542926		
+5_1500	5_1500	0.9460006		
+5_2500	5_2500	0.8992011		
+10_500	10_500	0.9237941		
+10_1000	10_1000	0.9357266	
+10_1500	10_1500	0.9249267		
+10_2500	10_2500	0.9002124
 ```
 
 We suggest selecting the optimal parameter combination that produces the largest average correlation of estimated tumor propotions with those produced by other combinations. The location of the mode of the Pi estimation may also be considered. The mode located too high or too low may suggest biased estimation.
 
-Based on the above criteria, both ``spike-ins = 50`` and ``number of selected genes = 1000``, ``spike-ins = 50`` and ``number of selected genes = 1500`` are the optimal parameter combinations. We can then obtain the corresponding tumor proportions based on ``spike-ins = 50`` and ``number of selected genes = 1000``
+Based on the above criteria, both ``spike-ins = 5`` and ``number of selected genes = 1000``, ``spike-ins = 5`` and ``number of selected genes = 1000`` are the optimal parameter combinations. We can then obtain the corresponding tumor proportions based on ``spike-ins = 5`` and ``number of selected genes = 1000``
 
 ```
-data.frame(sample.id=Tumor.id, PiT=PiT_GS_PRAD[['50_1000']])
+data.frame(sample.id=Tumor.id, PiT=PiT_GS_PRAD[['5_1000']])
 
 sample.id               PiT
-TCGA-2A-A8VL-01A	0.56174265			
-TCGA-2A-A8VO-01A	0.60221012			
-TCGA-2A-A8VT-01A	0.78682881			
-TCGA-2A-A8VV-01A	0.65545788			
-TCGA-2A-A8W1-01A	0.87264288			
-TCGA-2A-A8W3-01A	0.75036832			
-TCGA-CH-5737-01A	0.53433257			
-TCGA-CH-5738-01A	0.40521893			
-TCGA-CH-5739-01A	0.61147058			
-TCGA-CH-5740-01A	0.75048648
+TCGA-2A-A8VL-01A	0.7596888			
+TCGA-2A-A8VO-01A	0.8421716			
+TCGA-2A-A8VT-01A	0.8662378			
+TCGA-2A-A8VV-01A	0.7616749			
+TCGA-2A-A8W1-01A	0.8291091			
+TCGA-2A-A8W3-01A	0.8159406			
+TCGA-CH-5737-01A	0.7314935			
+TCGA-CH-5738-01A	0.4614545			
+TCGA-CH-5739-01A	0.6349423			
+TCGA-CH-5740-01A	0.7095117	
 ```
 
 and the tumor specific expression
 
 ```
-# res is DeMixT output
+## We then load the corresponding deconvolved gene expression
+load("PRAD_demixt_GS_res_nspikesin_5_ngene.selected_1000.RData")
 res$ExprT[1:5, 1:5]
 
-         TCGA-2A-A8VL-01A TCGA-2A-A8VO-01A TCGA-2A-A8VT-01A TCGA-2A-A8VV-01A TCGA-2A-A8W1-01A
-DPM1           1704.18119        1449.0052        1459.1907        1653.4350        1861.6115
-SCYL3           986.41202         758.3418        1718.3201        1649.9021         730.3697
-C1orf112         97.33428         100.4191         239.8180         155.7776         160.5089
-FUCA2          4182.57010        4963.5248         801.0699        4344.4320        1886.4633
-GCLC           2044.58982        1519.3045        1197.8271        1253.2875        2041.3444
+      TCGA-2A-A8VL-01A TCGA-2A-A8VO-01A TCGA-2A-A8VT-01A TCGA-2A-A8VV-01A TCGA-2A-A8W1-01A
+DPM1          1710.194         1466.484        1680.4562         1644.944         1812.600
+FUCA2         3782.990         4083.382         961.0578         4165.612         1896.901
+GCLC          2382.106         1826.957        1527.4895         1409.707         1913.784
+LAS1L         3329.766         2758.414        3520.9410         2834.415         2530.621
+ENPP4         2099.591         3123.365        3173.3516         2856.371         7413.330
 ```
 
 Instead of selecting using the parameter combination with the highest correlation, one can also select the parameter combination that produces estimated tumor proportions that are most biologically meaningful.

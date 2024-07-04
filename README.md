@@ -1,12 +1,15 @@
-# DeMixT (v 1.12.1)
+# DeMixT (v 1.20.1)
 DeMixT is a frequentist-based method and fast in yielding accurate estimates of cell proportions and compartment-specific expression profiles for two- and three-component deconvolution from heterogeneous tumor samples. 
 
 # Updates
+(06/23/2024) Script DeMixT_preprocessing.R is included in the package for input data preprocessing.
+The DeMixT tutorial at https://wwylab.github.io/DeMixT/ is updated.
+
 (06/18/2022) Fixed a bug in ``R/DeMixT_GS.R:130``: changed ``return(class(try(solve(m), silent = T)) == "matrix")`` to ``return(class(try(solve(m), silent = T))[1] == "matrix")`` to make it work properly under both ``R 3.x`` and ``R 4.x``; since under ``R 4.x``, ``class(matrix object)`` returns ``"matrix", "array"``, instead only ``"matrix"``  under ``R 3.x``. Please be aware of this bug for those who installed ``DeMixT``(v1.10.0) from Bioconductor. 
 
 
 # Installation
-The DeMixT package is compatible with Windows, Linux and MacOS. Specifically, for Linux and MacOS, the user can install the latest ``DeMixT``  (v 1.12.1) from GitHub:
+The DeMixT package is compatible with Windows, Linux and MacOS. Specifically, for Linux and MacOS, the user can install the latest ``DeMixT``  (v 1.20.1) from GitHub:
 
 ```
 if (!require("devtools", quietly = TRUE))
@@ -15,7 +18,7 @@ if (!require("devtools", quietly = TRUE))
 devtools::install_github("wwylab/DeMixT")
 ```
 
-For Windows, we recommend the user to install DeMixT (v 1.12.0) from ``Bioconductor``:
+For Windows, we recommend the user to install DeMixT (v 1.20.0) from ``Bioconductor``:
 ```
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
