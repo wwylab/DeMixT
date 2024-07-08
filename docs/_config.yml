@@ -2,7 +2,7 @@
 name: DeMixT
 
 project:
-  version: 1.10.1
+  version: 1.20.1
   download_url: https://github.com/wwylab/DeMixT/archive/refs/heads/master.zip
   download_text: Download
  
