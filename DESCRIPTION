@@ -11,7 +11,7 @@ Description: DeMixT is a software package that performs deconvolution on transcr
              data from a mixture of two or three components.
 LazyData: TRUE
 Depends: R (>= 3.6.0), parallel, Rcpp (>= 1.0.0), SummarizedExperiment,
-        knitr, KernSmooth, matrixcalc, rmarkdown
+        knitr, KernSmooth, matrixcalc, rmarkdown, DSS, sva, dendextend
 Imports: matrixStats, stats, truncdist, base64enc, ggplot2
 LinkingTo: Rcpp
 NeedsCompilation: yes
