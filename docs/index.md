@@ -13,7 +13,7 @@ description: Cell type-specific deconvolution of heterogeneous tumor samples wit
 
 Transcriptomic deconvolution in cancer and other heterogeneous tissues remains challenging. Available methods lack the ability to estimate both component-specific proportions and expression profiles for individual samples. We present DeMixT, a new tool to deconvolve high dimensional data from mixtures of two or three cellular components (i.e. within heterogenous tissues such as cancers). DeMixT implements an iterated conditional mode algorithm and a gene-set-based component merging approach to improve accuracy. In a series of experimental validation studies and application across large datasets of cancer studies, DeMixT showed high accuracy in inference of cell-type specific proportions[1-2]. Improved deconvolution is an important step towards linking tumor transcriptomic data with phenotypes and clinical outcomes.
 
-A tutorial for running DeMixT can be found [here](tutorial.html). 
+**A tutorial for running DeMixT can be found [here](tutorial.html)**. 
 
 <center>
 <img src="./etc/demixt.jpg" alt="demixt" width="60%" />
