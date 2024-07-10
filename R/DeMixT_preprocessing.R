@@ -316,10 +316,10 @@ DeMixT_preprocessing <- function(count.matrix, normal.id, tumor.id,
                                  cutoff_step=0.2){
   
 
-  stopifnot(cutoff_normal_range[0] >= 0)
-  stopifnot(cutoff_tumor_range[0] >= 0)
-  stopifnot(cutoff_normal_range[1] >= cutoff_normal_range[0])
-  stopifnot(cutoff_tumor_range[1] >= cutoff_tumor_range[0])
+  stopifnot(cutoff_normal_range[1] >= 0)
+  stopifnot(cutoff_tumor_range[1] >= 0)
+  stopifnot(cutoff_normal_range[2] >= cutoff_normal_range[0])
+  stopifnot(cutoff_tumor_range[2] >= cutoff_tumor_range[0])
 
   stopifnot(cutoff_step > 0)
   stopifnot(selected.genes > 0)
