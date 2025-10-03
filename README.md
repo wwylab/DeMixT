@@ -21,7 +21,7 @@ The DeMixT package is compatible with Windows, Linux and MacOS. Specifically, fo
 if (!require("devtools", quietly = TRUE))
     install.packages('devtools')
 
-devtools::install_github("wwylab/DeMixT")
+devtools::install_github("wwylab/DeMixT@develop")
 ```
 
 For Windows, we recommend the user to install from ``Bioconductor`` (to be released, current version is 1.20.0):
