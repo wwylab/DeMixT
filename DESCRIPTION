@@ -11,10 +11,10 @@ Description: DeMixT is a software package that performs deconvolution on transcr
              data from a mixture of two or three components.
 LazyData: TRUE
 Depends: R (>= 4.0.0), parallel, Rcpp (>= 1.0.0), SummarizedExperiment
-Imports: matrixStats, stats, truncdist, base64enc, ggplot2,
-        KernSmooth, matrixcalc, DSS, sva, dendextend,
-        fitdistrplus, pbapply, psych, magrittr, graphics, grDevices, S4Vectors
-Suggests: knitr, rmarkdown, calibrate
+Imports: matrixStats, stats, truncdist, base64enc, ggplot2, KernSmooth,
+        matrixcalc, DSS, sva, dendextend, fitdistrplus, pbapply, psych,
+        magrittr, graphics, grDevices, S4Vectors
+Suggests: knitr, rmarkdown
 LinkingTo: Rcpp
 NeedsCompilation: yes
 VignetteBuilder: knitr
@@ -27,4 +27,4 @@ git_branch: master
 git_last_commit: c4b178c
 git_last_commit_date: 2024-03-19
 Date/Publication: 2024-03-19
-Packaged: 2024-03-19 16:16:19 UTC; biocbuild
+Packaged: 2025-06-13 05:37:51 UTC; rli10

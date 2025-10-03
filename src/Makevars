@@ -1,6 +1,6 @@
 PKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS) -I$(R_HOME)/include
+PKG_LIBS = $(SHLIB_OPENMP_CFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) -I$(R_HOME)/include
-PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 SOURCES = DeMixNB.c DeMixT.c init.c registerDynamicSymbol.c Profile_2D.cpp RcppExports.cpp
 OBJECTS = DeMixNB.o DeMixT.o init.o registerDynamicSymbol.o Profile_2D.o RcppExports.o

@@ -39,9 +39,9 @@
 #' 
 #' @param output.more.info A boolean flag controlling whether to return the 
 #' estimations in each iteration. Default is False.
-#' 
+#'
 #' @param data.scale The constant scale to be multiplied to the data. Default is 1.
-#' 
+#'
 #' @return 
 #' \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
 #' each run and a consistency flag at each sample indicating whether the runs agree 

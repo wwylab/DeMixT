@@ -14,7 +14,8 @@ DeMixNB(
   nthread = 1,
   seeds = c(123, 456, 789),
   output.more.info = FALSE,
-  consistency_threshold = 0.1
+  consistency_threshold = 0.1,
+  data.scale = 1
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ estimations in each iteration. Default is False.}
 \item{consistency_threshold}{The maximum allowed difference (range) 
 between pi estimates across runs for a spot to be considered "consistent". 
 Default is 0.1.}
+
+\item{data.scale}{The constant scale to be multiplied to the data. Default is 1.}
 }
 \value{
 \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
