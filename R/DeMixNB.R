@@ -40,6 +40,8 @@
 #' @param output.more.info A boolean flag controlling whether to return the 
 #' estimations in each iteration. Default is False.
 #' 
+#' @param data.scale The constant scale to be multiplied to the data. Default is 1.
+#' 
 #' @return 
 #' \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
 #' each run and a consistency flag at each sample indicating whether the runs agree 
@@ -65,7 +67,7 @@
 ## Estimating function
 DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
                     nthread = 1, seeds = c(123, 456, 789), output.more.info = FALSE,
-                    consistency_threshold = 0.1){
+                    consistency_threshold = 0.1, data.scale = 1.0){
   ##----------------------------------------
   ## Step 1: Set up system and prepare input data
   ##----------------------------------------
@@ -80,8 +82,8 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
   #}
   #
   ## Transferring data format
-  data.Y <- SummarizedExperiment::assays(data.Y)[[1]]
-  data.N1 <- SummarizedExperiment::assays(data.N1)[[1]]
+  data.Y <- SummarizedExperiment::assays(data.Y)[[1]] * data.scale
+  data.N1 <- SummarizedExperiment::assays(data.N1)[[1]] * data.scale
   
   ## Create gene names by index if not already present
   if(is.null(rownames(data.Y)))
