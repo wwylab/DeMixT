@@ -12,6 +12,7 @@
 #'  column names are sample ids. 
 #' @param normal.id A vector of normal sample ids
 #' @param tumor.id A vector of tumor sample ids
+#'
 #' @return list object
 #' 
 #' @export detect_suspicious_sample_by_hierarchical_clustering_2comp
@@ -89,7 +90,7 @@ detect_suspicious_sample_by_hierarchical_clustering_2comp <- function(count.matr
 #'  column names are sample ids. 
 #' @param normal.id A vector of normal sample ids
 #' @param tumor.id A vector of tumor sample ids
-#' @return 
+#' @return None (creates plots)
 #' 
 #' @export plot_sd
 plot_sd  <- function(count.matrix, normal.id, tumor.id){
@@ -108,25 +109,25 @@ plot_sd  <- function(count.matrix, normal.id, tumor.id){
 }
 
 #' @title subset_sd
-#' @description Subset a count matrix given the the ranges of the standard deviations of the 
-#' log2 expressions from the tumor and normal samples 
+#' @description Subset a count matrix given the the ranges of the standard deviations of the
+#' log2 expressions from the tumor and normal samples
 #' @name subset_sd
 #' @param count.matrix A matrix of raw expression count with \eqn{G} by \eqn{(My + M1)}, where \eqn{G} is the number
 #' of genes, \eqn{My} is the number of mixed samples and \eqn{M1} is the number of normal samples. Row names are genes
-#'  column names are sample ids. 
+#'  column names are sample ids.
 #' @param normal.id A vector of normal sample ids
 #' @param tumor.id A vector of tumor sample ids
-#' @param cutoff_normal A vector of two numeric values, indicating the lower and upper bounds of standard deviation of 
+#' @param cutoff_normal A vector of two numeric values, indicating the lower and upper bounds of standard deviation of
 #' log2 count matrix from the normal samples to subset. Default is c(0.1, 0.6)
-#' @param cutoff_tumor A vector of two numeric values, indicating the lower and upper bounds of standard deviation of 
+#' @param cutoff_tumor A vector of two numeric values, indicating the lower and upper bounds of standard deviation of
 #' log2 count matrix from the tumor samples to subset. Default is c(0.2, 0.8)
 #' @return A subset of the count matrix
-#' 
+#'
 #' @export subset_sd
-subset_sd <- function(count.matrix, normal.id, tumor.id, 
-                      cutoff_normal = c(0.1, 0.6), 
+subset_sd <- function(count.matrix, normal.id, tumor.id,
+                      cutoff_normal = c(0.1, 0.6),
                       cutoff_tumor = c(0.2, 0.8)){
-  
+
   count.matrix[which(count.matrix == 0, arr.ind = T)] = 1
   sdn.obs <- apply(log2(count.matrix[, match(normal.id, colnames(count.matrix))]), 1, sd)
   sdm.obs <- apply(log2(count.matrix[, match(tumor.id, colnames(count.matrix))]), 1, sd)
@@ -138,15 +139,13 @@ subset_sd <- function(count.matrix, normal.id, tumor.id,
 #' @title plot_dim
 #' @description Plot the distribution of tumor and normal samples in a 2D PCA space based on their expressions
 #' @name plot_dim
-#' @rdname detect_suspicious_sample_by_hierarchical_clustering_2comp
 #' @param count.matrix A matrix of raw expression count with \eqn{G} by \eqn{(My + M1)}, where \eqn{G} is the number
 #' of genes, \eqn{My} is the number of mixed samples and \eqn{M1} is the number of normal samples. Row names are genes
 #'  column names are sample ids. 
-#' @param normal.id A vector of normal sample ids
-#' @param tumor.id A vector of tumor sample ids
+#' @param labels A vector of sample labels for plotting
 #' @param legend.position Position of legend in the plot. Default is bottomleft.
 #' @param legend.cex Character expansion factor relative to current par("cex"). Default = 1.2
-#' @return
+#' @return None (create plots)
 #' 
 #' @export plot_dim
 plot_dim <- function(count.matrix, labels, 
@@ -318,8 +317,8 @@ DeMixT_preprocessing <- function(count.matrix, normal.id, tumor.id,
 
   stopifnot(cutoff_normal_range[1] >= 0)
   stopifnot(cutoff_tumor_range[1] >= 0)
-  stopifnot(cutoff_normal_range[2] >= cutoff_normal_range[0])
-  stopifnot(cutoff_tumor_range[2] >= cutoff_tumor_range[0])
+  stopifnot(cutoff_normal_range[2] >= cutoff_normal_range[1])
+  stopifnot(cutoff_tumor_range[2] >= cutoff_tumor_range[1])
 
   stopifnot(cutoff_step > 0)
   stopifnot(selected.genes > 0)

@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // ft_y
 double ft_y(double y, double mung, double mutg, double sng, double stg, double pi1, double pi2);
 RcppExport SEXP _DeMixT_ft_y(SEXP ySEXP, SEXP mungSEXP, SEXP mutgSEXP, SEXP sngSEXP, SEXP stgSEXP, SEXP pi1SEXP, SEXP pi2SEXP) {
