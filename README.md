@@ -70,3 +70,5 @@ The DeMixT tutorial at https://wwylab.github.io/DeMixT/ is updated.
 [2] Wang, Z. et al. Transcriptome Deconvolution of Heterogeneous Tumor Samples with Immune Infiltration. iScience 9, 451–460 (2018).
 
 [3] Cao, S. et al. Estimation of tumor cell total mRNA expression in 15 cancer types predicts disease progression. Nature Biotechnology Published online June 13 2022. doi 10.1038/s41587-022-01342-x.
+
+[4] Montierth, M. et al. Deconvolution of Sparse-count RNA Sequencing Data for Tumor Cells Using Embedded Negative Binomial Distributions. bioRxiv 2025.11.21.689822; doi: https://doi.org/10.1101/2025.11.21.689822
