@@ -4,15 +4,16 @@ This repository contains code for DeMixT 2.0, which integrates and extends both 
 
 ## Overview
 
-- ***DeMixT*** is a frequentist-based method that provides fast and accurate estimates of cell proportions and compartment-specific expression profiles for two- and three-component deconvolution from heterogeneous tumor samples.
+- ***DeMixT*** is a frequentist-based method that provides fast and accurate estimates of cell proportions and compartment-specific expression profiles for two- and three-component deconvolution from heterogeneous tumor samples with high read counts.
 
-- ***DeMixNB***, now incorporated into DeMixT 2.0, is a variant of DeMixT based on the negative binomial distribution. It enables accurate estimation of transcript proportions in two-component deconvolution, particularly effective for sparse RNA-seq data.
+- ***DeMixNB***, now incorporated into DeMixT 2.0, is a variant of DeMixT based on the negative binomial distribution. It is designed for sparse data such as microRNA sequencing (miRNA) and spatial transcriptomics (ST) data which have low read counts with overdispersion.
 
 
 ## What’s New in DeMixT 2.0
 
-With this upgrade, DeMixT 2.0 unifies the strengths of DeMixT and DeMixNB, making it a more comprehensive and flexible tool for transcriptomic deconvolution across diverse data types and experimental scenarios.
-
+DeMixT 2.0 introduces DeMixNB, a new model that extends the package's deconvolution capabilities to a broader range of transcriptomic data types. The original DeMixT was designed for high-read-count sequencing data, where a log-normal distribution is appropriate — but this assumption breaks down for lower-count RNomes such as miRNA and spatial transcriptomics (ST) data. DeMixNB addresses this gap by modeling such data with a negative binomial distribution instead.
+Together, DeMixT and DeMixNB form a unified, flexible toolkit for deconvolution across diverse data types and experimental contexts.
+s
 
 ## Installation
 The DeMixT package is compatible with Windows, Linux and MacOS. Specifically, for Linux and MacOS, the user can install the latest DeMixT(v 2.0.0) from GitHub:
