@@ -33,6 +33,9 @@ gene_selection_DE <- function(count.matrix, normal.id, tumor.id,
                                   cutoff_step=0.2,
                                   filter.sd=NA,
                                   ngene.selected.for.pi=NA) {
+  if (is.na(ngene.selected.for.pi)) {
+    ngene.selected.for.pi <- min(1500, round(0.3*nrow(count.matrix)))
+  }
   preprocessed_data = DeMixNB_preprocessing(count.matrix, 
                                             normal.id, 
                                             tumor.id, 

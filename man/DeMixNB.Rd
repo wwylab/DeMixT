@@ -19,7 +19,11 @@ DeMixNB(
   mu_t.bounds = c(0.01, 1e+08),
   phi_t.bounds = c(0.01, 1e+08),
   pi.bounds = c(0.05, 0.95),
-  sequential.update = TRUE
+  sequential.update = TRUE,
+  gene.selection.method = c("None", "DE", "ST"),
+  ngene.selected = NA,
+  seurat.obj = NULL,
+  gene.selection.args = list()
 )
 }
 \arguments{
@@ -81,6 +85,28 @@ each iteration. If TRUE, the proportions are estimated given the tumor
 parameters (\eqn{mu_t}, \eqn{phi_t}) updated earlier in the same iteration,
 as in iterated conditional modes. If FALSE, both are estimated from the
 values at the start of the iteration. Default is TRUE.}
+
+\item{gene.selection.method}{The method used to select genes before
+deconvolution. "None" (default) uses all genes in data.Y and data.N1. "DE"
+runs \code{gene_selection_DE} on the combined counts of data.N1 and data.Y.
+"ST" runs \code{gene_selection_MoransI} on seurat.obj for spatial
+transcriptomics data. The selection is done once, before the runs with
+different seeds, and data.Y and data.N1 are subset to the selected genes.}
+
+\item{ngene.selected}{The number of genes to select. It is passed to
+\code{gene_selection_DE} as ngene.selected.for.pi and to
+\code{gene_selection_MoransI} as ngene.selected. Default is NA, i.e.
+\eqn{min(1500, 0.3*G)} for "DE", where \eqn{G} is the number of genes, and
+1000 for "ST". Ignored when gene.selection.method = "None".}
+
+\item{seurat.obj}{A Seurat object with the spatial counts and tissue image
+of the reference and mixed spots, required when gene.selection.method =
+"ST". Its spot ids must match the column names of data.N1 and data.Y.
+Default is NULL.}
+
+\item{gene.selection.args}{A list of further arguments passed to the gene
+selection function, e.g. list(filter.sd = 0.5) for "DE" or
+list(n.features.tested = 3000) for "ST". Default is an empty list.}
 }
 \value{
 \item{pi_t_summary}{A data frame containing the estimated tumor proportions for

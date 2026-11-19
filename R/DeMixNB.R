@@ -63,6 +63,28 @@
 #' as in iterated conditional modes. If FALSE, both are estimated from the
 #' values at the start of the iteration. Default is TRUE.
 #'
+#' @param gene.selection.method The method used to select genes before
+#' deconvolution. "None" (default) uses all genes in data.Y and data.N1. "DE"
+#' runs \code{gene_selection_DE} on the combined counts of data.N1 and data.Y.
+#' "ST" runs \code{gene_selection_MoransI} on seurat.obj for spatial
+#' transcriptomics data. The selection is done once, before the runs with
+#' different seeds, and data.Y and data.N1 are subset to the selected genes.
+#'
+#' @param ngene.selected The number of genes to select. It is passed to
+#' \code{gene_selection_DE} as ngene.selected.for.pi and to
+#' \code{gene_selection_MoransI} as ngene.selected. Default is NA, i.e.
+#' \eqn{min(1500, 0.3*G)} for "DE", where \eqn{G} is the number of genes, and
+#' 1000 for "ST". Ignored when gene.selection.method = "None".
+#'
+#' @param seurat.obj A Seurat object with the spatial counts and tissue image
+#' of the reference and mixed spots, required when gene.selection.method =
+#' "ST". Its spot ids must match the column names of data.N1 and data.Y.
+#' Default is NULL.
+#'
+#' @param gene.selection.args A list of further arguments passed to the gene
+#' selection function, e.g. list(filter.sd = 0.5) for "DE" or
+#' list(n.features.tested = 3000) for "ST". Default is an empty list.
+#'
 #' @return 
 #' \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
 #' each run and a consistency flag at each sample indicating whether the runs agree 
@@ -93,7 +115,10 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
                     nthread = 1, seeds = c(123, 456, 789), output.more.info = FALSE,
                     consistency_threshold = 0.1, data.scale = 1.0,
                     mu_t.bounds = c(0.01, 1e8), phi_t.bounds = c(0.01, 1e8),
-                    pi.bounds = c(0.05, 0.95), sequential.update = TRUE){
+                    pi.bounds = c(0.05, 0.95), sequential.update = TRUE,
+                    gene.selection.method = c("None", "DE", "ST"),
+                    ngene.selected = NA, seurat.obj = NULL,
+                    gene.selection.args = list()){
   ##----------------------------------------
   ## Step 1: Set up system and prepare input data
   ##----------------------------------------
@@ -142,6 +167,57 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
     stop("pi.bounds must be c(lower, upper) with 0 < lower < upper < 1.")
   if (!is.logical(sequential.update) || length(sequential.update) != 1 || is.na(sequential.update))
     stop("sequential.update must be TRUE or FALSE.")
+  gene.selection.method <- match.arg(gene.selection.method)
+  if (!is.list(gene.selection.args)) stop("gene.selection.args must be a list.")
+  if (length(ngene.selected) != 1 ||
+      (!is.na(ngene.selected) && (!is.numeric(ngene.selected) || ngene.selected < 1)))
+    stop("ngene.selected must be NA or a single number of at least 1.")
+  
+  ##----------------------------------------
+  ## Optional gene selection
+  ##----------------------------------------
+  if (gene.selection.method != "None") {
+    normal.id <- colnames(data.N1)
+    tumor.id <- colnames(data.Y)
+    if (anyDuplicated(c(normal.id, tumor.id)))
+      stop("The column names of data.N1 and data.Y must be unique for gene selection.")
+    
+    if (gene.selection.method == "DE") {
+      if ("ngene.selected.for.pi" %in% names(gene.selection.args))
+        stop("Please set the number of genes with ngene.selected, not in gene.selection.args.")
+      if (is.na(ngene.selected)) ngene.selected <- min(1500, round(0.3 * nrow(data.Y)))
+      cat("Selecting genes with gene_selection_DE...\n")
+      # Use the counts before scaling by data.scale
+      selected.genes <- do.call(gene_selection_DE,
+                                c(list(count.matrix = cbind(data.N1, data.Y) / data.scale,
+                                       normal.id = normal.id, tumor.id = tumor.id,
+                                       ngene.selected.for.pi = ngene.selected),
+                                  gene.selection.args))
+    } else {
+      if (is.null(seurat.obj))
+        stop("seurat.obj is required when gene.selection.method = \"ST\".")
+      if ("ngene.selected" %in% names(gene.selection.args))
+        stop("Please set the number of genes with ngene.selected, not in gene.selection.args.")
+      if (is.na(ngene.selected)) ngene.selected <- 1000
+      cat("Selecting genes with gene_selection_MoransI...\n")
+      selected.genes <- do.call(gene_selection_MoransI,
+                                c(list(seurat.obj = seurat.obj,
+                                       normal.id = normal.id, tumor.id = tumor.id,
+                                       ngene.selected = ngene.selected),
+                                  gene.selection.args))
+    }
+    
+    n.selected <- length(selected.genes)
+    selected.genes <- intersect(selected.genes, rownames(data.Y))
+    if (length(selected.genes) < n.selected)
+      warning(n.selected - length(selected.genes),
+              " selected genes are not in data.Y and were dropped.", call. = FALSE)
+    if (length(selected.genes) == 0)
+      stop("None of the selected genes are in data.Y.")
+    data.Y <- data.Y[selected.genes, , drop = FALSE]
+    data.N1 <- data.N1[selected.genes, , drop = FALSE]
+    cat(length(selected.genes), "genes selected by method", gene.selection.method, "\n")
+  }
   
   ##----------------------------------------
   ## Step 2: Run DeMixNB using different seeds and save the results
