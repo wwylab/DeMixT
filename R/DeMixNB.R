@@ -56,6 +56,12 @@
 #' iteration, and to truncate the initial values. Must satisfy
 #' 0 < lower < upper < 1. Default is c(0.05, 0.95).
 #'
+#' @param sequential.update A boolean flag controlling the order of updates in
+#' each iteration. If TRUE, the proportions are estimated given the tumor
+#' parameters (\eqn{mu_t}, \eqn{phi_t}) updated earlier in the same iteration,
+#' as in iterated conditional modes. If FALSE, both are estimated from the
+#' values at the start of the iteration. Default is TRUE.
+#'
 #' @return 
 #' \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
 #' each run and a consistency flag at each sample indicating whether the runs agree 
@@ -83,7 +89,7 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
                     nthread = 1, seeds = c(123, 456, 789), output.more.info = FALSE,
                     consistency_threshold = 0.1, data.scale = 1.0,
                     mu_t.bounds = c(0.01, 1e8), phi_t.bounds = c(0.01, 1e8),
-                    pi.bounds = c(0.05, 0.95)){
+                    pi.bounds = c(0.05, 0.95), sequential.update = TRUE){
   ##----------------------------------------
   ## Step 1: Set up system and prepare input data
   ##----------------------------------------
@@ -130,6 +136,8 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
   if (!is.numeric(pi.bounds) || length(pi.bounds) != 2 || any(!is.finite(pi.bounds)) ||
       pi.bounds[1] <= 0 || pi.bounds[2] >= 1 || pi.bounds[1] >= pi.bounds[2])
     stop("pi.bounds must be c(lower, upper) with 0 < lower < upper < 1.")
+  if (!is.logical(sequential.update) || length(sequential.update) != 1 || is.na(sequential.update))
+    stop("sequential.update must be TRUE or FALSE.")
   
   ##----------------------------------------
   ## Step 2: Run DeMixNB using different seeds and save the results
@@ -157,7 +165,8 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
                           output.more.info = output.more.info,
                           mu_t.bounds = mu_t.bounds,
                           phi_t.bounds = phi_t.bounds,
-                          pi.bounds = pi.bounds)
+                          pi.bounds = pi.bounds,
+                          sequential.update = sequential.update)
     }, error = function(e) {
       warning("Error occurred during run ", r, " with seed ", current_seed, ": ", e$message, call. = FALSE)
       NULL # Return NULL if an error occurs
@@ -272,6 +281,10 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
 #' @param pi.bounds The lower and upper bounds of the tumor proportion
 #' \eqn{pi} of each sample. Default is c(0.05, 0.95).
 #'
+#' @param sequential.update If TRUE, the proportions are estimated given the
+#' tumor parameters updated earlier in the same iteration; if FALSE, given the
+#' values at the start of the iteration. Default is TRUE.
+#'
 #' @return 
 #' \item{pi}{A matrix of estimated proportion. First row corresponds to the 
 #' proportion estimate for the known components and unknown component 
@@ -291,7 +304,8 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
 DeMixNB_single_seed <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 10e-8,
                                 nthread = 1, output.more.info = FALSE, seed=100,
                                 mu_t.bounds = c(0.01, 1e8), phi_t.bounds = c(0.01, 1e8),
-                                pi.bounds = c(0.05, 0.95))
+                                pi.bounds = c(0.05, 0.95),
+                                sequential.update = TRUE)
 {
   # Set random seed
   set.seed(seed)
@@ -400,11 +414,14 @@ DeMixNB_single_seed <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol
     phi_t_new <- mu_phi_t_matrix[, 2]
     
     
-    ## (B) Estimate tumor proportions pi using parameters from START of iteration
+    ## (B) Estimate tumor proportions pi using the tumor parameters just updated
+    ## in (A) (sequential.update = TRUE) or those from START of iteration
     #cat("    Estimating spot proportions (pi)...\n") # Added status message
+    mu_t_for_pi  <- if (sequential.update) mu_t_new else mu_t_start_iter
+    phi_t_for_pi <- if (sequential.update) phi_t_new else phi_t_start_iter
     pi_t_list <- pbapply::pblapply(1:Ny, FUN = Estimate_pi_i, cl = nthread, 
                           data.Y = data.Y, pi_0 = pi_start_iter, G = G, 
-                          mu_t = mu_t_start_iter, phi_t = phi_t_start_iter,
+                          mu_t = mu_t_for_pi, phi_t = phi_t_for_pi,
                           mu_n = mu_n, phi_n = phi_n, pi.bounds = pi.bounds)
     pi_t_new <- unlist(pi_t_list)
     pi_t_new <- pmax(pi.bounds[1], pmin(pi_t_new, pi.bounds[2])) # ensure pi stays within pi.bounds

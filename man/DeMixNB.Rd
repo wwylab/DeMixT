@@ -18,7 +18,8 @@ DeMixNB(
   data.scale = 1,
   mu_t.bounds = c(0.01, 1e+08),
   phi_t.bounds = c(0.01, 1e+08),
-  pi.bounds = c(0.05, 0.95)
+  pi.bounds = c(0.05, 0.95),
+  sequential.update = TRUE
 )
 }
 \arguments{
@@ -73,6 +74,12 @@ bounds of the tumor proportion \eqn{pi} of each sample. The bounds are used
 in the optimization of \eqn{pi}, to truncate the estimates after each
 iteration, and to truncate the initial values. Must satisfy
 0 < lower < upper < 1. Default is c(0.05, 0.95).}
+
+\item{sequential.update}{A boolean flag controlling the order of updates in
+each iteration. If TRUE, the proportions are estimated given the tumor
+parameters (\eqn{mu_t}, \eqn{phi_t}) updated earlier in the same iteration,
+as in iterated conditional modes. If FALSE, both are estimated from the
+values at the start of the iteration. Default is TRUE.}
 }
 \value{
 \item{pi_t_summary}{A data frame containing the estimated tumor proportions for

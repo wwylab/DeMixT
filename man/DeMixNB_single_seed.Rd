@@ -16,7 +16,8 @@ DeMixNB_single_seed(
   seed = 100,
   mu_t.bounds = c(0.01, 1e+08),
   phi_t.bounds = c(0.01, 1e+08),
-  pi.bounds = c(0.05, 0.95)
+  pi.bounds = c(0.05, 0.95),
+  sequential.update = TRUE
 )
 }
 \arguments{
@@ -59,6 +60,10 @@ of each gene in the optimization. Default is c(0.01, 1e8).}
 
 \item{pi.bounds}{The lower and upper bounds of the tumor proportion
 \eqn{pi} of each sample. Default is c(0.05, 0.95).}
+
+\item{sequential.update}{If TRUE, the proportions are estimated given the
+tumor parameters updated earlier in the same iteration; if FALSE, given the
+values at the start of the iteration. Default is TRUE.}
 }
 \value{
 \item{pi}{A matrix of estimated proportion. First row corresponds to the 
