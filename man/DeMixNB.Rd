@@ -16,8 +16,8 @@ DeMixNB(
   output.more.info = FALSE,
   consistency_threshold = 0.1,
   data.scale = 1,
-  mu_t.lower = 0.01,
-  phi_t.lower = 0.01,
+  mu_t.bounds = c(0.01, 1e+08),
+  phi_t.bounds = c(0.01, 1e+08),
   pi.bounds = c(0.05, 0.95)
 )
 }
@@ -60,11 +60,13 @@ Default is 0.1.}
 
 \item{data.scale}{The constant scale to be multiplied to the data. Default is 1.}
 
-\item{mu_t.lower}{The lower bound for the tumor mean \eqn{mu_t} of each gene
-in the optimization. Must be a single positive number. Default is 0.01.}
+\item{mu_t.bounds}{A numeric vector of length two giving the lower and upper
+bounds of the tumor mean \eqn{mu_t} of each gene in the optimization. Must
+satisfy 0 < lower < upper; upper may be Inf. Default is c(0.01, 1e8).}
 
-\item{phi_t.lower}{The lower bound for the tumor dispersion \eqn{phi_t} of
-each gene in the optimization. Must be a single positive number. Default is 0.01.}
+\item{phi_t.bounds}{A numeric vector of length two giving the lower and upper
+bounds of the tumor dispersion \eqn{phi_t} of each gene in the optimization.
+Must satisfy 0 < lower < upper; upper may be Inf. Default is c(0.01, 1e8).}
 
 \item{pi.bounds}{A numeric vector of length two giving the lower and upper
 bounds of the tumor proportion \eqn{pi} of each sample. The bounds are used

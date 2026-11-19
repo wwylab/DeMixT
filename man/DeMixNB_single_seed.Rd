@@ -14,8 +14,8 @@ DeMixNB_single_seed(
   nthread = 1,
   output.more.info = FALSE,
   seed = 100,
-  mu_t.lower = 0.01,
-  phi_t.lower = 0.01,
+  mu_t.bounds = c(0.01, 1e+08),
+  phi_t.bounds = c(0.01, 1e+08),
   pi.bounds = c(0.05, 0.95)
 )
 }
@@ -51,11 +51,11 @@ estimations in each iteration. Default is False.}
 
 \item{seed}{The random seed to use for each run.}
 
-\item{mu_t.lower}{The lower bound for the tumor mean \eqn{mu_t} of each gene
-in the optimization. Default is 0.01.}
+\item{mu_t.bounds}{The lower and upper bounds of the tumor mean \eqn{mu_t}
+of each gene in the optimization. Default is c(0.01, 1e8).}
 
-\item{phi_t.lower}{The lower bound for the tumor dispersion \eqn{phi_t} of
-each gene in the optimization. Default is 0.01.}
+\item{phi_t.bounds}{The lower and upper bounds of the tumor dispersion
+\eqn{phi_t} of each gene in the optimization. Default is c(0.01, 1e8).}
 
 \item{pi.bounds}{The lower and upper bounds of the tumor proportion
 \eqn{pi} of each sample. Default is c(0.05, 0.95).}

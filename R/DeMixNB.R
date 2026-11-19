@@ -42,11 +42,13 @@
 #'
 #' @param data.scale The constant scale to be multiplied to the data. Default is 1.
 #'
-#' @param mu_t.lower The lower bound for the tumor mean \eqn{mu_t} of each gene
-#' in the optimization. Must be a single positive number. Default is 0.01.
+#' @param mu_t.bounds A numeric vector of length two giving the lower and upper
+#' bounds of the tumor mean \eqn{mu_t} of each gene in the optimization. Must
+#' satisfy 0 < lower < upper; upper may be Inf. Default is c(0.01, 1e8).
 #'
-#' @param phi_t.lower The lower bound for the tumor dispersion \eqn{phi_t} of
-#' each gene in the optimization. Must be a single positive number. Default is 0.01.
+#' @param phi_t.bounds A numeric vector of length two giving the lower and upper
+#' bounds of the tumor dispersion \eqn{phi_t} of each gene in the optimization.
+#' Must satisfy 0 < lower < upper; upper may be Inf. Default is c(0.01, 1e8).
 #'
 #' @param pi.bounds A numeric vector of length two giving the lower and upper
 #' bounds of the tumor proportion \eqn{pi} of each sample. The bounds are used
@@ -79,8 +81,9 @@
 ## Estimating function
 DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
                     nthread = 1, seeds = c(123, 456, 789), output.more.info = FALSE,
-                    consistency_threshold = 0.1, data.scale = 1.0, mu_t.lower = 0.01,
-                    phi_t.lower = 0.01, pi.bounds = c(0.05, 0.95)){
+                    consistency_threshold = 0.1, data.scale = 1.0,
+                    mu_t.bounds = c(0.01, 1e8), phi_t.bounds = c(0.01, 1e8),
+                    pi.bounds = c(0.05, 0.95)){
   ##----------------------------------------
   ## Step 1: Set up system and prepare input data
   ##----------------------------------------
@@ -118,10 +121,12 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
   if (!is.matrix(data.Y)) stop("data.Y must be a matrix.")
   if (!is.matrix(data.N1)) stop("data.N1 must be a matrix.")
   if (nrow(data.Y) != nrow(data.N1)) stop("data.Y and data.N1 must have the same number of rows (genes).")
-  if (!is.numeric(mu_t.lower) || length(mu_t.lower) != 1 || !is.finite(mu_t.lower) || mu_t.lower <= 0)
-    stop("mu_t.lower must be a single positive number.")
-  if (!is.numeric(phi_t.lower) || length(phi_t.lower) != 1 || !is.finite(phi_t.lower) || phi_t.lower <= 0)
-    stop("phi_t.lower must be a single positive number.")
+  if (!is.numeric(mu_t.bounds) || length(mu_t.bounds) != 2 || anyNA(mu_t.bounds) ||
+      !is.finite(mu_t.bounds[1]) || mu_t.bounds[1] <= 0 || mu_t.bounds[1] >= mu_t.bounds[2])
+    stop("mu_t.bounds must be c(lower, upper) with 0 < lower < upper.")
+  if (!is.numeric(phi_t.bounds) || length(phi_t.bounds) != 2 || anyNA(phi_t.bounds) ||
+      !is.finite(phi_t.bounds[1]) || phi_t.bounds[1] <= 0 || phi_t.bounds[1] >= phi_t.bounds[2])
+    stop("phi_t.bounds must be c(lower, upper) with 0 < lower < upper.")
   if (!is.numeric(pi.bounds) || length(pi.bounds) != 2 || any(!is.finite(pi.bounds)) ||
       pi.bounds[1] <= 0 || pi.bounds[2] >= 1 || pi.bounds[1] >= pi.bounds[2])
     stop("pi.bounds must be c(lower, upper) with 0 < lower < upper < 1.")
@@ -150,8 +155,8 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
                           nthread = nthread,
                           seed = current_seed,
                           output.more.info = output.more.info,
-                          mu_t.lower = mu_t.lower,
-                          phi_t.lower = phi_t.lower,
+                          mu_t.bounds = mu_t.bounds,
+                          phi_t.bounds = phi_t.bounds,
                           pi.bounds = pi.bounds)
     }, error = function(e) {
       warning("Error occurred during run ", r, " with seed ", current_seed, ": ", e$message, call. = FALSE)
@@ -258,11 +263,11 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
 #' @param output.more.info A boolean flag controlling whether to return the 
 #' estimations in each iteration. Default is False.
 #' 
-#' @param mu_t.lower The lower bound for the tumor mean \eqn{mu_t} of each gene
-#' in the optimization. Default is 0.01.
+#' @param mu_t.bounds The lower and upper bounds of the tumor mean \eqn{mu_t}
+#' of each gene in the optimization. Default is c(0.01, 1e8).
 #'
-#' @param phi_t.lower The lower bound for the tumor dispersion \eqn{phi_t} of
-#' each gene in the optimization. Default is 0.01.
+#' @param phi_t.bounds The lower and upper bounds of the tumor dispersion
+#' \eqn{phi_t} of each gene in the optimization. Default is c(0.01, 1e8).
 #'
 #' @param pi.bounds The lower and upper bounds of the tumor proportion
 #' \eqn{pi} of each sample. Default is c(0.05, 0.95).
@@ -285,7 +290,7 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
 #' automatically indexed.}
 DeMixNB_single_seed <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 10e-8,
                                 nthread = 1, output.more.info = FALSE, seed=100,
-                                mu_t.lower = 0.01, phi_t.lower = 0.01,
+                                mu_t.bounds = c(0.01, 1e8), phi_t.bounds = c(0.01, 1e8),
                                 pi.bounds = c(0.05, 0.95))
 {
   # Set random seed
@@ -383,8 +388,8 @@ DeMixNB_single_seed <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol
     mu_phi_t_list <- pbapply::pblapply(X=1:G, FUN = Estimate_T_g, cl = nthread, 
                               data.Y = data.Y, pi_t = pi_start_iter, n = Ny,
                               mu_t = mu_t_start_iter, phi_t = phi_t_start_iter, # Pass starting estimates
-                              mu_n = mu_n, phi_n = phi_n, mu_t.lower = mu_t.lower,
-                              phi_t.lower = phi_t.lower)
+                              mu_n = mu_n, phi_n = phi_n, mu_t.bounds = mu_t.bounds,
+                              phi_t.bounds = phi_t.bounds)
     # Check if the result is a list of vectors before binding
     is_list_of_vectors <- all(sapply(mu_phi_t_list, is.vector)) && all(sapply(mu_phi_t_list, length) == 2)
     if (!is_list_of_vectors || length(mu_phi_t_list) != G) {
@@ -505,14 +510,14 @@ Likelihood_NB_T_g <- function(paras, y_g, pi, mu_ng, phi_ng, n = n){
 
 ## Estimate gene-specific para
 Estimate_T_g <- function(g, data.Y, pi_t, n, mu_t, phi_t, mu_n, phi_n,
-                         mu_t.lower = 0.01, phi_t.lower = 0.01){
+                         mu_t.bounds = c(0.01, 1e8), phi_t.bounds = c(0.01, 1e8)){
   
   y_g = data.Y[g,]
   Fit_opt_T <- optim(par = c(mu_t[g], phi_t[g]),
                      fn = Likelihood_NB_T_g,
                      method = 'L-BFGS-B',
-                     lower = c(mu_t.lower, phi_t.lower),
-                     upper = c(1e8, 1e8),
+                     lower = c(mu_t.bounds[1], phi_t.bounds[1]),
+                     upper = c(mu_t.bounds[2], phi_t.bounds[2]),
                      y_g = y_g, n = n, pi = pi_t,
                      mu_ng = mu_n[g], phi_ng = phi_n[g],
                      hessian = T)
