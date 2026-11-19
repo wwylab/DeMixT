@@ -13,7 +13,10 @@ DeMixNB_single_seed(
   tol = 1e-07,
   nthread = 1,
   output.more.info = FALSE,
-  seed = 100
+  seed = 100,
+  mu_t.lower = 0.01,
+  phi_t.lower = 0.01,
+  pi.bounds = c(0.05, 0.95)
 )
 }
 \arguments{
@@ -47,6 +50,15 @@ under the hood when calculating the complete likelihood.}
 estimations in each iteration. Default is False.}
 
 \item{seed}{The random seed to use for each run.}
+
+\item{mu_t.lower}{The lower bound for the tumor mean \eqn{mu_t} of each gene
+in the optimization. Default is 0.01.}
+
+\item{phi_t.lower}{The lower bound for the tumor dispersion \eqn{phi_t} of
+each gene in the optimization. Default is 0.01.}
+
+\item{pi.bounds}{The lower and upper bounds of the tumor proportion
+\eqn{pi} of each sample. Default is c(0.05, 0.95).}
 }
 \value{
 \item{pi}{A matrix of estimated proportion. First row corresponds to the 

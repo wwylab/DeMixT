@@ -15,7 +15,10 @@ DeMixNB(
   seeds = c(123, 456, 789),
   output.more.info = FALSE,
   consistency_threshold = 0.1,
-  data.scale = 1
+  data.scale = 1,
+  mu_t.lower = 0.01,
+  phi_t.lower = 0.01,
+  pi.bounds = c(0.05, 0.95)
 )
 }
 \arguments{
@@ -56,6 +59,18 @@ between pi estimates across runs for a spot to be considered "consistent".
 Default is 0.1.}
 
 \item{data.scale}{The constant scale to be multiplied to the data. Default is 1.}
+
+\item{mu_t.lower}{The lower bound for the tumor mean \eqn{mu_t} of each gene
+in the optimization. Must be a single positive number. Default is 0.01.}
+
+\item{phi_t.lower}{The lower bound for the tumor dispersion \eqn{phi_t} of
+each gene in the optimization. Must be a single positive number. Default is 0.01.}
+
+\item{pi.bounds}{A numeric vector of length two giving the lower and upper
+bounds of the tumor proportion \eqn{pi} of each sample. The bounds are used
+in the optimization of \eqn{pi}, to truncate the estimates after each
+iteration, and to truncate the initial values. Must satisfy
+0 < lower < upper < 1. Default is c(0.05, 0.95).}
 }
 \value{
 \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
