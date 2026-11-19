@@ -38,7 +38,8 @@
 #' Default is 0.1.
 #' 
 #' @param output.more.info A boolean flag controlling whether to return the 
-#' estimations in each iteration. Default is False.
+#' estimations in each iteration. When TRUE, each run in all_run_results also
+#' contains pi_iters, mu_t_iters and phi_t_iters. Default is False.
 #'
 #' @param data.scale The constant scale to be multiplied to the data. Default is 1.
 #'
@@ -71,7 +72,10 @@
 #' for each run.}
 #' 
 #' \item{all_run_results}{A list containing all the detailed outputs of each run,
-#' including the \eqn{mu} and \eqn{phi} estimates.}
+#' including the \eqn{mu} and \eqn{phi} estimates. When output.more.info = TRUE,
+#' each run also contains pi_iters (tumor proportions of the mixed and spike-in
+#' samples), mu_t_iters and phi_t_iters (tumor parameters of each gene), with one
+#' column per iteration; the first column is the initial value.}
 #' 
 #' @author Liyang Xie
 #' @examples
@@ -291,8 +295,13 @@ DeMixNB <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol = 1e-8,
 #' respectively, and each column 
 #' corresponds to one sample.}
 #' 
-#' \item{pi.iter}{Estimated proportions in each iteration. It is a \eqn{niter*
-#' My*2} array. This is enabled only when output.more.info = TRUE.}
+#' \item{pi_iters}{Estimated tumor proportions in each iteration. It is a
+#' \eqn{(My + nspikein)} by \eqn{(iterations + 1)} matrix; the spike-in samples
+#' follow the mixed samples. This is enabled only when output.more.info = TRUE.}
+#'
+#' \item{mu_t_iters, phi_t_iters}{Estimated tumor \eqn{mu} and \eqn{phi} in each
+#' iteration. Each is a \eqn{G} by \eqn{(iterations + 1)} matrix with genes in
+#' rows. These are enabled only when output.more.info = TRUE.}
 #' 
 #' \item{Mu}{A matrix of estimated \eqn{mu} of the negative binomial 
 #' distribution for both components. Each row corresponds to one gene.} 
@@ -473,7 +482,10 @@ DeMixNB_single_seed <- function(data.Y, data.N1, niter = 30, nspikein = 200, tol
   
   if (output.more.info)
   {
+    rownames(mu_t_iters) <- rownames(phi_t_iters) <- gene.name
+    colnames(mu_t_iters) <- colnames(phi_t_iters) <- paste0("iter", seq_len(iters_used) - 1)
     return(list(pi = pi, pi_iters = pi_iters, 
+                mu_t_iters = mu_t_iters, phi_t_iters = phi_t_iters,
                 Mu = Mu, phi = phi,
                 gene.name = gene.name))
   }

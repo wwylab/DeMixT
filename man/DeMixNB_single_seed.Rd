@@ -71,8 +71,13 @@ proportion estimate for the known components and unknown component
 respectively, and each column 
 corresponds to one sample.}
 
-\item{pi.iter}{Estimated proportions in each iteration. It is a \eqn{niter*
-My*2} array. This is enabled only when output.more.info = TRUE.}
+\item{pi_iters}{Estimated tumor proportions in each iteration. It is a
+\eqn{(My + nspikein)} by \eqn{(iterations + 1)} matrix; the spike-in samples
+follow the mixed samples. This is enabled only when output.more.info = TRUE.}
+
+\item{mu_t_iters, phi_t_iters}{Estimated tumor \eqn{mu} and \eqn{phi} in each
+iteration. Each is a \eqn{G} by \eqn{(iterations + 1)} matrix with genes in
+rows. These are enabled only when output.more.info = TRUE.}
 
 \item{Mu}{A matrix of estimated \eqn{mu} of the negative binomial 
 distribution for both components. Each row corresponds to one gene.} 

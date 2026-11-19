@@ -53,7 +53,8 @@ under the hood when calculating the complete likelihood.}
 The DeMixNB algorithm will be run once for each seed. Default is c(123, 456, 789).}
 
 \item{output.more.info}{A boolean flag controlling whether to return the 
-estimations in each iteration. Default is False.}
+estimations in each iteration. When TRUE, each run in all_run_results also
+contains pi_iters, mu_t_iters and phi_t_iters. Default is False.}
 
 \item{consistency_threshold}{The maximum allowed difference (range) 
 between pi estimates across runs for a spot to be considered "consistent". 
@@ -90,7 +91,10 @@ with each other based on the maximum difference.}
 for each run.}
 
 \item{all_run_results}{A list containing all the detailed outputs of each run,
-including the \eqn{mu} and \eqn{phi} estimates.}
+including the \eqn{mu} and \eqn{phi} estimates. When output.more.info = TRUE,
+each run also contains pi_iters (tumor proportions of the mixed and spike-in
+samples), mu_t_iters and phi_t_iters (tumor parameters of each gene), with one
+column per iteration; the first column is the initial value.}
 }
 \description{
 DeMixNB is a variant of DeMixT such that the expressions are 
