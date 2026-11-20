@@ -15,7 +15,15 @@ DeMixNB(
   seeds = c(123, 456, 789),
   output.more.info = FALSE,
   consistency_threshold = 0.1,
-  data.scale = 1
+  data.scale = 1,
+  mu_t.bounds = c(0.01, 1e+08),
+  phi_t.bounds = c(0.01, 1e+08),
+  pi.bounds = c(0.05, 0.95),
+  sequential.update = TRUE,
+  gene.selection.method = c("None", "DE", "ST"),
+  ngene.selected = NA,
+  seurat.obj = NULL,
+  gene.selection.args = list()
 )
 }
 \arguments{
@@ -49,13 +57,56 @@ under the hood when calculating the complete likelihood.}
 The DeMixNB algorithm will be run once for each seed. Default is c(123, 456, 789).}
 
 \item{output.more.info}{A boolean flag controlling whether to return the 
-estimations in each iteration. Default is False.}
+estimations in each iteration. When TRUE, each run in all_run_results also
+contains pi_iters, mu_t_iters and phi_t_iters. Default is False.}
 
 \item{consistency_threshold}{The maximum allowed difference (range) 
 between pi estimates across runs for a spot to be considered "consistent". 
 Default is 0.1.}
 
 \item{data.scale}{The constant scale to be multiplied to the data. Default is 1.}
+
+\item{mu_t.bounds}{A numeric vector of length two giving the lower and upper
+bounds of the tumor mean \eqn{mu_t} of each gene in the optimization. Must
+satisfy 0 < lower < upper; upper may be Inf. Default is c(0.01, 1e8).}
+
+\item{phi_t.bounds}{A numeric vector of length two giving the lower and upper
+bounds of the tumor dispersion \eqn{phi_t} of each gene in the optimization.
+Must satisfy 0 < lower < upper; upper may be Inf. Default is c(0.01, 1e8).}
+
+\item{pi.bounds}{A numeric vector of length two giving the lower and upper
+bounds of the tumor proportion \eqn{pi} of each sample. The bounds are used
+in the optimization of \eqn{pi}, to truncate the estimates after each
+iteration, and to truncate the initial values. Must satisfy
+0 < lower < upper < 1. Default is c(0.05, 0.95).}
+
+\item{sequential.update}{A boolean flag controlling the order of updates in
+each iteration. If TRUE, the proportions are estimated given the tumor
+parameters (\eqn{mu_t}, \eqn{phi_t}) updated earlier in the same iteration,
+as in iterated conditional modes. If FALSE, both are estimated from the
+values at the start of the iteration. Default is TRUE.}
+
+\item{gene.selection.method}{The method used to select genes before
+deconvolution. "None" (default) uses all genes in data.Y and data.N1. "DE"
+runs \code{gene_selection_DE} on the combined counts of data.N1 and data.Y.
+"ST" runs \code{gene_selection_MoransI} on seurat.obj for spatial
+transcriptomics data. The selection is done once, before the runs with
+different seeds, and data.Y and data.N1 are subset to the selected genes.}
+
+\item{ngene.selected}{The number of genes to select. It is passed to
+\code{gene_selection_DE} as ngene.selected.for.pi and to
+\code{gene_selection_MoransI} as ngene.selected. Default is NA, i.e.
+\eqn{min(1500, 0.3*G)} for "DE", where \eqn{G} is the number of genes, and
+1000 for "ST". Ignored when gene.selection.method = "None".}
+
+\item{seurat.obj}{A Seurat object with the spatial counts and tissue image
+of the reference and mixed spots, required when gene.selection.method =
+"ST". Its spot ids must match the column names of data.N1 and data.Y.
+Default is NULL.}
+
+\item{gene.selection.args}{A list of further arguments passed to the gene
+selection function, e.g. list(filter.sd = 0.5) for "DE" or
+list(n.features.tested = 3000) for "ST". Default is an empty list.}
 }
 \value{
 \item{pi_t_summary}{A data frame containing the estimated tumor proportions for
@@ -66,7 +117,10 @@ with each other based on the maximum difference.}
 for each run.}
 
 \item{all_run_results}{A list containing all the detailed outputs of each run,
-including the \eqn{mu} and \eqn{phi} estimates.}
+including the \eqn{mu} and \eqn{phi} estimates. When output.more.info = TRUE,
+each run also contains pi_iters (tumor proportions of the mixed and spike-in
+samples), mu_t_iters and phi_t_iters (tumor parameters of each gene), with one
+column per iteration; the first column is the initial value.}
 }
 \description{
 DeMixNB is a variant of DeMixT such that the expressions are 

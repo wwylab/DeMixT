@@ -14,7 +14,7 @@ Depends: R (>= 4.0.0), parallel, Rcpp (>= 1.0.0), SummarizedExperiment
 Imports: matrixStats, stats, truncdist, base64enc, ggplot2, KernSmooth,
         matrixcalc, DSS, sva, dendextend, fitdistrplus, pbapply, psych,
         magrittr, graphics, grDevices, S4Vectors
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, Seurat, Matrix
 LinkingTo: Rcpp
 NeedsCompilation: yes
 VignetteBuilder: knitr

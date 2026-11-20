@@ -13,7 +13,11 @@ DeMixNB_single_seed(
   tol = 1e-07,
   nthread = 1,
   output.more.info = FALSE,
-  seed = 100
+  seed = 100,
+  mu_t.bounds = c(0.01, 1e+08),
+  phi_t.bounds = c(0.01, 1e+08),
+  pi.bounds = c(0.05, 0.95),
+  sequential.update = TRUE
 )
 }
 \arguments{
@@ -47,6 +51,19 @@ under the hood when calculating the complete likelihood.}
 estimations in each iteration. Default is False.}
 
 \item{seed}{The random seed to use for each run.}
+
+\item{mu_t.bounds}{The lower and upper bounds of the tumor mean \eqn{mu_t}
+of each gene in the optimization. Default is c(0.01, 1e8).}
+
+\item{phi_t.bounds}{The lower and upper bounds of the tumor dispersion
+\eqn{phi_t} of each gene in the optimization. Default is c(0.01, 1e8).}
+
+\item{pi.bounds}{The lower and upper bounds of the tumor proportion
+\eqn{pi} of each sample. Default is c(0.05, 0.95).}
+
+\item{sequential.update}{If TRUE, the proportions are estimated given the
+tumor parameters updated earlier in the same iteration; if FALSE, given the
+values at the start of the iteration. Default is TRUE.}
 }
 \value{
 \item{pi}{A matrix of estimated proportion. First row corresponds to the 
@@ -54,8 +71,13 @@ proportion estimate for the known components and unknown component
 respectively, and each column 
 corresponds to one sample.}
 
-\item{pi.iter}{Estimated proportions in each iteration. It is a \eqn{niter*
-My*2} array. This is enabled only when output.more.info = TRUE.}
+\item{pi_iters}{Estimated tumor proportions in each iteration. It is a
+\eqn{(My + nspikein)} by \eqn{(iterations + 1)} matrix; the spike-in samples
+follow the mixed samples. This is enabled only when output.more.info = TRUE.}
+
+\item{mu_t_iters, phi_t_iters}{Estimated tumor \eqn{mu} and \eqn{phi} in each
+iteration. Each is a \eqn{G} by \eqn{(iterations + 1)} matrix with genes in
+rows. These are enabled only when output.more.info = TRUE.}
 
 \item{Mu}{A matrix of estimated \eqn{mu} of the negative binomial 
 distribution for both components. Each row corresponds to one gene.} 

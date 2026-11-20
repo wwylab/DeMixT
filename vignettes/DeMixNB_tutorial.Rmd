@@ -130,7 +130,7 @@ Here we demonstrate a workflow for `DeMixNB` using spatial transcriptomic data.
 # Step 0: Install and load packages
 # --------------------------------------
 # Install packages
-install.packages('Seurat' ,'hdf5r', 'Rfast2')
+install.packages(c("Seurat", "hdf5r", "Rfast2"))
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -139,18 +139,20 @@ BiocManager::install("glmGamPoi")
 # Load library
 library(Seurat)
 library(DeMixT)
-library(dplyr)
 library(ggplot2)
 
 # --------------------------------------
-# Step 1: Load and Preprocess Data
+# Step 1: Load Data
 # --------------------------------------
 # Load the LUSC spatial transcriptomics dataset (Seurat object)
 
-data_dir <- "/rsrch6/home/bcb/wwang7/Team/Spatial_TmS/DeMixNB_tutorial_data/lusc_public_data"
+data_dir <- "~/lusc_public_data"
 
-spatial_img <- Read10X_Image(image.dir = file.path(data_dir, "spatial/"),
-                             image.name = "tissue_lowres_image.png")
+spatial_img <- Read10X_Image(
+  image.dir = file.path(data_dir, "spatial"),
+  image.name = "tissue_lowres_image.png",
+  filter.matrix = TRUE
+)
 lusc_seurat <- Load10X_Spatial(data.dir = file.path(data_dir, 
                                                     "filtered_feature_bc_matrix/"), 
                                filename = "filtered_feature_bc_matrix.h5",
@@ -158,6 +160,10 @@ lusc_seurat <- Load10X_Spatial(data.dir = file.path(data_dir,
                                filter.matrix = TRUE,
                                to.upper = FALSE,
                                image = spatial_img)
+
+# Load cell metadata from CSV file (one row per cell, with the spot barcode 
+# and the cell class: "t" tumor, "f" stromal, "l" immune, "o" other)
+cell_metadata <- read.csv(file.path(data_dir, "LUSC_spot_annotation.csv"))
 
 # Display initial dataset dimensions
 message("Before quality control, the dataset contains ", 
@@ -171,178 +177,83 @@ Before quality control, the dataset contains 3858 spots and 18085 genes.
 # --------------------------------------
 # Step 2: Filter Genes
 # --------------------------------------
-# Remove unwanted genes (e.g., mitochondrial, pseudogenes, etc.)
-# Regular expressions identify genes to exclude based on their names
-unwanted_genes <- grepl("^(MT-|MIR-|LINC|A[A-Z]|B[A-Z]|
-                        C[A-Z]|Rik|Gm|Vmn|Olfr|Trav)", 
-                        rownames(lusc_seurat))
-lusc_seurat <- lusc_seurat[!unwanted_genes, ]
-
-# Filter genes with low expression (detected in fewer than 10 spots)
-count_data <- GetAssayData(lusc_seurat, assay = "Spatial",layer = "counts")
-gene_detection_counts <- rowSums(count_data > 0)
-genes_to_keep <- names(gene_detection_counts[gene_detection_counts >= 10])
+# Remove unwanted genes (e.g., mitochondrial, pseudogenes, etc.) and
+# genes with low expression (detected in fewer than 10 spots)
+lusc_seurat <- filter_genes_ST(lusc_seurat, assay = "Spatial", min.spots = 10)
 
 # --------------------------------------
-# Step 3: Load and Process Cell Metadata
+# Step 3: Quality Control (QC) on Spots
 # --------------------------------------
-# Load cell metadata from CSV file
-cell_metadata <- read.csv(file.path(data_dir, 
-                                    "CytAssist_FFPE_Lung_Squamous_Cell_Carcinoma_pyramidLZW.tiff.csv"))
-
-# Filter valid barcodes and classify cells as tumor or non-tumor
-cell_metadata <- cell_metadata %>%
-  filter(!is.na(Barcode) & Barcode != "" & Barcode %in% colnames(count_data)) %>%
-  mutate(class = ifelse(class2 == "t", "tumor", "non_tumor"))
-
-# Summarize spot-level cell information (e.g., coordinates, cell type proportions)
-barcode_summary <- cell_metadata %>%
-  group_by(Barcode) %>%
-  summarise(
-    x_coor = mean(x_fullres),
-    y_coor = mean(y_fullres),
-    tumor_proportion = sum(class == "tumor") / n(),
-    stromal_proportion = sum(class2 == "f") / n(),
-    immune_proportion = sum(class2 == "l") / n(),
-    non_tumor_proportion = 1 - tumor_proportion,
-    number_of_cells = n()
-  )
+# Keep spots with sufficient counts and detected genes
+lusc_seurat <- qc_spots_ST(lusc_seurat, assay = "Spatial",
+                           min.counts = 600, min.features = 300)
 
 # --------------------------------------
-# Step 4: Quality Control (QC) on Spots
+# Step 4: Summarize and Filter the Cell Annotation
 # --------------------------------------
-# Subset Seurat object to keep spots with sufficient counts and features
-lusc_seurat <- subset(
-  x = lusc_seurat,
-  subset = (nCount_Spatial >= 600) & (nFeature_Spatial >= 300),
-  features = genes_to_keep
-)
+# Summarize the cells in each remaining spot (coordinates, numbers of cells
+# and proportions of tumor, stromal and immune cells)
+barcode_summary <- summarize_spot_annotation(cell_metadata,
+                                             barcodes = colnames(lusc_seurat),
+                                             barcode.col = "Barcode",
+                                             class.col = "class2",
+                                             tumor.label = "t",
+                                             stromal.label = "f",
+                                             immune.label = "l")
 
-# Update barcode summary to match filtered Seurat object
-barcode_summary <- cell_metadata %>%
-  filter(Barcode %in% colnames(lusc_seurat)) %>%
-  group_by(Barcode) %>%
-  summarise(
-    x_coor = mean(x_fullres),
-    y_coor = mean(y_fullres),
-    tumor_proportion = sum(class == "tumor") / n(),
-    stromal_proportion = sum(class2 == "f") / n(),
-    immune_proportion = sum(class2 == "l") / n(),
-    non_tumor_proportion = 1 - tumor_proportion,
-    tumor_cell = sum(class == "tumor"),
-    number_of_cells = n()
-  )
-
-# Filter spots with at least 5 cells and tumor proportion between 0.05 and 0.95
-barcode_summary_filtered <- barcode_summary %>%
-  filter(number_of_cells >= 5 & (tumor_proportion == 0 | 
-                                   (tumor_proportion >= 0.05 
-                                    & tumor_proportion <= 0.95)))
+# Keep spots with at least 5 cells and a tumor proportion of 0 (reference)
+# or between 0.05 and 0.95 (mixed)
+barcode_summary_filtered <- filter_spots_by_annotation(barcode_summary,
+                                                       min.cells = 5,
+                                                       tumor.prop.range = c(0.05, 0.95))
 
 # Display post-QC dataset dimensions
-count_matrix <- GetAssayData(lusc_seurat, assay = "Spatial", layer = "counts")
 message("After quality control, the dataset contains ", 
         nrow(barcode_summary_filtered), " spots and ", 
-        nrow(count_matrix), " genes.")
+        nrow(lusc_seurat), " genes.")
 ```
 
-After quality control, the dataset contains 3088 spots and 14546 genes.
+After quality control, the dataset contains 3088 spots and 16356 genes.
+
 ```{r example1-3, eval=FALSE}
 # --------------------------------------
 # Step 5: Classify Spots
 # --------------------------------------
 # Identify mixed (tumor + non-tumor) and reference (non-tumor) spots
-barcode_mixed <- barcode_summary_filtered %>%
-  filter(tumor_proportion != 0) %>%
-  pull(Barcode)
-barcode_reference <- barcode_summary_filtered %>%
-  filter(tumor_proportion == 0) %>%
-  pull(Barcode)
-
-# Create data frames for mixed and reference spots
-cell_proportions <- barcode_summary_filtered %>%
-  select(Barcode, tumor_proportion, stromal_proportion, 
-         immune_proportion, non_tumor_proportion, number_of_cells)
-
-mixed_spots <- cell_proportions %>%
-  filter(Barcode %in% barcode_mixed) %>%
-  mutate(Type = "Candidate mixed spot")
-reference_spots <- cell_proportions %>%
-  filter(Barcode %in% barcode_reference) %>%
-  mutate(Type = "Candidate reference spot")
-
-# Combine spot data
-combined_spots <- rbind(mixed_spots, reference_spots)
+spot_ids <- classify_spots(barcode_summary_filtered)
+barcode_mixed <- spot_ids$tumor.id
+barcode_reference <- spot_ids$normal.id
 
 # --------------------------------------
 # Step 6: Subset Seurat Object
 # --------------------------------------
-# Create Seurat objects for reference and mixed spots
-reference_seurat <- lusc_seurat[, colnames(lusc_seurat) %in% barcode_reference]
-mixed_seurat <- lusc_seurat[, colnames(lusc_seurat) %in% barcode_mixed]
-combined_seurat <- lusc_seurat[, colnames(lusc_seurat) %in% combined_spots$Barcode]
-
-# Add sample type metadata
-combined_seurat$sample_type <- ifelse(
-  colnames(combined_seurat) %in% barcode_reference, "Normal",
-  ifelse(colnames(combined_seurat) %in% barcode_mixed, "Tumor Mixed", NA)
-)
+# Keep the reference and mixed spots and label them in the metadata
+# (sample_type: "Normal" or "Tumor Mixed")
+combined_seurat <- subset_spots_ST(lusc_seurat,
+                                   normal.id = barcode_reference,
+                                   tumor.id = barcode_mixed)
 
 # --------------------------------------
 # Step 7: Visualize Spot Classifications
 # --------------------------------------
 # Plot spatial distribution of normal and tumor-mixed spots
-spatial_plot <- SpatialDimPlot(
-  combined_seurat,
-  group.by = "sample_type",
-  cols = c("Normal" = "blue", "Tumor Mixed" = "red"),
-  pt.size.factor = 1.5,
-  interactive = FALSE,
-  crop = FALSE
-)
+spatial_plot <- plot_spot_classification(combined_seurat, pt.size.factor = 1.5)
 
 # --------------------------------------
-# Step 8: Prepare Data for DeMixNB
+# Step 8: Select Spatially Variable Genes
 # --------------------------------------
-# Extract count matrices for tumor and normal spots
-genes_shared <- intersect(rownames(reference_seurat), rownames(mixed_seurat))
-tumor_counts <- GetAssayData(mixed_seurat, layer = "counts")[genes_shared, ]
-normal_counts <- GetAssayData(reference_seurat, layer = "counts")[genes_shared, ]
+# Normalize the counts with SCTransform, compute Moran's I for the top 1000 
+# variable genes and rank them by observed Moran's I.
+# This step will take a while to process.
+# Users can choose the number of genes as needed.
+top_genes <- gene_selection_MoransI(combined_seurat,
+                                    normal.id = barcode_reference,
+                                    tumor.id = barcode_mixed,
+                                    ngene.selected = 1000,
+                                    n.features.tested = 1000)
 
 # --------------------------------------
-# Step 9: SCTransform and Dimensionality Reduction
-# --------------------------------------
-# Normalize and transform data using SCTransform
-combined_seurat <- SCTransform(combined_seurat, assay = "Spatial", verbose = FALSE)
-
-# Run PCA, clustering, and UMAP
-combined_seurat <- RunPCA(combined_seurat, assay = "SCT", verbose = FALSE)
-combined_seurat <- FindNeighbors(combined_seurat, reduction = "pca", dims = 1:50)
-combined_seurat <- FindClusters(combined_seurat, verbose = FALSE, resolution = 0.8)
-combined_seurat <- RunUMAP(combined_seurat, reduction = "pca", dims = 1:50)
-
-# --------------------------------------
-# Step 10: Identify Spatially Variable Genes
-# --------------------------------------
-# Select top 1000 spatially variable genes using Moran's I
-# This step will take a while to process 
-# User can choose number of genes as needed
-combined_seurat <- FindSpatiallyVariableFeatures(
-  combined_seurat,
-  assay = "SCT",
-  features = VariableFeatures(combined_seurat)[1:1000],
-  selection.method = "moransi"
-)
-
-# Extract Moran's I results and sort by observed Moran's I
-moransi_results <- combined_seurat@assays$SCT@meta.features %>%
-  na.exclude() %>%
-  arrange(desc(MoransI_observed))
-top_genes <- rownames(moransi_results)[1:1000]  
-
-
-# --------------------------------------
-# Step 11: Run DeMixNB
+# Step 9: Run DeMixNB
 # --------------------------------------
 # Define gene list sizes and prepare gene lists
 # For illustration purpose, this tutorial only uses gene size of 1000. 
@@ -353,18 +264,17 @@ gene_list_sizes <- c(1000)
 deconvolution_results <- matrix(nrow = length(barcode_mixed), ncol = 0)
 
 for (i in 1:length(gene_list_sizes)) {
-  gl <- top_genes[1:gene_list_sizes[i]]
-  filtered_mat <- count_matrix[gl, ]  # Subset count matrix for selected genes
-  data.N1 <- as.matrix(filtered_mat[, barcode_reference])  # Normal spot counts
-  data.Y <- as.matrix(filtered_mat[, barcode_mixed])
-  matrix_data <- as.matrix(filtered_mat[, barcode_mixed])
-  data.Y <- SummarizedExperiment(assays = list(counts = matrix_data))
-  matrix_data <- as.matrix(filtered_mat[, barcode_reference])
-  data.N1 <- SummarizedExperiment(assays = list(counts = matrix_data))
-  test_simulation <- DeMixNB(data.Y = data.Y, data.N1 = data.N1, niter = 30, tol = 1e-3)
+  # Raw counts of the selected genes for the mixed (data.Y) and
+  # reference (data.N1) spots
+  input <- prepare_DeMixNB_input(combined_seurat,
+                                 normal.id = barcode_reference,
+                                 tumor.id = barcode_mixed,
+                                 genes = top_genes[1:gene_list_sizes[i]])
+  test_simulation <- DeMixNB(data.Y = input$data.Y, data.N1 = input$data.N1,
+                             niter = 30, tol = 1e-3)
  
   ngene.selected <- gene_list_sizes[i]
-  name <- paste0("DemixNB_PUSC_hard_threshold_0.05_0.95_v2_", ngene.selected, ".RData")
+  name <- paste0("DemixNB_LUSC_", ngene.selected, ".RData")
   save(test_simulation, file = paste0('./Deconvolution_result/', name))
   
   # Get pi results and add gene count prefix to column names
@@ -373,14 +283,22 @@ for (i in 1:length(gene_list_sizes)) {
   deconvolution_results <- cbind(deconvolution_results, pi_results)
 }
 
+# Steps 8 and 9 can also be done in one call, which selects the genes inside
+# DeMixNB:
+# input <- prepare_DeMixNB_input(combined_seurat, barcode_reference, barcode_mixed)
+# test_simulation <- DeMixNB(data.Y = input$data.Y, data.N1 = input$data.N1,
+#                            niter = 30, tol = 1e-3,
+#                            gene.selection.method = "ST",
+#                            seurat.obj = combined_seurat,
+#                            ngene.selected = 1000)
 
 # --------------------------------------
-# Step 12: Visualize DeMixNB Results
+# Step 10: Visualize DeMixNB Results
 # --------------------------------------
 # Subset Seurat object for mixed spots and add tumor proportion estimates
 consistent_rows_1000 <- deconvolution_results$`1000_consistency` == "consistent"
 
-# Select the 500 gene results specifically
+# Select the 1000 gene results specifically
 tumor_proportions <- data.frame(
   sample.id = barcode_mixed[consistent_rows_1000], 
   PiT = deconvolution_results$`1000_pi_run1`[consistent_rows_1000]
